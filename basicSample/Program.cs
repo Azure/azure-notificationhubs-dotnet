@@ -20,8 +20,8 @@ namespace BasicSample
     class Program
     {
 
-        private const string GcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification\"}}";
-        private const string AppleSampleNotificationContent = "{\"aps\":{\"alert\":\"Notification Hub test notification\"}}";
+        private const string GcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification from SDK sample\"}}";
+        private const string AppleSampleNotificationContent = "{\"aps\":{\"alert\":\"Notification Hub test notification from SDK sample\"}}";
 
         static async Task Main(string[] args)
         {
@@ -144,8 +144,8 @@ namespace BasicSample
         private static async Task<NotificationDetails> WaitForThePushStatusAsync(string pnsType, NotificationHubClient nhClient, NotificationOutcome notificationOutcome) 
         {
             var notificationId = notificationOutcome.NotificationId;
-            var state = notificationOutcome.State;
-            NotificationDetails outcomeDetails = null;
+            NotificationDetails outcomeDetails = await nhClient.GetNotificationOutcomeDetailsAsync(notificationId);
+            var state = outcomeDetails.State;
             var count = 0;
             while ((state == NotificationOutcomeState.Enqueued || state == NotificationOutcomeState.Processing) && ++count < 10)
             {
