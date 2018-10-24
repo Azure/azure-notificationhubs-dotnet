@@ -9,5 +9,7 @@ namespace AzureNHDotnet
         public string Location { get; set; } = "West US";
         public string NamespaceName { get; set; }
         public string HubName { get; set; }
+        public string GcmCreds { get; set; }
+        public string ApnsCreds { get; set; }
     }
 }
