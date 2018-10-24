@@ -126,8 +126,8 @@ namespace BasicSample
             PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
             PrintPushOutcome("GCM Tags", gcmTagOutcomeDetails, gcmTagOutcomeDetails.GcmOutcomeCounts);
             PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
-            PrintPushOutcome("GCM Direct", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
-            PrintPushOutcome("APNS Direct", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
+            PrintPushOutcome("GCM Direct", gcmDirectSendOutcomeDetails, gcmDirectSendOutcomeDetails.ApnsOutcomeCounts);
+            PrintPushOutcome("APNS Direct", apnsDirectSendOutcomeDetails, apnsDirectSendOutcomeDetails.ApnsOutcomeCounts);
             Console.WriteLine("Hello World!");
         }
 
