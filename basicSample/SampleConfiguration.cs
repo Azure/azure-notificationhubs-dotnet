@@ -1,6 +1,6 @@
 using System;
 
-namespace AzureNHDotnet
+namespace BasicSample
 {
     public class SampleConfiguration
     {

@@ -15,7 +15,7 @@ using Microsoft.Azure.Management.NotificationHubs.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Azure.NotificationHubs;
 
-namespace AzureNHDotnet
+namespace BasicSample
 {
     class Program
     {

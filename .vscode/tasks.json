@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/AzureNHDotnet.csproj"
+                "${workspaceFolder}/basicSample/basicSample.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -17,7 +17,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/AzureNHDotnet.csproj"
+                "${workspaceFolder}/basicSample/basicSample.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
