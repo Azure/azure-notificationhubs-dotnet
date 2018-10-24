@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Rest.ClientRuntime.Azure;
 using Microsoft.Rest.Azure.Authentication;
 using Microsoft.Azure.Management.NotificationHubs;
@@ -18,6 +19,10 @@ namespace AzureNHDotnet
 {
     class Program
     {
+
+        private const string GcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification\"}}";
+        private const string AppleSampleNotificationContent = "{\"aps\":{\"alert\":\"Notification Hub test notification\"}}";
+
         static async Task Main(string[] args)
         {
             var clientId = "1950a258-227b-4e31-a9cf-717495945fc2"; // Unfortunately a "well-known" value: https://blogs.technet.microsoft.com/keithmayer/2014/12/30/leveraging-the-azure-service-management-rest-api-with-azure-active-directory-and-powershell-list-azure-administrators/
@@ -39,7 +44,10 @@ namespace AzureNHDotnet
             nhManagemntClient.SubscriptionId = config.SubscriptionId;
 
             // Create namespace
-            await nhManagemntClient.Namespaces.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, new NamespaceCreateOrUpdateParameters(config.Location));
+            await nhManagemntClient.Namespaces.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, new NamespaceCreateOrUpdateParameters(config.Location)
+            {
+                Sku = new Microsoft.Azure.Management.NotificationHubs.Models.Sku("standard")
+            });
             // Create hub
             Microsoft.Azure.Management.NotificationHubs.Models.GcmCredential gcmCreds = null;
             Microsoft.Azure.Management.NotificationHubs.Models.ApnsCredential apnsCreds = null;
@@ -75,35 +83,91 @@ namespace AzureNHDotnet
             var nhClient = NotificationHubClient.CreateClientFromConnectionString(connectionString.PrimaryConnectionString, config.HubName);
 
             // Register some fake devices
+            var gcmDeviceId = Guid.NewGuid().ToString();
             var gcmInstallation = new Installation
             {
                 InstallationId = "fake-gcm-install-id",
                 Platform = NotificationPlatform.Gcm,
-                PushChannel = Guid.NewGuid().ToString(),
-                PushChannelExpired = false
+                PushChannel = gcmDeviceId,
+                PushChannelExpired = false,
+                Tags = new [] { "gcm" }
             };
             await nhClient.CreateOrUpdateInstallationAsync(gcmInstallation);
             
+            var appleDeviceId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
             var apnsInstallation = new Installation
             {
                 InstallationId = "fake-apns-install-id",
                 Platform = NotificationPlatform.Apns,
-                PushChannel = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0",
+                PushChannel = appleDeviceId,
                 PushChannelExpired = false,
-                Tags = {"test"}
+                Tags = new [] { "apns" }
             };
             await nhClient.CreateOrUpdateInstallationAsync(apnsInstallation);
 
             // Send notifications to all users
-            var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync("{\"data\":{\"message\":\"Notification Hub test notification\"}}");
-            var outcomeApns = await nhClient.SendAppleNativeNotificationAsync("{\"aps\":{\"alert\":\"Notification Hub test notification\"}}");
+            var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
+            var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
 
-            var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync("{\"data\":{\"message\":\"Notification Hub test notification\"}}", "test");
+            var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, "gcm");
+            var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, "apns");
 
-            Console.WriteLine("GCM outcome: ", outcomeGcm.ToString());
-            Console.WriteLine("APNS outcome: ", outcomeApns.ToString());                            
-            Console.WriteLine("GCM outcome to tags: ", outcomeGcmByTag.ToString());                            
+            var outcomeGcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateGcmNotification(), gcmDeviceId);
+            var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), appleDeviceId);
+
+            var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
+            var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
+            var gcmTagOutcomeDetails = await WaitForThePushStatusAsync("GCM Tags", nhClient, outcomeGcmByTag);
+            var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
+            var gcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("GCM direct", nhClient, outcomeGcmByDeviceId);
+            var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
+
+            PrintPushOutcome("GCM", gcmOutcomeDetails, gcmOutcomeDetails.GcmOutcomeCounts);
+            PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
+            PrintPushOutcome("GCM Tags", gcmTagOutcomeDetails, gcmTagOutcomeDetails.GcmOutcomeCounts);
+            PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
+            PrintPushOutcome("GCM Direct", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
+            PrintPushOutcome("APNS Direct", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
             Console.WriteLine("Hello World!");
+        }
+
+        private static Notification CreateGcmNotification()
+        {
+            return new GcmNotification(GcmSampleNotificationContent);
+        }
+
+        private static Notification CreateApnsNotification()
+        {
+            return new AppleNotification(AppleSampleNotificationContent);
+        } 
+
+        private static async Task<NotificationDetails> WaitForThePushStatusAsync(string pnsType, NotificationHubClient nhClient, NotificationOutcome notificationOutcome) 
+        {
+            var notificationId = notificationOutcome.NotificationId;
+            var state = notificationOutcome.State;
+            NotificationDetails outcomeDetails = null;
+            var count = 0;
+            while ((state == NotificationOutcomeState.Enqueued || state == NotificationOutcomeState.Processing) && ++count < 10)
+            {
+                Console.WriteLine($"{pnsType} status: {state}");
+                outcomeDetails = await nhClient.GetNotificationOutcomeDetailsAsync(notificationId);
+                state = outcomeDetails.State;
+                Thread.Sleep(1000);                                                
+            }
+            return outcomeDetails;
+        }
+
+        private static void PrintPushOutcome(string pnsType, NotificationDetails details, NotificationOutcomeCollection collection)
+        {
+            if (collection != null) 
+            {
+                Console.WriteLine($"{pnsType} outcome: " + string.Join(",", collection.Select(kv => $"{kv.Key}:{kv.Value}")));    
+            }
+            else 
+            {
+                Console.WriteLine($"{pnsType} no outcomes.");
+            }
+            Console.WriteLine($"{pnsType} error details URL: {details.PnsErrorDetailsUri}");
         }
 
         private static SampleConfiguration LoadConfiguration(string[] args) 
