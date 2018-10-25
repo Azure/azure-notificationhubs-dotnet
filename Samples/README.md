@@ -46,3 +46,15 @@ To run the sample update the `config.json` file and execute the sample as such:
 cd RegistrationSample
 dotnet run --primaryConnectionString "primaryConnectionString"
 ```
+
+## UWPSample
+Sa,ple UWP application for sending push notifications 
+
+Create Secrets.cs file with the following properties
+public const string HubName = "<hub name>";
+public const string HubConnectionString = "<connection string>"
+
+```
+cd UWPSample
+Hit F5
+```
