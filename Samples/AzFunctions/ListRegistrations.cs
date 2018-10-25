@@ -30,7 +30,7 @@ namespace nh_samples_function
             }
 
             var hub = NotificationHubClient.CreateClientFromConnectionString(
-                NHubSamples.Parameters.QueryString, 
+                NHubSamples.Parameters.ConnectionString, 
                 hubName);
 
             CollectionQueryResult<RegistrationDescription> regs = await hub.GetAllRegistrationsAsync(0);

@@ -35,7 +35,7 @@ namespace NHubSamples
             string tags = req.Query["tags"];
             tags = tags ?? data?.tags;
             var hub = NotificationHubClient.CreateClientFromConnectionString(
-                Parameters.QueryString, 
+                Parameters.ConnectionString, 
                 hubName);
 
             Installation installation = new Installation();
