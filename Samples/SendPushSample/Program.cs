@@ -43,9 +43,9 @@ namespace SendPushSample
             await nhClient.CreateOrUpdateInstallationAsync(apnsInstallation);
 
             
-            switch (config.SendType)
+            switch ((SampleConfiguration.Operation)Enum.Parse(typeof(SampleConfiguration.Operation), config.SendType))
             {
-                case SampleConfiguration.Operation.Broadcast.ToString().Equals("Broadcast"):
+                case SampleConfiguration.Operation.Broadcast:
                     // Send notifications to all users
                     var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
                     var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
@@ -55,20 +55,20 @@ namespace SendPushSample
                     PrintPushOutcome("GCM", gcmOutcomeDetails, gcmOutcomeDetails.GcmOutcomeCounts);
                     PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
                     break;
-                case SampleConfiguration.Operation.SendByTag.ToString().Equals("SendByTag"):
+                case SampleConfiguration.Operation.SendByTag:
                     // Send notifications by tag
-                    var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, "gcm");
-                    var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, "apns");
+                    var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, config.Tag ?? "gcm");
+                    var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, config.Tag ?? "apns");
                     // Gather send outcome
                     var gcmTagOutcomeDetails = await WaitForThePushStatusAsync("GCM Tags", nhClient, outcomeGcmByTag);
                     var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
                     PrintPushOutcome("GCM Tags", gcmTagOutcomeDetails, gcmTagOutcomeDetails.GcmOutcomeCounts);
                     PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
                     break;
-                case SampleConfiguration.Operation.SendByDevice.ToString().Equals("SendByDevice"):
+                case SampleConfiguration.Operation.SendByDevice:
                     // Send notifications by deviceId
-                    var outcomeGcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateGcmNotification(), gcmDeviceId);
-                    var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), appleDeviceId);
+                    var outcomeGcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateGcmNotification(), config.GcmDeviceId ?? gcmDeviceId);
+                    var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), config.AppleDeviceId ?? appleDeviceId);
                     // Gather send outcome
                     var gcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("GCM direct", nhClient, outcomeGcmByDeviceId);
                     var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
