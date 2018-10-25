@@ -64,3 +64,4 @@ namespace UwpSample
 ```
 
 To run the sample open the solution, select UwpSample as a startup project, and hit F5.
+
