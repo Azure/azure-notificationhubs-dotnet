@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Samples/CreateHubSample/CreateHubSample.csproj"
+                "${workspaceFolder}/ParseFeedbackSample.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

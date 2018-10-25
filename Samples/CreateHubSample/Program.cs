@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
+// license information.
+
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -8,12 +12,8 @@ using Microsoft.Azure.Management.NotificationHubs;
 using Microsoft.Azure.Management.NotificationHubs.Models;
 using Microsoft.Azure.Management.ResourceManager;
 using Microsoft.Azure.Management.ResourceManager.Models;
-//using Microsoft.Azure.NotificationHubs;
 using Microsoft.Extensions.Configuration;
-//using Microsoft.IdentityModel.Clients.ActiveDirectory;
-//using Microsoft.Rest;
 using Microsoft.Rest.Azure.Authentication;
-//using Microsoft.Rest.ClientRuntime.Azure;
 
 namespace CreateHubSample
 {
