@@ -1,19 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.Rest.ClientRuntime.Azure;
-using Microsoft.Rest.Azure.Authentication;
-using Microsoft.Azure.Management.NotificationHubs;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Azure.Management.ResourceManager;
-using System.Threading.Tasks;
-using Microsoft.Azure;
-using Microsoft.Rest;
-using System.Net.Http;
 using System.Threading;
-using Microsoft.Azure.Management.ResourceManager.Models;
-using Microsoft.Azure.Management.NotificationHubs.Models;
-using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 using Microsoft.Azure.NotificationHubs;
+using Microsoft.Extensions.Configuration;
 
 namespace SendPushSample
 {
@@ -56,12 +46,15 @@ namespace SendPushSample
             var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
             var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
 
+            // Send notifications by tag
             var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, "gcm");
             var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, "apns");
 
+            // Send notifications by deviceId
             var outcomeGcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateGcmNotification(), gcmDeviceId);
             var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), appleDeviceId);
 
+            // Gather send outcome
             var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
             var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
             var gcmTagOutcomeDetails = await WaitForThePushStatusAsync("GCM Tags", nhClient, outcomeGcmByTag);
