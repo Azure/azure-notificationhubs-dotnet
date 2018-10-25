@@ -8,7 +8,7 @@ dotnet build
 ```
 
 ## CreateHubSample
-Samples for creating Azure Notification Hubs using Management SDK (Microsoft.Azure.Management.NotificationHubs).
+Samples CLI for creating Azure Notification Hubs using Management SDK (Microsoft.Azure.Management.NotificationHubs).
 
 To run the sample update the `config.json` file and execute the sample as such:
 
@@ -18,7 +18,7 @@ dotnet run [--gcmCreds "<GCM credentials>" --apnsCreds "<APNS Credentials>"]
 ```
 
 ## SendPushSample
-Samples for sending push notifications and reading notification feedback.
+Samples CLI for sending push notifications and reading notification feedback.
 
 To run the sample update the `config.json` file and execute the sample as such:
 
