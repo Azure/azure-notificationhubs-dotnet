@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.Rest.ClientRuntime.Azure;
-using Microsoft.Rest.Azure.Authentication;
-using Microsoft.Azure.Management.NotificationHubs;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Azure.Management.ResourceManager;
-using System.Threading.Tasks;
-using Microsoft.Azure;
-using Microsoft.Rest;
 using System.Net.Http;
 using System.Threading;
-using Microsoft.Azure.Management.ResourceManager.Models;
+using System.Threading.Tasks;
+using Microsoft.Azure;
+using Microsoft.Azure.Management.NotificationHubs;
 using Microsoft.Azure.Management.NotificationHubs.Models;
+using Microsoft.Azure.Management.ResourceManager;
+using Microsoft.Azure.Management.ResourceManager.Models;
+//using Microsoft.Azure.NotificationHubs;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Azure.NotificationHubs;
+//using Microsoft.IdentityModel.Clients.ActiveDirectory;
+//using Microsoft.Rest;
+using Microsoft.Rest.Azure.Authentication;
+//using Microsoft.Rest.ClientRuntime.Azure;
 
 namespace CreateHubSample
 {
@@ -21,9 +21,9 @@ namespace CreateHubSample
     {
         static async Task Main(string[] args)
         {
-            var clientId = "1950a258-227b-4e31-a9cf-717495945fc2"; // Unfortunately a "well-known" value: https://blogs.technet.microsoft.com/keithmayer/2014/12/30/leveraging-the-azure-service-management-rest-api-with-azure-active-directory-and-powershell-list-azure-administrators/
+            var clientId = "1950a258-227b-4e31-a9cf-717495945fc2"; // "well-known" value: https://blogs.technet.microsoft.com/keithmayer/2014/12/30/leveraging-the-azure-service-management-rest-api-with-azure-active-directory-and-powershell-list-azure-administrators/
             var config = LoadConfiguration(args);
-            var authorizationRule = "DefaultFullSharedAccessSignature";
+            //var authorizationRule = "DefaultFullSharedAccessSignature";
 
             var creds = await UserTokenProvider.LoginByDeviceCodeAsync(clientId, (deviceCodeResult) =>
             {
@@ -31,7 +31,7 @@ namespace CreateHubSample
                 return true;
             });
 
-            // Creating resource group                           
+            // Create resource group                           
             var resourceClient = new ResourceManagementClient(creds);
             resourceClient.SubscriptionId = config.SubscriptionId;
             await resourceClient.ResourceGroups.CreateOrUpdateAsync(config.ResourceGroupName, new ResourceGroup(config.Location));
@@ -44,6 +44,7 @@ namespace CreateHubSample
             {
                 Sku = new Microsoft.Azure.Management.NotificationHubs.Models.Sku("standard")
             });
+
             // Create hub
             Microsoft.Azure.Management.NotificationHubs.Models.GcmCredential gcmCreds = null;
             Microsoft.Azure.Management.NotificationHubs.Models.ApnsCredential apnsCreds = null;
