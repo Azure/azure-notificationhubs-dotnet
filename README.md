@@ -1,6 +1,6 @@
-# .NET Samples for Azure Notification Hubs
+# .NET Client for Azure Notification Hubs
 
-This repository contains samples for creating Azure Notification Hubs as well as sending push notifications and reading notification feedback.
+This repository contains source code for Azure Notification Hubs .NET SDK as well as samples for using the client.
 
 ## Contributing
 
