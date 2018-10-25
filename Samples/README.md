@@ -24,5 +24,15 @@ To run the sample update the `config.json` file and execute the sample as such:
 
 ```
 cd SendPushSample
+dotnet run --primaryConnectionString "primaryConnectionString" --sendType "[broadcast|sendByTag|sendByDevice]" [--gcmDeviceId "id"] [--appleDeviceId "id"] [--tag "tag"]
+```
+
+## ParseFeedbackSample
+Samples CLI for sending push notifications and parsing per message telemetry.
+
+To run the sample update the `config.json` file and execute the sample as such:
+
+```
+cd ParseFeedbackSample
 dotnet run --primaryConnectionString "primaryConnectionString"
 ```
