@@ -36,3 +36,13 @@ To run the sample update the `config.json` file and execute the sample as such:
 cd ParseFeedbackSample
 dotnet run --primaryConnectionString "primaryConnectionString"
 ```
+
+## RegistrationSample
+Samples CLI for adding and deleting registrations and installations. 
+
+To run the sample update the `config.json` file and execute the sample as such:
+
+```
+cd RegistrationSample
+dotnet run --primaryConnectionString "primaryConnectionString"
+```
