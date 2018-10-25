@@ -1,5 +1,8 @@
+# .NET Samples for Azure Notification Hubs
 
-# Contributing
+This repository contains samples for creating Azure Notification Hubs as well as sending push notifications and reading notification feedback.
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
