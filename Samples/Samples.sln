@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendPushSample", "SendPushS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParseFeedbackSample", "ParseFeedbackSample\ParseFeedbackSample.csproj", "{247F82AF-161E-4B1F-AC7D-EA11B2C3500D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationSample", "RegistrationSample\RegistrationSample.csproj", "{969BB247-0779-4333-AC10-F69FCAB3EF26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{247F82AF-161E-4B1F-AC7D-EA11B2C3500D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{247F82AF-161E-4B1F-AC7D-EA11B2C3500D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{247F82AF-161E-4B1F-AC7D-EA11B2C3500D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{969BB247-0779-4333-AC10-F69FCAB3EF26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{969BB247-0779-4333-AC10-F69FCAB3EF26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{969BB247-0779-4333-AC10-F69FCAB3EF26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{969BB247-0779-4333-AC10-F69FCAB3EF26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,9 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for
 // license information.
 
-using System;
-
-namespace SendPushSample
+namespace RegistrationSample
 {
     public class SampleConfiguration
     {
