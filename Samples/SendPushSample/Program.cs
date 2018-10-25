@@ -48,38 +48,49 @@ namespace SendPushSample
             };
             await nhClient.CreateOrUpdateInstallationAsync(apnsInstallation);
 
-            // Send notifications to all users
-            var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
-            var outcomeSilentGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleSilentNotificationContent);
-            var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
-            var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
+            switch ((SampleConfiguration.Operation)Enum.Parse(typeof(SampleConfiguration.Operation), config.SendType))
+            {
+                case SampleConfiguration.Operation.Broadcast:
+                    // Send notifications to all users
+                    var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
+                    var outcomeSilentGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleSilentNotificationContent);
+                    var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
+                    var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
 
-            // Send notifications by tag
-            var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, "gcm");
-            var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, "apns");
-
-            // Send notifications by deviceId
-            var outcomeGcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateGcmNotification(), gcmDeviceId);
-            var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), appleDeviceId);
-
-            // Gather send outcome
-            var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
-            var gcmSilentOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeSilentGcm);
-            var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
-            var apnsSilentOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeSilentApns);
-            var gcmTagOutcomeDetails = await WaitForThePushStatusAsync("GCM Tags", nhClient, outcomeGcmByTag);
-            var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
-            var gcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("GCM direct", nhClient, outcomeGcmByDeviceId);
-            var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
-
-            PrintPushOutcome("GCM", gcmOutcomeDetails, gcmOutcomeDetails.GcmOutcomeCounts);
-            PrintPushOutcome("GCM Silent ", gcmSilentOutcomeDetails, gcmSilentOutcomeDetails.GcmOutcomeCounts);
-            PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
-            PrintPushOutcome("APNS Silent", apnsSilentOutcomeDetails, apnsSilentOutcomeDetails.ApnsOutcomeCounts);
-            PrintPushOutcome("GCM Tags", gcmTagOutcomeDetails, gcmTagOutcomeDetails.GcmOutcomeCounts);
-            PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
-            PrintPushOutcome("GCM Direct", gcmDirectSendOutcomeDetails, gcmDirectSendOutcomeDetails.ApnsOutcomeCounts);
-            PrintPushOutcome("APNS Direct", apnsDirectSendOutcomeDetails, apnsDirectSendOutcomeDetails.ApnsOutcomeCounts);
+                    // Gather send outcome
+                    var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
+                    var gcmSilentOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeSilentGcm);
+                    var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
+                    var apnsSilentOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeSilentApns);
+                    PrintPushOutcome("GCM", gcmOutcomeDetails, gcmOutcomeDetails.GcmOutcomeCounts);
+                    PrintPushOutcome("GCM Silent ", gcmSilentOutcomeDetails, gcmSilentOutcomeDetails.GcmOutcomeCounts);
+                    PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
+                    PrintPushOutcome("APNS Silent", apnsSilentOutcomeDetails, apnsSilentOutcomeDetails.ApnsOutcomeCounts);
+                    break;
+                case SampleConfiguration.Operation.SendByTag:
+                    // Send notifications by tag
+                    var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, config.Tag ?? "gcm");
+                    var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, config.Tag ?? "apns");
+                    // Gather send outcome
+                    var gcmTagOutcomeDetails = await WaitForThePushStatusAsync("GCM Tags", nhClient, outcomeGcmByTag);
+                    var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
+                    PrintPushOutcome("GCM Tags", gcmTagOutcomeDetails, gcmTagOutcomeDetails.GcmOutcomeCounts);
+                    PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
+                    break;
+                case SampleConfiguration.Operation.SendByDevice:
+                    // Send notifications by deviceId
+                    var outcomeGcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateGcmNotification(), config.GcmDeviceId ?? gcmDeviceId);
+                    var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), config.AppleDeviceId ?? appleDeviceId);
+                    // Gather send outcome
+                    var gcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("GCM direct", nhClient, outcomeGcmByDeviceId);
+                    var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
+                    PrintPushOutcome("GCM Direct", gcmDirectSendOutcomeDetails, gcmDirectSendOutcomeDetails.ApnsOutcomeCounts);
+                    PrintPushOutcome("APNS Direct", apnsDirectSendOutcomeDetails, apnsDirectSendOutcomeDetails.ApnsOutcomeCounts);
+                    break;
+                default:
+                    Console.WriteLine("Invalid Sendtype");
+                    break;
+            }
         }
 
         private static Notification CreateGcmNotification()
