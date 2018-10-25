@@ -19,7 +19,7 @@ namespace RegistrationSample
             // Getting connection key from the new resource
             var config = LoadConfiguration(args);
             var nhClient = NotificationHubClient.CreateClientFromConnectionString(config.PrimaryConnectionString, config.HubName);
-            //await CreateAndDeleteInstallationAsync(nhClient);
+            await CreateAndDeleteInstallationAsync(nhClient);
             await CreateAndDeleteRegistrationAsync(nhClient);
         }
 
