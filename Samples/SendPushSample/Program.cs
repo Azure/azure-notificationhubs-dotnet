@@ -18,6 +18,7 @@ namespace SendPushSample
         private const string GcmSampleSilentNotificationContent = "{ \"message\":{\"data\":{ \"Nick\": \"Mario\", \"body\": \"great match!\", \"Room\": \"PortugalVSDenmark\" } }}";
         private const string AppleSampleNotificationContent = "{\"aps\":{\"alert\":\"Notification Hub test notification from SDK sample\"}}";
         private const string AppleSampleSilentNotificationContent = "{\"aps\":{\"content-available\":1}, \"foo\": 2 }";
+        private const string WnsSampleNotification = "<?xml version=\"1.0\" encoding=\"utf-8\"?><toast><visual><binding template=\"ToastText01\"><text id=\"1\">Notification Hub test notification from SDK sample</text></binding></visual></toast>";
 
         static async Task Main(string[] args)
         {
@@ -56,16 +57,19 @@ namespace SendPushSample
                     var outcomeSilentGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleSilentNotificationContent);
                     var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
                     var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
+                    var outcomeWns = await nhClient.SendWindowsNativeNotificationAsync(WnsSampleNotification);
 
                     // Gather send outcome
                     var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
                     var gcmSilentOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeSilentGcm);
                     var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
                     var apnsSilentOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeSilentApns);
+                    var wnsOutcomeDetails = await WaitForThePushStatusAsync("WNS", nhClient, outcomeWns);
                     PrintPushOutcome("GCM", gcmOutcomeDetails, gcmOutcomeDetails.GcmOutcomeCounts);
                     PrintPushOutcome("GCM Silent ", gcmSilentOutcomeDetails, gcmSilentOutcomeDetails.GcmOutcomeCounts);
                     PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
                     PrintPushOutcome("APNS Silent", apnsSilentOutcomeDetails, apnsSilentOutcomeDetails.ApnsOutcomeCounts);
+                    PrintPushOutcome("WNS", wnsOutcomeDetails, wnsOutcomeDetails.WnsOutcomeCounts);
                     break;
                 case SampleConfiguration.Operation.SendByTag:
                     // Send notifications by tag

@@ -24,7 +24,7 @@ To run the sample update the `config.json` file and execute the sample as such:
 
 ```
 cd SendPushSample
-dotnet run --primaryConnectionString "primaryConnectionString" --sendType "[broadcast|sendByTag|sendByDevice]" [--gcmDeviceId "id"] [--appleDeviceId "id"] [--tag "tag"]
+dotnet run --primaryConnectionString "primaryConnectionString" --sendType "[Broadcast|SendByTag|SendByDevice]" [--gcmDeviceId "id"] [--appleDeviceId "id"] [--tag "tag"]
 ```
 
 ## ParseFeedbackSample
