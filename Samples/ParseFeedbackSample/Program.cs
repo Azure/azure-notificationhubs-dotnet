@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Azure.NotificationHubs;
+using Microsoft.Azure.NotificationHubs.Messaging;
 using Microsoft.Extensions.Configuration;
 
 namespace ParseFeedbackSample
@@ -94,7 +95,7 @@ namespace ParseFeedbackSample
                     outcomeDetails = await nhClient.GetNotificationOutcomeDetailsAsync(notificationId);
                     state = outcomeDetails.State;
                 }
-                catch (Exception)
+                catch (MessagingEntityNotFoundException)
                 {
                     // It's possible for the notification to not yet be enqueued, so we may have to swallow an exception
                     // until it's ready to give us a new state.

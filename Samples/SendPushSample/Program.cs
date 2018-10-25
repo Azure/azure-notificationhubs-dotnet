@@ -7,15 +7,17 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.NotificationHubs;
+using Microsoft.Azure.NotificationHubs.Messaging;
 using Microsoft.Extensions.Configuration;
 
 namespace SendPushSample
 {
     class Program
     {
-
         private const string GcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification from SDK sample\"}}";
+        private const string GcmSampleSilentNotificationContent = "{ \"message\":{\"data\":{ \"Nick\": \"Mario\", \"body\": \"great match!\", \"Room\": \"PortugalVSDenmark\" } }}";
         private const string AppleSampleNotificationContent = "{\"aps\":{\"alert\":\"Notification Hub test notification from SDK sample\"}}";
+        private const string AppleSampleSilentNotificationContent = "{\"aps\":{\"content-available\":1}, \"foo\": 2 }";
 
         static async Task Main(string[] args)
         {
@@ -48,7 +50,9 @@ namespace SendPushSample
 
             // Send notifications to all users
             var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
+            var outcomeSilentGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleSilentNotificationContent);
             var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
+            var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
 
             // Send notifications by tag
             var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, "gcm");
@@ -60,14 +64,18 @@ namespace SendPushSample
 
             // Gather send outcome
             var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
+            var gcmSilentOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeSilentGcm);
             var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
+            var apnsSilentOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeSilentApns);
             var gcmTagOutcomeDetails = await WaitForThePushStatusAsync("GCM Tags", nhClient, outcomeGcmByTag);
             var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
             var gcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("GCM direct", nhClient, outcomeGcmByDeviceId);
             var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
 
             PrintPushOutcome("GCM", gcmOutcomeDetails, gcmOutcomeDetails.GcmOutcomeCounts);
+            PrintPushOutcome("GCM Silent ", gcmSilentOutcomeDetails, gcmSilentOutcomeDetails.GcmOutcomeCounts);
             PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
+            PrintPushOutcome("APNS Silent", apnsSilentOutcomeDetails, apnsSilentOutcomeDetails.ApnsOutcomeCounts);
             PrintPushOutcome("GCM Tags", gcmTagOutcomeDetails, gcmTagOutcomeDetails.GcmOutcomeCounts);
             PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
             PrintPushOutcome("GCM Direct", gcmDirectSendOutcomeDetails, gcmDirectSendOutcomeDetails.ApnsOutcomeCounts);
@@ -82,19 +90,27 @@ namespace SendPushSample
         private static Notification CreateApnsNotification()
         {
             return new AppleNotification(AppleSampleNotificationContent);
-        } 
+        }
 
         private static async Task<NotificationDetails> WaitForThePushStatusAsync(string pnsType, NotificationHubClient nhClient, NotificationOutcome notificationOutcome) 
         {
             var notificationId = notificationOutcome.NotificationId;
-            NotificationDetails outcomeDetails = await nhClient.GetNotificationOutcomeDetailsAsync(notificationId);
-            var state = outcomeDetails.State;
+            var state = NotificationOutcomeState.Enqueued;
             var count = 0;
+            NotificationDetails outcomeDetails = null;
             while ((state == NotificationOutcomeState.Enqueued || state == NotificationOutcomeState.Processing) && ++count < 10)
             {
-                Console.WriteLine($"{pnsType} status: {state}");
-                outcomeDetails = await nhClient.GetNotificationOutcomeDetailsAsync(notificationId);
-                state = outcomeDetails.State;
+                try
+                {
+                    Console.WriteLine($"{pnsType} status: {state}");
+                    outcomeDetails = await nhClient.GetNotificationOutcomeDetailsAsync(notificationId);
+                    state = outcomeDetails.State;
+                }
+                catch (MessagingEntityNotFoundException)
+                {
+                    // It's possible for the notification to not yet be enqueued, so we may have to swallow an exception
+                    // until it's ready to give us a new state.
+                }
                 Thread.Sleep(1000);                                                
             }
             return outcomeDetails;
