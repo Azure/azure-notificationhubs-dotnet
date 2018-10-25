@@ -26,9 +26,9 @@ QueryString example:
 Body example:
 ```json
 {
-    "hubName" = "nhub-ios",
-    "token" = "1234567890abcdef",
-    "tags" = "Football,level2,LoggedIn"
+    "hubName" : "nhub-ios",
+    "token" : "1234567890abcdef",
+    "tags" : "Football,level2,LoggedIn"
 }
 ```
 
@@ -52,7 +52,7 @@ QueryString example:
 Body example:
 ```json
 {
-    "hubName" = "nhub-ios"
+    "hubName" : "nhub-ios"
 }
 ```
 
