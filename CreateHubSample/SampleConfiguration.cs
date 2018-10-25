@@ -1,6 +1,6 @@
 using System;
 
-namespace BasicSample
+namespace CreateHubSample
 {
     public class SampleConfiguration
     {
