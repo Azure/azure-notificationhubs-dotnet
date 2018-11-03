@@ -1,0 +1,696 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NoIPEndpointsFoundForHost" xml:space="preserve">
+    <value>No IPEndpoints were found for host {0}.</value>
+  </data>
+  <data name="DnsResolveFailed" xml:space="preserve">
+    <value>No DNS entries exist for host {0}.</value>
+  </data>
+  <data name="TokenProviderFailedSecurityToken" xml:space="preserve">
+    <value>The token provider was unable to provide a security token while accessing '{0}'. Token provider returned message: '{1}'.</value>
+  </data>
+  <data name="TokenProviderTimeout" xml:space="preserve">
+    <value>The timeout elapsed upon attempting to obtain a token while accessing '{0}'.</value>
+  </data>
+  <data name="TokenProviderInvalidTokenParameter" xml:space="preserve">
+    <value>The token service returned an invalid parameter '{0}'.</value>
+  </data>
+  <data name="TokenProviderEmptyToken" xml:space="preserve">
+    <value>The token service did not return a token.</value>
+  </data>
+  <data name="TokenProviderEmptyExpiration" xml:space="preserve">
+    <value>The token service did not return a token expiration.</value>
+  </data>
+  <data name="ClientCredentialTypeMustBeSpecifiedForMixedMode" xml:space="preserve">
+    <value>ClientCredentialType.None is not valid for the TransportWithMessageCredential security mode. Specify a message credential type or use a different security mode.</value>
+  </data>
+  <data name="BasicHttpMessageSecurityRequiresCertificate" xml:space="preserve">
+    <value>BasicHttp binding requires that BasicHttpBinding.Security.Message.ClientCredentialType be equivalent to the BasicHttpMessageCredentialType.Certificate credential type for secure messages. Select Transport or TransportWithMessageCredential security for UserName credentials.</value>
+  </data>
+  <data name="SecureConversationRequiredByReliableSession" xml:space="preserve">
+    <value>Cannot establish a reliable session without secure conversation. Enable secure conversation.</value>
+  </data>
+  <data name="MissingMessageID" xml:space="preserve">
+    <value>Request Message is missing a MessageID header. This header is required to correlate a reply.</value>
+  </data>
+  <data name="Hosting_BaseUriDeserializedNotValid" xml:space="preserve">
+    <value>The BaseUriWithWildcard object has invalid fields after deserialization.</value>
+  </data>
+  <data name="Hosting_MisformattedPort" xml:space="preserve">
+    <value>The '{0}' protocol binding '{1}' specifies an invalid port number '{2}'.</value>
+  </data>
+  <data name="Hosting_MisformattedBinding" xml:space="preserve">
+    <value>The protocol binding '{0}' does not conform to the syntax for '{1}'. The following is an example of valid '{1}' protocol bindings: '{2}'.</value>
+  </data>
+  <data name="Hosting_MisformattedBindingData" xml:space="preserve">
+    <value>The protocol binding '{0}' is not valid for '{1}'. This might be because the port number is out of range.</value>
+  </data>
+  <data name="Hosting_NoHttpTransportManagerForUri" xml:space="preserve">
+    <value>There is no compatible TransportManager found for Uri '{0}'. This may be because that you have used an absolute address which points outside of the virtual application. Please use a relative address instead.</value>
+  </data>
+  <data name="Hosting_NoTcpPipeTransportManagerForUri" xml:space="preserve">
+    <value>There is no compatible TransportManager found for Uri '{0}'. This may be because that you have used an absolute address which points outside of the virtual application, or the binding settings of the endpoint do not match those that have been set by other services or endpoints. Note that all bindings for the same protocol should have same settings in the same application.</value>
+  </data>
+  <data name="Hosting_NotSupportedProtocol" xml:space="preserve">
+    <value>The protocol '{0}' is not supported.</value>
+  </data>
+  <data name="Hosting_ServiceActivationFailed" xml:space="preserve">
+    <value>The requested service '{0}' could not be activated. See the server's diagnostic trace logs for more information.</value>
+  </data>
+  <data name="Sharing_ConnectionDispatchFailed" xml:space="preserve">
+    <value>The message could not be dispatched to the service at address '{0}'. Refer to the server event log for more details.</value>
+  </data>
+  <data name="Sharing_EndpointUnavailable" xml:space="preserve">
+    <value>The message could not be dispatched because the service at the endpoint address '{0}' is unavailable for the protocol of the address.</value>
+  </data>
+  <data name="InvalidLockOperation" xml:space="preserve">
+    <value>Object synchronization method was called from an unsynchronized block of code.</value>
+  </data>
+  <data name="TransportManagerOpen" xml:space="preserve">
+    <value>This property cannot be changed after the transport manager has been opened.</value>
+  </data>
+  <data name="AsyncCallbackException" xml:space="preserve">
+    <value>An AsyncCallback threw an exception.</value>
+  </data>
+  <data name="SendCannotBeCalledAfterCloseOutputSession" xml:space="preserve">
+    <value>You cannot send messages on a channel after CloseOutputSession has been called.</value>
+  </data>
+  <data name="CommunicationObjectCannotBeModifiedInState" xml:space="preserve">
+    <value>The communication object '{0}' cannot be modified while it is in the {1} state.</value>
+  </data>
+  <data name="CommunicationObjectCannotBeUsed" xml:space="preserve">
+    <value>The communication object '{0}' is in the {1} state.  Communication objects cannot be used for communication unless they are in the Opened state.</value>
+  </data>
+  <data name="CommunicationObjectFaultedStack2" xml:space="preserve">
+    <value>The communication object '{0}' cannot be used for communication because it is in the Faulted state. {1}</value>
+  </data>
+  <data name="CommunicationObjectAbortedStack2" xml:space="preserve">
+    <value>The communication object '{0}' cannot be used for communication because it has been Aborted. {1}</value>
+  </data>
+  <data name="CommunicationObjectBaseClassMethodNotCalled" xml:space="preserve">
+    <value>The communication object '{0}' has overridden the virtual function {1} but it does not call version defined in the base class.</value>
+  </data>
+  <data name="ChannelTypeNotSupported" xml:space="preserve">
+    <value>The specified channel type {0} is not supported by this channel manager.</value>
+  </data>
+  <data name="InvalidDecoderStateMachine" xml:space="preserve">
+    <value>Invalid decoder found within state machine.</value>
+  </data>
+  <data name="SeekNotSupported" xml:space="preserve">
+    <value>This stream does not support seek related operation.</value>
+  </data>
+  <data name="ChannelInitializationTimeout" xml:space="preserve">
+    <value>A newly accepted connection did not receive initialization data from the sender within the configured ChannelInitializationTimeout ({0}). As a result the connection will be aborted. If you are on a highly congested network, or your sending machine is heavily loaded, consider increasing this value or load-balancing your server.</value>
+  </data>
+  <data name="SocketCloseReadTimeout" xml:space="preserve">
+    <value>The remote endpoint of the socket ({0}) did not respond to a close request within the allotted timeout ({1}). It is likely that the remote endpoint is not calling Close after receiving the EOF signal (null) from Receive. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="SocketCloseReadReceivedData" xml:space="preserve">
+    <value>A graceful close was attempted on the socket, but the other side ({0}) is still sending data.</value>
+  </data>
+  <data name="SocketAbortedReceiveTimedOut" xml:space="preserve">
+    <value>The socket was aborted because an asynchronous receive from the socket did not complete within the allotted timeout of {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="SocketAbortedSendTimedOut" xml:space="preserve">
+    <value>The socket connection was aborted because an asynchronous send to the socket did not complete within the allotted timeout of {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="ThreadAcquisitionTimedOut" xml:space="preserve">
+    <value>Cannot claim lock within the allotted timeout of {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="FramingError" xml:space="preserve">
+    <value>Error while reading message framing format at position {0} of stream (state: {1})</value>
+  </data>
+  <data name="FramingPrematureEOF" xml:space="preserve">
+    <value>More data was expected, but EOF was reached.</value>
+  </data>
+  <data name="FramingRecordTypeMismatch" xml:space="preserve">
+    <value>Expected record type '{0}', but found '{1}'.</value>
+  </data>
+  <data name="FramingVersionNotSupported" xml:space="preserve">
+    <value>Framing major version {0} is not supported.</value>
+  </data>
+  <data name="FramingModeNotSupported" xml:space="preserve">
+    <value>Framing mode {0} is not supported.</value>
+  </data>
+  <data name="FramingSizeTooLarge" xml:space="preserve">
+    <value>Specified size is too large for this implementation.</value>
+  </data>
+  <data name="FramingViaTooLong" xml:space="preserve">
+    <value>The framing via size ({0}) exceeds the quota.</value>
+  </data>
+  <data name="FramingViaNotUri" xml:space="preserve">
+    <value>The framing via ({0}) is not a valid URI.</value>
+  </data>
+  <data name="FramingFaultTooLong" xml:space="preserve">
+    <value>The framing fault size ({0}) exceeds the quota.</value>
+  </data>
+  <data name="FramingContentTypeTooLong" xml:space="preserve">
+    <value>The framing content type size ({0}) exceeds the quota.</value>
+  </data>
+  <data name="FramingValueNotAvailable" xml:space="preserve">
+    <value>The value cannot be accessed because it has not yet been fully decoded.</value>
+  </data>
+  <data name="FramingAtEnd" xml:space="preserve">
+    <value>An attempt was made to decode a value after the framing stream was ended.</value>
+  </data>
+  <data name="RemoteSecurityNotNegotiatedOnStreamUpgrade" xml:space="preserve">
+    <value>Stream Security is required at {0}, but no security context was negotiated. This is likely caused by the remote endpoint missing a StreamSecurityBindingElement from its binding.</value>
+  </data>
+  <data name="MaxReceivedMessageSizeExceeded" xml:space="preserve">
+    <value>The maximum message size quota for incoming messages ({0}) has been exceeded. To increase the quota, use the MaxReceivedMessageSize property on the appropriate binding element.</value>
+  </data>
+  <data name="MaxSentMessageSizeExceeded" xml:space="preserve">
+    <value>The maximum message size quota for outgoing messages ({0}) has been exceeded.</value>
+  </data>
+  <data name="FramingMaxMessageSizeExceeded" xml:space="preserve">
+    <value>The maximum message size quota for incoming messages has been exceeded for the remote channel. See the server logs for more details.</value>
+  </data>
+  <data name="StreamDoesNotSupportTimeout" xml:space="preserve">
+    <value>TimeoutStream requires an inner Stream that supports timeouts; its CanTimeout property must be true.</value>
+  </data>
+  <data name="ReceiveTimedOut" xml:space="preserve">
+    <value>Receive on local address {0} timed out after {1}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="ReceiveTimedOut2" xml:space="preserve">
+    <value>Receive timed out after {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="WaitForMessageTimedOut" xml:space="preserve">
+    <value>WaitForMessage timed out after {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="ReceiveTimedOutNoLocalAddress" xml:space="preserve">
+    <value>Receive timed out after {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="ReceiveRequestTimedOutNoLocalAddress" xml:space="preserve">
+    <value>Receive request timed out after {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="ReceiveRequestTimedOut" xml:space="preserve">
+    <value>Receive request on local address {0} timed out after {1}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="SendToViaTimedOut" xml:space="preserve">
+    <value>Sending to via {0} timed out after {1}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="CloseTimedOut" xml:space="preserve">
+    <value>Close timed out after {0}. Increase the timeout value passed to the call to Close or increase the CloseTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="OpenTimedOutEstablishingTransportSession" xml:space="preserve">
+    <value>Open timed out after {0} while establishing a transport session to {1}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="RequestTimedOutEstablishingTransportSession" xml:space="preserve">
+    <value>Request timed out after {0} while establishing a transport connection to {1}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="TcpConnectingToViaTimedOut" xml:space="preserve">
+    <value>Connecting to via {0} timed out after {1}. Connection attempts were made to {2} of {3} available addresses ({4}). Check the RemoteAddress of your channel and verify that the DNS records for this endpoint correspond to valid IP Addresses. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="RequestChannelSendTimedOut" xml:space="preserve">
+    <value>The request channel timed out attempting to send after {0}. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="RequestChannelWaitForReplyTimedOut" xml:space="preserve">
+    <value>The request channel timed out while waiting for a reply after {0}. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="ReplyAlreadySent" xml:space="preserve">
+    <value>A reply has already been sent from this RequestContext.</value>
+  </data>
+  <data name="RequestContextAborted" xml:space="preserve">
+    <value>The requestContext has been aborted.</value>
+  </data>
+  <data name="ThreadNeutralSemaphoreAborted" xml:space="preserve">
+    <value>The ThreadNeutralSemaphore has been aborted.</value>
+  </data>
+  <data name="ThreadNeutralSemaphoreAsyncAbort" xml:space="preserve">
+    <value>The ThreadNeutralSemaphore.Abort is not supported for the asynchronous usage.</value>
+  </data>
+  <data name="InnerListenerFactoryNotSet" xml:space="preserve">
+    <value>The inner listener factory of {0} must be set before this operation.</value>
+  </data>
+  <data name="AsyncObjectAlreadyEnded" xml:space="preserve">
+    <value>The 'End' method has already been called on this AsyncResult object.</value>
+  </data>
+  <data name="InvalidAsyncResult" xml:space="preserve">
+    <value>The AsyncResult object used to end this operation was not the object that was returned when the operation was initiated.</value>
+  </data>
+  <data name="EndpointNotFound" xml:space="preserve">
+    <value>There was no endpoint listening at {0} that could accept the message. This is often caused by an incorrect address or Soap action. See the InnerException, if present, for more details.</value>
+  </data>
+  <data name="MaxReceivedMessageSizeMustBeInIntegerRange" xml:space="preserve">
+    <value>This factory buffers messages, so the message sizes must be in the range of an integer value.</value>
+  </data>
+  <data name="MaxBufferSizeMustMatchMaxReceivedMessageSize" xml:space="preserve">
+    <value>For TransferMode.Buffered, MaxReceivedMessageSize and MaxBufferSize must be the same value.</value>
+  </data>
+  <data name="MaxBufferSizeMustNotExceedMaxReceivedMessageSize" xml:space="preserve">
+    <value>MaxBufferSize must not exceed MaxReceivedMessageSize.</value>
+  </data>
+  <data name="UriLengthExceedsMaxSupportedSize" xml:space="preserve">
+    <value>Uri {0} could not be set because its size ({1}) exceeds the max supported size ({2}).</value>
+  </data>
+  <data name="DuplexChannelAbortedDuringOpen" xml:space="preserve">
+    <value>Duplex channel to {0} was aborted during the open process.</value>
+  </data>
+  <data name="OperationAbortedDuringConnectionEstablishment" xml:space="preserve">
+    <value>Operation was aborted while establishing a connection to {0}.</value>
+  </data>
+  <data name="MessageXmlProtocolError" xml:space="preserve">
+    <value>There is a problem with the Xml that was received from the network. See inner exception for more details.</value>
+  </data>
+  <data name="TcpConnectNoBufs" xml:space="preserve">
+    <value>Insufficient winsock resources available to complete socket connection initiation.</value>
+  </data>
+  <data name="InsufficentMemory" xml:space="preserve">
+    <value>Insufficient memory available to complete the operation.</value>
+  </data>
+  <data name="TcpConnectError" xml:space="preserve">
+    <value>Could not connect to {0}. TCP error code {1}: {2}. </value>
+  </data>
+  <data name="TcpConnectErrorWithTimeSpan" xml:space="preserve">
+    <value>Could not connect to {0}. The connection attempt lasted for a time span of {3}. TCP error code {1}: {2}. </value>
+  </data>
+  <data name="TcpTransferError" xml:space="preserve">
+    <value>A TCP error ({0}: {1}) occurred while transmitting data.</value>
+  </data>
+  <data name="TcpLocalConnectionAborted" xml:space="preserve">
+    <value>The socket connection was aborted by your local machine. This could be caused by a channel Abort() call, or a transmission error from another thread using this socket.</value>
+  </data>
+  <data name="TcpConnectionResetError" xml:space="preserve">
+    <value>The socket connection was aborted. This could be caused by an error processing your message or a receive timeout being exceeded by the remote host, or an underlying network resource issue. Local socket timeout was '{0}'.</value>
+  </data>
+  <data name="TcpConnectionTimedOut" xml:space="preserve">
+    <value>The socket transfer timed out after {0}. You have exceeded the timeout set on your binding. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="SocketConnectionDisposed" xml:space="preserve">
+    <value>The socket connection has been disposed.</value>
+  </data>
+  <data name="DuplexSessionListenerNotFound" xml:space="preserve">
+    <value>No duplex session listener was listening at {0}. This could be due to an incorrect via set on the client or a binding mismatch.</value>
+  </data>
+  <data name="ContentTypeMismatch" xml:space="preserve">
+    <value>Content Type {0} was sent to a service expecting {1}. The client and service bindings may be mismatched.</value>
+  </data>
+  <data name="FramingContentTypeMismatch" xml:space="preserve">
+    <value>Content Type {0} was not supported by service {1}. The client and service bindings may be mismatched.</value>
+  </data>
+  <data name="FramingFaultUnrecognized" xml:space="preserve">
+    <value>Server faulted with code '{0}'.</value>
+  </data>
+  <data name="FramingContentTypeTooLongFault" xml:space="preserve">
+    <value>Content type '{0}' is too long to be processed by the remote host. See the server logs for more details.</value>
+  </data>
+  <data name="FramingViaTooLongFault" xml:space="preserve">
+    <value>Via '{0}' is too long to be processed by the remote host. See the server logs for more details.</value>
+  </data>
+  <data name="FramingModeNotSupportedFault" xml:space="preserve">
+    <value>The .Net Framing mode being used is not supported by '{0}'. See the server logs for more details.</value>
+  </data>
+  <data name="FramingVersionNotSupportedFault" xml:space="preserve">
+    <value>The .Net Framing version being used is not supported by '{0}'. See the server logs for more details.</value>
+  </data>
+  <data name="FramingUpgradeInvalid" xml:space="preserve">
+    <value>The requested upgrade is not supported by '{0}'. This could be due to mismatched bindings (for example security enabled on the client and not on the server).</value>
+  </data>
+  <data name="ServerTooBusy" xml:space="preserve">
+    <value>Server '{0}' is too busy to process this request. Try again later.</value>
+  </data>
+  <data name="UpgradeProtocolNotSupported" xml:space="preserve">
+    <value>Protocol Type {0} was sent to a service that does not support that type of upgrade.</value>
+  </data>
+  <data name="UpgradeRequestToNonupgradableService" xml:space="preserve">
+    <value>.Net Framing upgrade request for {0} was sent to a service that is not setup to receive upgrades.</value>
+  </data>
+  <data name="PreambleAckIncorrect" xml:space="preserve">
+    <value>You have tried to create a channel to a service that does not support .Net Framing. </value>
+  </data>
+  <data name="PreambleAckIncorrectMaybeHttp" xml:space="preserve">
+    <value>You have tried to create a channel to a service that does not support .Net Framing. It is possible that you are encountering an HTTP endpoint.</value>
+  </data>
+  <data name="StreamError" xml:space="preserve">
+    <value>An error occurred while transmitting data.</value>
+  </data>
+  <data name="ServerRejectedUpgradeRequest" xml:space="preserve">
+    <value>The server rejected the upgrade request.</value>
+  </data>
+  <data name="ServerRejectedSessionPreamble" xml:space="preserve">
+    <value>The server at {0} rejected the session-establishment request. Please retry.</value>
+  </data>
+  <data name="UnableToResolveHost" xml:space="preserve">
+    <value>Cannot resolve the host name of URI "{0}" using DNS.</value>
+  </data>
+  <data name="HttpProxyRequiresSingleAuthScheme" xml:space="preserve">
+    <value>The '{0}' authentication scheme has been specified for the proxy on the HTTP factory. However, the factory only supports specification of exactly one authentication scheme. Valid authentication schemes are Digest, Negotiate, NTLM, Basic, or Anonymous.</value>
+  </data>
+  <data name="InvalidUriScheme" xml:space="preserve">
+    <value>The provided Uri scheme '{0}' is invalid; expected '{1}'.</value>
+  </data>
+  <data name="ListenerFactoryNotRegistered" xml:space="preserve">
+    <value>The specified channel listener at '{0}' is not registered with this transport manager.</value>
+  </data>
+  <data name="DuplicateRegistration" xml:space="preserve">
+    <value>A registration already exists for Uri '{0}'.</value>
+  </data>
+  <data name="NoCompatibleTransportManagerForUri" xml:space="preserve">
+    <value>Could not find a compatible transport manager for Uri '{0}'.</value>
+  </data>
+  <data name="UriGeneratorSchemeMustNotBeEmpty" xml:space="preserve">
+    <value>The scheme parameter must not be empty.</value>
+  </data>
+  <data name="TimeSpanMustbeGreaterThanTimeSpanZero" xml:space="preserve">
+    <value>TimeSpan must be greater than TimeSpan.Zero.</value>
+  </data>
+  <data name="ValueMustBeNonNegative" xml:space="preserve">
+    <value>The value of this argument must be non-negative.</value>
+  </data>
+  <data name="ValueMustBePositive" xml:space="preserve">
+    <value>The value of this argument must be positive.</value>
+  </data>
+  <data name="ValueMustBeInRange" xml:space="preserve">
+    <value>The value of this argument must fall within the range {0} to {1}.</value>
+  </data>
+  <data name="OffsetExceedsBufferSize" xml:space="preserve">
+    <value>The specified offset exceeds the buffer size ({0} bytes).</value>
+  </data>
+  <data name="SizeExceedsRemainingBufferSpace" xml:space="preserve">
+    <value>The specified size exceeds the remaining buffer space ({0} bytes).</value>
+  </data>
+  <data name="SpaceNeededExceedsMessageFrameOffset" xml:space="preserve">
+    <value>The space needed for encoding ({0} bytes) exceeds the message frame offset.</value>
+  </data>
+  <data name="TimeoutOnOpen" xml:space="preserve">
+    <value>The open operation did not complete within the allotted timeout of {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="TimeoutOnRequest" xml:space="preserve">
+    <value>The request operation did not complete within the allotted timeout of {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="SFxTimeoutOutOfRange0" xml:space="preserve">
+    <value>Timeout must be greater than or equal to TimeSpan.Zero. To disable timeout, specify TimeSpan.MaxValue.</value>
+  </data>
+  <data name="SFxTimeoutOutOfRangeTooBig" xml:space="preserve">
+    <value>Timeouts larger than Int32.MaxValue TotalMilliseconds (approximately 24 days) cannot be honored. To disable timeout, specify TimeSpan.MaxValue.</value>
+  </data>
+  <data name="SFxWrongType2" xml:space="preserve">
+    <value>An argument of the wrong type was passed to this method. This method expected an argument of type {0}, but it was passed an argument of type {1}.</value>
+  </data>
+  <data name="SFxCloseTimedOut1" xml:space="preserve">
+    <value>The ServiceHost close operation timed out after {0}. This could be because a client failed to close a sessionful channel within the required time. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="SuppliedMessageIsNotAReplyItHasNoRelatesTo0" xml:space="preserve">
+    <value>A reply message was received without a valid RelatesTo header. This may have been caused by a missing RelatesTo header or a RelatesTo header with an invalid WS-Addressing Relationship type.</value>
+  </data>
+  <data name="MultipleMebesInParameters" xml:space="preserve">
+    <value>More than one MessageEncodingBindingElement was found in the BindingParameters of the BindingContext. This usually is caused by having multiple MessageEncodingBindingElements in a CustomBinding. Remove all but one of these elements.</value>
+  </data>
+  <data name="MultipleStreamUpgradeProvidersInParameters" xml:space="preserve">
+    <value>More than one IStreamUpgradeProviderElement was found in the BindingParameters of the BindingContext. This usually is caused by having multiple IStreamUpgradeProviderElements in a CustomBinding. Remove all but one of these elements.</value>
+  </data>
+  <data name="BaseAddressMustBeAbsolute" xml:space="preserve">
+    <value>Only an absolute Uri can be used as a base address.</value>
+  </data>
+  <data name="BaseAddressCannotHaveUserInfo" xml:space="preserve">
+    <value>A base address cannot contain a Uri user info section.</value>
+  </data>
+  <data name="BaseAddressCannotHaveQuery" xml:space="preserve">
+    <value>A base address cannot contain a Uri query string.</value>
+  </data>
+  <data name="BaseAddressCannotHaveFragment" xml:space="preserve">
+    <value>A base address cannot contain a Uri fragment.</value>
+  </data>
+  <data name="ConfigBindingExtensionNotFound" xml:space="preserve">
+    <value>Configuration binding extension '{0}' could not be found. Verify that this binding extension is properly registered in system.serviceModel/extensions/bindingExtensions and that it is spelled correctly.</value>
+  </data>
+  <data name="ConfigInvalidBindingConfigurationName" xml:space="preserve">
+    <value>The {1} binding does not have a configured binding named '{0}'.</value>
+  </data>
+  <data name="ConfigInvalidClassFactoryValue" xml:space="preserve">
+    <value>The value '{0}' is not a valid instance of type '{1}'.</value>
+  </data>
+  <data name="ConfigInvalidClassInstanceValue" xml:space="preserve">
+    <value>The instance is not a valid configurable value of type '{0}'.</value>
+  </data>
+  <data name="ConfigInvalidEncodingValue" xml:space="preserve">
+    <value>{0} is not a valid encoding string for System.Text.Encoding.GetEncoding(string).</value>
+  </data>
+  <data name="ConfigSectionNotFound" xml:space="preserve">
+    <value>The '{0}' configuration section cannot be created. The machine.config file is missing information. Verify that this configuration section is properly registered and that you have correctly spelled the section name. For Windows Communication Foundation sections, run ServiceModelReg.exe -i to fix this error.</value>
+  </data>
+  <data name="SecurityAuditNotSupportedOnChannelFactory" xml:space="preserve">
+    <value>SecurityAuditBehavior is not supported on the channel factory.</value>
+  </data>
+  <data name="ActivityClose" xml:space="preserve">
+    <value>Close '{0}'.</value>
+  </data>
+  <data name="ActivityOpen" xml:space="preserve">
+    <value>Open '{0}'.</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectAborted" xml:space="preserve">
+    <value>Aborted '{0}'.</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectAbortFailed" xml:space="preserve">
+    <value>Failed to abort {0}</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectCloseFailed" xml:space="preserve">
+    <value>Failed to close {0}</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectClosed" xml:space="preserve">
+    <value>Closed {0}</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectClosing" xml:space="preserve">
+    <value>Closing {0}</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectFaulted" xml:space="preserve">
+    <value>Faulted {0}</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectOpenFailed" xml:space="preserve">
+    <value>Failed to open {0}</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectOpened" xml:space="preserve">
+    <value>Opened {0}</value>
+  </data>
+  <data name="TraceCodeCommunicationObjectOpening" xml:space="preserve">
+    <value>Opening {0}</value>
+  </data>
+  <data name="TraceCodeConnectionPoolIdleTimeoutReached" xml:space="preserve">
+    <value>A connection has exceeded the idle timeout of this connection pool ({0}) and been closed.</value>
+  </data>
+  <data name="TraceCodeConnectionPoolLeaseTimeoutReached" xml:space="preserve">
+    <value>A connection has exceeded the connection lease timeout of this connection pool ({0}) and been closed.</value>
+  </data>
+  <data name="TraceCodeConnectionPoolMaxOutboundConnectionsPerEndpointQuotaReached" xml:space="preserve">
+    <value>MaxOutboundConnectionsPerEndpoint quota ({0}) has been reached, so connection was closed and not stored in this connection pool.</value>
+  </data>
+  <data name="TraceCodeServerMaxPooledConnectionsQuotaReached" xml:space="preserve">
+    <value>MaxOutboundConnectionsPerEndpoint quota ({0}) has been reached, so the connection was closed and not reused by the listener.</value>
+  </data>
+  <data name="TraceCodeFailedAcceptFromPool" xml:space="preserve">
+    <value>An attempt to reuse a pooled connection failed. Another attempt will be made with {0} remaining in the overall timeout.</value>
+  </data>
+  <data name="TraceCodeTransportListen" xml:space="preserve">
+    <value>Listening at '{0}'.</value>
+  </data>
+  <data name="PrematureEOF" xml:space="preserve">
+    <value>More data was expected, but EOF was reached.</value>
+  </data>
+  <data name="InvalidUriPathCharacter" xml:space="preserve">
+    <value>The path '{0}' contains character(s) that are not allowed by Service Bus. Entity segments can contain only letters, numbers, periods (.), hyphens (-), and underscores (_).</value>
+  </data>
+  <data name="CharacterReservedForUriScheme" xml:space="preserve">
+    <value>'{0}' contained character '{1}' which is not allowed because it is reserved in the Uri scheme.</value>
+  </data>
+  <data name="BufferAllocationFailed" xml:space="preserve">
+    <value>Failed to allocate a managed memory buffer of {0} bytes. The amount of available memory may be low.</value>
+  </data>
+  <data name="GenericCallbackException" xml:space="preserve">
+    <value>A user callback threw an exception. Check the exception stack and inner exception to determine the callback that failed.</value>
+  </data>
+  <data name="InvalidGzipHeaderCannotBeRead" xml:space="preserve">
+    <value>Compression failed. Could not read Gzip Header. Returning the original body stream.</value>
+  </data>
+  <data name="InvalidGzipUnexpectedFlagsValue" xml:space="preserve">
+    <value>Compression failed. The compressed stream has unexpected values in the flag field. Returning the original body stream.</value>
+  </data>
+  <data name="TraceCodeAppDomainUnload" xml:space="preserve">
+    <value>AppDomain Unloading.</value>
+  </data>
+  <data name="TraceCodeEventLog" xml:space="preserve">
+    <value>Wrote to the event log.</value>
+  </data>
+  <data name="TraceCodeTraceTruncatedQuotaExceeded" xml:space="preserve">
+    <value>A trace size quota was exceeded. The trace was truncated.</value>
+  </data>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>An exception went unhandled.</value>
+  </data>
+  <data name="WriteCharsInvalidContent" xml:space="preserve">
+    <value>The contents of the buffer passed to PlainXmlWriter.WriteChars are invalid.</value>
+  </data>
+  <data name="SbmpClientMustEnableRedirect" xml:space="preserve">
+    <value>The server only supports Redirect. Client must set EnableRedirect=true in the transport settings.</value>
+  </data>
+  <data name="AcceptMessageSessionRedirectNotSupported" xml:space="preserve">
+    <value>The client cannot enable redirect when AcceptMessageSession is used.</value>
+  </data>
+  <data name="ServerBusy" xml:space="preserve">
+    <value> This request has been blocked because the entity or namespace is being throttled. Please retry the operation, and if condition continues, please slow down your rate of request.</value>
+  </data>
+  <data name="SSLCertThumbprintMissing" xml:space="preserve">
+    <value>The SSL certificate thumbprint value is null.</value>
+  </data>
+  <data name="TokenProviderServiceUnavailable" xml:space="preserve">
+    <value>The token provider service was not available when obtaining a token for '{0}'.</value>
+  </data>
+  <data name="InvalidNotificationHubCreateRequest" xml:space="preserve">
+    <value>NotificationHub creation with preview API version, or lesser version is not supported.</value>
+  </data>
+  <data name="ClientWebSocketConnectionClosed" xml:space="preserve">
+    <value>ClientWebSocketConnection is closed.</value>
+  </data>
+  <data name="ClientWebSocketNotInInitialState" xml:space="preserve">
+    <value>ServiceBusClientWebSocket not in Initial State during Connect.</value>
+  </data>
+  <data name="ClientWebSocketNotInOpenStateDuringReceive" xml:space="preserve">
+    <value>ServiceBusClientWebSocket not in Open State during Receive.</value>
+  </data>
+  <data name="ClientWebSocketNotInOpenStateDuringSend" xml:space="preserve">
+    <value>ServiceBusClientWebSocket not in Open State during Send.</value>
+  </data>
+  <data name="ClientWebSocketTransportClosed" xml:space="preserve">
+    <value>Client WebSocket Transport is closed.</value>
+  </data>
+  <data name="ClientWebSocketConnectionPrematureEndRead" xml:space="preserve">
+    <value>EndRead method cannot be called before the asynchronous read operation is complete.</value>
+  </data>
+  <data name="ClientWebSocketConnectionReadPending" xml:space="preserve">
+    <value>BeginRead method cannot be called when there is an asynchronous read operation already pending.</value>
+  </data>
+  <data name="ClientWebSocketTransportReadBufferTooSmall" xml:space="preserve">
+    <value>Client WebSocket Transport read buffer is too small to read incoming message.</value>
+  </data>
+  <data name="ResourcePublishingNotAllowed" xml:space="preserve">
+    <value>Azure Hybrid Connections are disabled by Group Policy.</value>
+  </data>
+  <data name="ResourcePublishingEndpointNotAllowed" xml:space="preserve">
+    <value>Azure Hybrid Connections to the endpoint '{0}' are not allowed by Group Policy.</value>
+  </data>
+  <data name="TokenProviderEmptyAudience" xml:space="preserve">
+    <value>The token service did not return an audience.</value>
+  </data>
+  <data name="EventProcessorAlreadyRegistered" xml:space="preserve">
+    <value>Event Processor already registered for partion '{0}'.</value>
+  </data>
+  <data name="OperationIsNotAllowedForNamespaceType" xml:space="preserve">
+    <value>This operation is not allowed for given namespace type: {0}.</value>
+  </data>
+</root>

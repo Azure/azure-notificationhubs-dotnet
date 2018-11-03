@@ -1,0 +1,1288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="MessageEntityNotOpened" xml:space="preserve">
+    <value>This messaging entity is not in an open state.</value>
+  </data>
+  <data name="MessageEntityDisposed" xml:space="preserve">
+    <value>This messaging entity has already been closed, aborted, or disposed.</value>
+  </data>
+  <data name="EventDataDisposed" xml:space="preserve">
+    <value>This event data instance has already been disposed.</value>
+  </data>
+  <data name="MessageBodyConsumed" xml:space="preserve">
+    <value>The message body cannot be read multiple times. To reuse it store the value after reading.</value>
+  </data>
+  <data name="InvalidXmlFormat" xml:space="preserve">
+    <value>The XML returned is not in the expected format.</value>
+  </data>
+  <data name="BufferAlreadyReclaimed" xml:space="preserve">
+    <value>The buffer has already been reclaimed.</value>
+  </data>
+  <data name="CannotSendReceivedMessage" xml:space="preserve">
+    <value>A received message cannot be directly sent to another entity. Construct a new message object instead.</value>
+  </data>
+  <data name="CommunicationObjectFaulted" xml:space="preserve">
+    <value>The communication object, {0}, cannot be used because it is in a faulted state.</value>
+  </data>
+  <data name="EntityNameLengthExceedsLimit" xml:space="preserve">
+    <value>The entity path/name '{0}' exceeds the '{1}' character limit.</value>
+  </data>
+  <data name="TemplateNameLengthExceedsLimit" xml:space="preserve">
+    <value>The template name exceeds the '{0}' character limit.</value>
+  </data>
+  <data name="IsolationLevelNotSupported" xml:space="preserve">
+    <value>The only supported IsolationLevel is 'IsolationLevel.Serializable'.</value>
+  </data>
+  <data name="MessageBodyNull" xml:space="preserve">
+    <value>The message body is null.</value>
+  </data>
+  <data name="LockTimeExceedsMaximumAllowed" xml:space="preserve">
+    <value>The supplied lock time exceeds the allowed maximum of '{0}' minutes.</value>
+  </data>
+  <data name="DuplicateHistoryExpiryTimeExceedsMaximumAllowed" xml:space="preserve">
+    <value>The supplied duplicate detection history duration exceeds the maximum allowed value of '{0}' minutes.</value>
+  </data>
+  <data name="SQLSyntaxError" xml:space="preserve">
+    <value>There was an error parsing the SQL expression. [Token line={0}, column={1}, Token in error= {2}]</value>
+  </data>
+  <data name="SQLSyntaxErrorDetailed" xml:space="preserve">
+    <value>There was an error parsing the SQL expression. [Token line={0}, column={1}, Token in error= {2}, Additional details= {3}] </value>
+  </data>
+  <data name="InvalidUriScheme" xml:space="preserve">
+    <value>The provided URI scheme '{0}' is invalid; expected '{1}'.</value>
+  </data>
+  <data name="ReadNotSupported" xml:space="preserve">
+    <value>Reading is not supported on this stream.</value>
+  </data>
+  <data name="BufferedOutputStreamQuotaExceeded" xml:space="preserve">
+    <value>The size quota for this stream ({0}) has been exceeded.</value>
+  </data>
+  <data name="SeekNotSupported" xml:space="preserve">
+    <value>Seeking is not supported on this stream.</value>
+  </data>
+  <data name="ValueMustBeNonNegative" xml:space="preserve">
+    <value>The value of this argument must be non-negative.</value>
+  </data>
+  <data name="MessagingEntityAlreadyExists" xml:space="preserve">
+    <value>The messaging entity '{0}' already exists.</value>
+  </data>
+  <data name="MessagingEntityCouldNotBeFound" xml:space="preserve">
+    <value>The messaging entity '{0}' could not be found.</value>
+  </data>
+  <data name="MessagingEndpointCommunicationError" xml:space="preserve">
+    <value>An error occurred during communication with '{0}'. Check the connection information, then retry.</value>
+  </data>
+  <data name="ChannelTypeNotSupported" xml:space="preserve">
+    <value>The specified channel type {0} is not supported by this channel manager.</value>
+  </data>
+  <data name="ConfigInvalidBindingConfigurationName" xml:space="preserve">
+    <value>The {1} binding does not have a configured binding named '{0}'.</value>
+  </data>
+  <data name="NoAddressesFound" xml:space="preserve">
+    <value>Could not resolve any addresses for entity '{0}'.</value>
+  </data>
+  <data name="CannotSerializeMessageWithPartiallyConsumedBodyStream" xml:space="preserve">
+    <value>Failed to serialize the message because its body stream has been partially consumed.</value>
+  </data>
+  <data name="CannotUseSameMessageInstanceInMultipleOperations" xml:space="preserve">
+    <value>The operation cannot be performed because the brokered message '{0}' has already been consumed. Please use a new BrokeredMessage instance for the operation.</value>
+  </data>
+  <data name="FailedToSerializeEntireBodyStream" xml:space="preserve">
+    <value>Failed to serialize the message because the number of bytes read from its body stream did not match the expected length.</value>
+  </data>
+  <data name="FailedToDeSerializeEntireBodyStream" xml:space="preserve">
+    <value>Failed to deserialize the message because the number of bytes read from its body stream did not match the expected length.</value>
+  </data>
+  <data name="CannotSerializeSessionStateWithPartiallyConsumedStream" xml:space="preserve">
+    <value>Failed to serialize the session state because its state stream has been partially consumed.</value>
+  </data>
+  <data name="FailedToSerializeEntireSessionStateStream" xml:space="preserve">
+    <value>Failed to serialize the session state because the number of bytes read from its state stream did not match the expected length.</value>
+  </data>
+  <data name="FailedToDeSerializeEntireSessionStateStream" xml:space="preserve">
+    <value>Failed to deserialize the session state because the number of bytes read from its state stream did not match the expected length.</value>
+  </data>
+  <data name="TooManyMessageProperties" xml:space="preserve">
+    <value>A message cannot have more than '{0}' properties. Found '{1}' properties.</value>
+  </data>
+  <data name="ExceededMessagePropertySizeLimit" xml:space="preserve">
+    <value>The size of message property '{0}' exceeds the limit of '{1}' bytes.</value>
+  </data>
+  <data name="EntityNameNotFound" xml:space="preserve">
+    <value>The endpoint address '{0}' must specify the name of the messaging entity. Expected 'sb://resourcelocator/entityname'.</value>
+  </data>
+  <data name="SbmpTransport" xml:space="preserve">
+    <value>Sbmp</value>
+  </data>
+  <data name="FailedToSerializeUnsupportedType" xml:space="preserve">
+    <value>Serialization operation failed due to unsupported type {0}.</value>
+  </data>
+  <data name="FailedToDeserializeUnsupportedProperty" xml:space="preserve">
+    <value>Deserialize operation failed due to unsupported property {0}.</value>
+  </data>
+  <data name="OverflowWhenAddingException" xml:space="preserve">
+    <value>There was an overflow when adding the values {0} and {1} of the type {2}.</value>
+  </data>
+  <data name="MessageAttributeSetMethodNotAccessible" xml:space="preserve">
+    <value>The property {0} cannot be assigned to.</value>
+  </data>
+  <data name="MessageAttributeGetMethodNotAccessible" xml:space="preserve">
+    <value>The property {0} cannot be assigned from.</value>
+  </data>
+  <data name="MessageGetPropertyNotFound" xml:space="preserve">
+    <value>The specified property {0} does not exist, or it is not a gettable property of the {1} class.</value>
+  </data>
+  <data name="MultipleResourceManagersNotSupported" xml:space="preserve">
+    <value>Local transactions are not supported with other resource managers/DTC.</value>
+  </data>
+  <data name="SqlFilterActionStatmentTooLong" xml:space="preserve">
+    <value>The length of the filter action statement is {0}, which exceeds the maximum length of {1}.</value>
+  </data>
+  <data name="FilterActionTooManyStatements" xml:space="preserve">
+    <value>There are {0} statements defined in the filter action, which exceeds the allowed maximum of {1}.</value>
+  </data>
+  <data name="NoCorrelationForChannelMessageId" xml:space="preserve">
+    <value>sessionId:messageId '{0}':'{1}' This correlation response was previously received or not expected.</value>
+  </data>
+  <data name="NoCorrelationResponseForChannelMessageId" xml:space="preserve">
+    <value>sessionId:messageId '{0}':'{1}' There was no correlation response for the channel message.</value>
+  </data>
+  <data name="SentCorrelationMessage" xml:space="preserve">
+    <value>sessionId:messageId '{0}':'{1}' Sent a correlation message over the channel session.</value>
+  </data>
+  <data name="ReceivedCorrelationMessage" xml:space="preserve">
+    <value>sessionId:relatesTo '{0}':'{1}' Received a correlation message over the channel session.</value>
+  </data>
+  <data name="ServerDidNotReply" xml:space="preserve">
+    <value>Internal Server Error: The server did not provide a meaningful reply; this might be caused by a premature session shutdown.</value>
+  </data>
+  <data name="OperationRequestTimedOut" xml:space="preserve">
+    <value>The request has timed out after {0} milliseconds. The successful completion of the request cannot be determined. Additional queries should be made to determine whether or not the operation has succeeded.</value>
+  </data>
+  <data name="QueueProvisioningError" xml:space="preserve">
+    <value>An error occurred while creating the queue '{0}'. {1}</value>
+  </data>
+  <data name="QueueUnProvisioningError" xml:space="preserve">
+    <value>An error occurred while deleting the queue '{0}'. {1}</value>
+  </data>
+  <data name="SubscriptionProvisioningError" xml:space="preserve">
+    <value>An error occurred while creating the subscription '{0}' for the topic {1}. {2}</value>
+  </data>
+  <data name="TopicProvisioningError" xml:space="preserve">
+    <value>An error occurred while creating the topic '{0}'. {1}</value>
+  </data>
+  <data name="TopicUnProvisioningError" xml:space="preserve">
+    <value>An error occurred while deleting the topic '{0}'. {1}</value>
+  </data>
+  <data name="IncompatibleQueueExport" xml:space="preserve">
+    <value>Incompatible queue export type. Expected type {0} or {1}. Specified type is {2}.</value>
+  </data>
+  <data name="IncompatibleTopicExport" xml:space="preserve">
+    <value>Incompatible topic export type. Expected type {0} or {1}. Specified type is {2}.</value>
+  </data>
+  <data name="InvalidSubQueueNameString" xml:space="preserve">
+    <value>Provide a valid sub-queue name. The allowed values are: '{0}'.</value>
+  </data>
+  <data name="CannotConvertFilterAction" xml:space="preserve">
+    <value>Cannot convert the filter action of type '{0}'.</value>
+  </data>
+  <data name="CannotConvertFilterExpression" xml:space="preserve">
+    <value>Cannot convert the filter expression of type '{0}'.</value>
+  </data>
+  <data name="CannotCreateClientOnSubQueue" xml:space="preserve">
+    <value>Cannot directly create a client on a sub-queue. Create a client on the main queue and use that to create receivers on the appropriate sub-queue.</value>
+  </data>
+  <data name="InvalidOperationOnSessionBrowser" xml:space="preserve">
+    <value>Cannot perform this operation on a session browser.</value>
+  </data>
+  <data name="InvalidBatchFlushInterval" xml:space="preserve">
+    <value>The BatchFlushInterval that is specified in the settings is not valid.</value>
+  </data>
+  <data name="InvalidAddressPath" xml:space="preserve">
+    <value>The Uri address given contains a path which is not allowed. Remove the path from the supplied Uri {0}.</value>
+  </data>
+  <data name="InvalidEntityNameFormatWithSlash" xml:space="preserve">
+    <value>The entity name or path cannot contain '/' as prefix or suffix. The supplied value is '{0}'.</value>
+  </data>
+  <data name="InvalidCharacterInEntityName" xml:space="preserve">
+    <value>The entity name or path contains an invalid character '{0}'. The supplied value is '{1}'.</value>
+  </data>
+  <data name="ArgumentOutOfRange" xml:space="preserve">
+    <value>The value supplied must be between {0} and {1}.</value>
+  </data>
+  <data name="FilterExpressionTooComplex" xml:space="preserve">
+    <value>The filter expression computation time exceeded the allowed value. Reduce the complexity of the expression.</value>
+  </data>
+  <data name="SqlFilterStatmentTooLong" xml:space="preserve">
+    <value>The length of the filter statement is {0}, which exceeds the maximum length of {1}</value>
+  </data>
+  <data name="MessageIdIsNullOrEmptyOrOverMaxValue" xml:space="preserve">
+    <value>The message ID is either null, empty, or exceeds the maximum allowed size of {0} characters.</value>
+  </data>
+  <data name="SessionIdIsOverMaxValue" xml:space="preserve">
+    <value>The session ID exceeds the maximum allowed size of {0} characters.</value>
+  </data>
+  <data name="InvalidManagementEntityType" xml:space="preserve">
+    <value>Cannot get entity '{0}' because it is not of type {1}.</value>
+  </data>
+  <data name="TrackableExceptionMessageFormat" xml:space="preserve">
+    <value>{0}.{1}</value>
+  </data>
+  <data name="TrackableHttpExceptionMessageFormat" xml:space="preserve">
+    <value>The remote server returned an error: ({0}) {1}. Reason: {2}..{3}</value>
+  </data>
+  <data name="TrackingIdAndTimestampFormat" xml:space="preserve">
+    <value>TrackingId:{0}, Timestamp:{1}</value>
+  </data>
+  <data name="PeekLockModeRequired" xml:space="preserve">
+    <value>This operation is only supported for a message receiver in 'PeekLock' receive mode.</value>
+  </data>
+  <data name="SqlFilterActionCannotRemoveSystemProperty" xml:space="preserve">
+    <value>A system property cannot be removed. The system property specified was '{0}'.</value>
+  </data>
+  <data name="FilterScopeNotSupported" xml:space="preserve">
+    <value>The specified scope ({0}) is not supported.</value>
+  </data>
+  <data name="ActionMustBeProcessed" xml:space="preserve">
+    <value>The action must be processed.</value>
+    <comment>Not user visible, only if inherited class does not implement execution of action</comment>
+  </data>
+  <data name="FilterMustBeProcessed" xml:space="preserve">
+    <value>The filter must be processed.</value>
+  </data>
+  <data name="NotSupportedCompatibilityLevel" xml:space="preserve">
+    <value>The specified compatibility level ({0}) is not supported.</value>
+  </data>
+  <data name="MessageSetPropertyNotFound" xml:space="preserve">
+    <value>The specified property ({0}) does not exist or it is not a settable property of the {1} class.</value>
+  </data>
+  <data name="SqlFilterReservedKeyword" xml:space="preserve">
+    <value>'{0}' is a reserved keyword. Use a delimited identifier if you intended to use a reserved keyword as a property name.</value>
+  </data>
+  <data name="DelimitedIdentifierNotTerminated" xml:space="preserve">
+    <value>The delimited identifier ({0}) was not terminated properly.</value>
+  </data>
+  <data name="StringLiteralNotTerminated" xml:space="preserve">
+    <value>The string ({0}) was not terminated properly.</value>
+  </data>
+  <data name="FilterFunctionIncorrectNumberOfArguments" xml:space="preserve">
+    <value>The '{0}' function expects {1} argument(s), but {2} argument(s) was/were specified.</value>
+  </data>
+  <data name="FilterUnknownFunctionName" xml:space="preserve">
+    <value>The specified function name ({0}) is unknown. Make sure the function name is correct.</value>
+  </data>
+  <data name="StringIsTooLong" xml:space="preserve">
+    <value>The string ('{0}...') length is {1} and it is longer than allowed. Maximum string length allowed is {2}.</value>
+  </data>
+  <data name="InvalidCharactersInEntityName" xml:space="preserve">
+    <value>{0} '{1}' contains character(s) that are not allowed by Service Bus. Entity names or path can contain only letters, numbers, periods (.), hyphens (-), and underscores (_).</value>
+  </data>
+  <data name="PropertyIsNullOrEmpty" xml:space="preserve">
+    <value>The property '{0}' is null or empty.</value>
+  </data>
+  <data name="EntityClosedOrAborted" xml:space="preserve">
+    <value>The operation cannot be performed because the entity has been closed or aborted.</value>
+  </data>
+  <data name="MessagingCommunicationError" xml:space="preserve">
+    <value>Error during communication with Service Bus. Check the connection information, then retry.</value>
+  </data>
+  <data name="BatchManagerAborted" xml:space="preserve">
+    <value>This asynchronous operation was aborted because the overall batching operation was aborted.</value>
+  </data>
+  <data name="CannotCreateMessageSessionForSubQueue" xml:space="preserve">
+    <value>Cannot create a MessageSession for a sub-queue.</value>
+  </data>
+  <data name="MessagingEntityIsDisabledException" xml:space="preserve">
+    <value>Messaging entity '{0}' is currently disabled.</value>
+  </data>
+  <data name="UseOverloadWithBaseAddress" xml:space="preserve">
+    <value>Use overload which allows specifying a base address.</value>
+  </data>
+  <data name="PropertyReferenceUsedWithoutInitializes" xml:space="preserve">
+    <value>A PropertyReference instance ({0}) is used without being part of RuleCreationAction.Initializes property.</value>
+  </data>
+  <data name="RuleCreationActionRequiresFilterTemplate" xml:space="preserve">
+    <value>Filter property must be set to a valid FilterTemplate instance.</value>
+  </data>
+  <data name="EmptyPropertyInCorrelationFilter" xml:space="preserve">
+    <value>At least one system or user property must be set for a correlation filter.</value>
+  </data>
+  <data name="X509InUnTrustedStore" xml:space="preserve">
+    <value>Certificate '{0}' is in the untrusted store.</value>
+  </data>
+  <data name="X509InvalidUsageTime" xml:space="preserve">
+    <value>Certificate '{0}' is not used in its valid time period.</value>
+  </data>
+  <data name="X509CRLCheckFailed" xml:space="preserve">
+    <value>CRL check failed for certificate '{0}'.</value>
+  </data>
+  <data name="CannotFindTransactionResult" xml:space="preserve">
+    <value>Cannot find transaction result for the transaction id '{0}'.</value>
+  </data>
+  <data name="InvalidRefcountedCommunicationObject" xml:space="preserve">
+    <value>The usage of RefcountedCommunicationObject is invalid.</value>
+  </data>
+  <data name="InvalidStateMachineRefcountedCommunicationObject" xml:space="preserve">
+    <value>Invalid state-machine in RefcountedCommunicationObject.</value>
+  </data>
+  <data name="ExpectedTypeInvalidCastException" xml:space="preserve">
+    <value>Unexpected type encountered. Expected '{0}' or '{1}', but received '{2}'.</value>
+  </data>
+  <data name="InvalidElement" xml:space="preserve">
+    <value>Invalid element: {0}.</value>
+  </data>
+  <data name="ConnectionStatusBehavior" xml:space="preserve">
+    <value>ConnectionStatusBehavior requires an IChannelListener that exposes IConnectionStatus.</value>
+  </data>
+  <data name="UnsupportedChannelType" xml:space="preserve">
+    <value>{0} is not a supported channel-type</value>
+  </data>
+  <data name="StreamClosed" xml:space="preserve">
+    <value>The Stream was closed.</value>
+  </data>
+  <data name="UnsupportedConnectivityMode" xml:space="preserve">
+    <value>Unsupported ConnectivityMode '{0}'.</value>
+  </data>
+  <data name="InvalidCallFaultException" xml:space="preserve">
+    <value>Invalid Call.</value>
+  </data>
+  <data name="MaximumAttemptsExceeded" xml:space="preserve">
+    <value>Maximum connect attempts exceeded.</value>
+  </data>
+  <data name="ConnectFailed" xml:space="preserve">
+    <value>Connect process failed.</value>
+  </data>
+  <data name="InvalidID" xml:space="preserve">
+    <value>The ID is invalid.</value>
+  </data>
+  <data name="EndpointNotFound" xml:space="preserve">
+    <value>Endpoint not found.</value>
+  </data>
+  <data name="DuplicateConnectionID" xml:space="preserve">
+    <value>Duplicate connection ID.</value>
+  </data>
+  <data name="InvalidBufferSize" xml:space="preserve">
+    <value>The buffer size is invalid.</value>
+  </data>
+  <data name="ListenerLengthArgumentOutOfRange" xml:space="preserve">
+    <value>listener.Type length exceeds maximum allowed.</value>
+  </data>
+  <data name="UnrecognizedCredentialType" xml:space="preserve">
+    <value>CredentialType is either unrecognized or unable to create HTTP authorization token.</value>
+  </data>
+  <data name="MessageHeaderRetrieval" xml:space="preserve">
+    <value>Unable to retrieve the '{0}' header from the message.</value>
+  </data>
+  <data name="ResponseHeaderRetrieval" xml:space="preserve">
+    <value>Unable to retrieve the '{0}' header from the response.</value>
+  </data>
+  <data name="XMLContentReadFault" xml:space="preserve">
+    <value>{0}: unable to read Atom XML content.</value>
+  </data>
+  <data name="IncorrectContentTypeFault" xml:space="preserve">
+    <value>{0}: ContentType is incorrect</value>
+  </data>
+  <data name="LockedMessageInfo" xml:space="preserve">
+    <value>Unable to retrieve the LockedMessageInfo property from message.</value>
+  </data>
+  <data name="ReadOnlyPolicy" xml:space="preserve">
+    <value>Policy is read-only.</value>
+  </data>
+  <data name="UnableToReach" xml:space="preserve">
+    <value>Unable to reach {0} via TCP ({1}, {2}) or HTTP (80, 443).</value>
+  </data>
+  <data name="MaxRedirectsExceeded" xml:space="preserve">
+    <value>Exceeded the maximum allowed redirects: {0}.</value>
+  </data>
+  <data name="EndpointNotFoundFault" xml:space="preserve">
+    <value>Endpoint not found.</value>
+  </data>
+  <data name="DuplicateConnectionIDFault" xml:space="preserve">
+    <value>Duplicate connection ID.</value>
+  </data>
+  <data name="InvalidConfiguration" xml:space="preserve">
+    <value>Invalid configuration. Unable to use transport protection with Hybrid mode.</value>
+  </data>
+  <data name="TransportSecurity" xml:space="preserve">
+    <value>Transport security is required to protect the security token. The URI schema must be set to HTTPS.</value>
+  </data>
+  <data name="HTTPAuthTokenNotSupportedException" xml:space="preserve">
+    <value>The token provider does not support HTTP authorization token.</value>
+  </data>
+  <data name="UnexpectedFormat" xml:space="preserve">
+    <value>The message has an unexpected format other than SOAP and HTTP.</value>
+  </data>
+  <data name="InvalidDNSClaims" xml:space="preserve">
+    <value>Found {0} DNS claims in authorization context.</value>
+  </data>
+  <data name="BaseAddressScheme" xml:space="preserve">
+    <value>Scheme of base address must be '{0}'.</value>
+  </data>
+  <data name="InvalidChannelType" xml:space="preserve">
+    <value>Invalid channel type.</value>
+  </data>
+  <data name="IncompatibleChannelListener" xml:space="preserve">
+    <value>Incompatible channel listener settings.</value>
+  </data>
+  <data name="NullSAMLs" xml:space="preserve">
+    <value>SamlCredential and its SamlToken cannot be null or empty.</value>
+  </data>
+  <data name="STSURIFormat" xml:space="preserve">
+    <value>stsUri must end with a '/'.</value>
+  </data>
+  <data name="NullIssuerName" xml:space="preserve">
+    <value>Parameter 'issuerName' cannot be null or empty.</value>
+  </data>
+  <data name="NullIssuerSecret" xml:space="preserve">
+    <value>Parameter 'issuerSecret' cannot be null or empty.</value>
+  </data>
+  <data name="InvalidIssuerSecret" xml:space="preserve">
+    <value>The 'issuerSecret' is invalid.</value>
+  </data>
+  <data name="TokenExpiresOn" xml:space="preserve">
+    <value>The provided token does not specify the 'ExpiresOn' value.</value>
+  </data>
+  <data name="InvalidEncoding" xml:space="preserve">
+    <value>The string has an invalid encoding format.</value>
+  </data>
+  <data name="UnsupportedEncodingType" xml:space="preserve">
+    <value>The string has an unsupported encoding type.</value>
+  </data>
+  <data name="NullSimpleWebToken" xml:space="preserve">
+    <value>Parameter 'simpleWebToken' cannot be null or empty.</value>
+  </data>
+  <data name="ArgumentOutOfRangeLessThanOne" xml:space="preserve">
+    <value>'value' must be at least 1.</value>
+  </data>
+  <data name="BeginGetWebTokenNotSupported" xml:space="preserve">
+    <value>This TokenProvider does not support BeginGetWebToken call.</value>
+  </data>
+  <data name="UnsupportedAction" xml:space="preserve">
+    <value>Unsupported action '{0}'.</value>
+  </data>
+  <data name="NullAppliesTo" xml:space="preserve">
+    <value>Parameter appliesTo cannot be null or empty.</value>
+  </data>
+  <data name="NullHostname" xml:space="preserve">
+    <value>Hostname cannot be null or empty.</value>
+  </data>
+  <data name="MismatchServiceBusDomain" xml:space="preserve">
+    <value>The Uri provided {0} does not match Service Bus domain: {1}.</value>
+  </data>
+  <data name="UnsupportedServiceBusDomainPrefix" xml:space="preserve">
+    <value>Uri {0} cannot support more than 1 prefix for Service Bus domain: {1}.</value>
+  </data>
+  <data name="TimeoutExceeded" xml:space="preserve">
+    <value>The timeout is too large.</value>
+  </data>
+  <data name="AlreadyRunning" xml:space="preserve">
+    <value>The pump is already running.</value>
+  </data>
+  <data name="UnexpectedSSL" xml:space="preserve">
+    <value>Unexpected SSL signal value '{0}' found in preamble message.</value>
+  </data>
+  <data name="RelayCertificateNotFound" xml:space="preserve">
+    <value>Cannot find relay certificate.</value>
+  </data>
+  <data name="MessageSizeExceeded" xml:space="preserve">
+    <value>A request from the client instance has exceeded the maximum message size, and the underlying channel will be recreated. Validate the content size before retrying.</value>
+  </data>
+  <data name="ExpectedBytesNotRead" xml:space="preserve">
+    <value>Did not receive any bytes from expected read.</value>
+  </data>
+  <data name="HTTPConnectivityMode" xml:space="preserve">
+    <value>Unable to connect to Service Bus using HTTP connectivity mode.</value>
+  </data>
+  <data name="DownstreamConnection" xml:space="preserve">
+    <value>Unable to connect downstream.</value>
+  </data>
+  <data name="ConnectionTermination" xml:space="preserve">
+    <value>Unable to close connection.</value>
+  </data>
+  <data name="UpstreamConnection" xml:space="preserve">
+    <value>Unable to connect upstream.</value>
+  </data>
+  <data name="URIEndpoint" xml:space="preserve">
+    <value>Error creating endpoint Uri for connecting to the Service Bus.</value>
+  </data>
+  <data name="FaultyEndpointResponse" xml:space="preserve">
+    <value>Faulty response from factory endpoint - locations were not returned.</value>
+  </data>
+  <data name="FactoryEndpoint" xml:space="preserve">
+    <value>Unable to connect to factory endpoint.</value>
+  </data>
+  <data name="WebStreamShutdown" xml:space="preserve">
+    <value>The web stream has been shut down - can no longer write to the stream.</value>
+  </data>
+  <data name="ValueVisibility" xml:space="preserve">
+    <value>Cannot set the value at this time.</value>
+  </data>
+  <data name="MultipleConnectionModeAssertions" xml:space="preserve">
+    <value>More than one relay 'connection-mode' assertion was found.</value>
+  </data>
+  <data name="ITokenProviderType" xml:space="preserve">
+    <value>Unsupported ITokenProvider type.</value>
+  </data>
+  <data name="EnabledAutoFlowCreditIssuing" xml:space="preserve">
+    <value>Manually issuing credit on a link with auto-flow enabled is not allowed.</value>
+  </data>
+  <data name="InvalidFrameSize" xml:space="preserve">
+    <value>Invalid frame size:{0}, maximum frame size:{1}.</value>
+  </data>
+  <data name="MismatchedListSizeEncodedValueLength" xml:space="preserve">
+    <value>The list size must be exactly the same as the encoded value length.</value>
+  </data>
+  <data name="MessageListenerAlreadyRegistered" xml:space="preserve">
+    <value>Message listener is already registered.</value>
+  </data>
+  <data name="CreditListenerAlreadyRegistered" xml:space="preserve">
+    <value>Credit listener is already registered.</value>
+  </data>
+  <data name="DispositionListenerAlreadyRegistered" xml:space="preserve">
+    <value>Disposition listener is already registered.</value>
+  </data>
+  <data name="DispositionListenerSetNotSupported" xml:space="preserve">
+    <value>Not supported when the disposition listener is set.</value>
+  </data>
+  <data name="ServerCertificateAlreadySet" xml:space="preserve">
+    <value>Cannot set target host because the server certificate is already set.</value>
+  </data>
+  <data name="ClientTargetHostAlreadySet" xml:space="preserve">
+    <value>Cannot set server certificate because the client target host is already set.</value>
+  </data>
+  <data name="ClientTargetHostServerCertificateNotSet" xml:space="preserve">
+    <value>Either the client target host or the server certificate must be set.</value>
+  </data>
+  <data name="TargetHostNotSet" xml:space="preserve">
+    <value>TargetHost must be set.</value>
+  </data>
+  <data name="ServerCertificateNotSet" xml:space="preserve">
+    <value>Service certificate must be set.</value>
+  </data>
+  <data name="AsyncResultInUse" xml:space="preserve">
+    <value>The asynchronous result is still in use.</value>
+  </data>
+  <data name="AsyncResultDifferent" xml:space="preserve">
+    <value>The asynchronous result is different.</value>
+  </data>
+  <data name="AsyncResultNotInUse" xml:space="preserve">
+    <value>The asynchronous result is not in use.</value>
+  </data>
+  <data name="FeatureNotSupported" xml:space="preserve">
+    <value>The feature '{0}' is not supported with the current configuration.</value>
+  </data>
+  <data name="BrokeredMessageApplicationProperties" xml:space="preserve">
+    <value>{0} is not currently supported in BrokeredMessage application properties.</value>
+  </data>
+  <data name="NullEmptyRights" xml:space="preserve">
+    <value>Rights cannot be null, empty or greater than {0}.</value>
+  </data>
+  <data name="UnsupportedRight" xml:space="preserve">
+    <value>Unsupported Right '{0}'. The Supported Rights are '{1}'.</value>
+  </data>
+  <data name="UnsupportedGetClaim" xml:space="preserve">
+    <value>GetClaim does not support linkInfo.LinkType '{0}'.</value>
+  </data>
+  <data name="NullResourceDescription" xml:space="preserve">
+    <value>Resource descriptions is null or empty.</value>
+  </data>
+  <data name="NullResourceName" xml:space="preserve">
+    <value>Resource names is null or empty.</value>
+  </data>
+  <data name="NullServiceNameSpace" xml:space="preserve">
+    <value>Service namespace cannot be null or empty.</value>
+  </data>
+  <data name="PathSegmentASCIICharacters" xml:space="preserve">
+    <value>Path segments in 'servicePath' can only contain ASCII characters.</value>
+  </data>
+  <data name="InvalidSchemeValue" xml:space="preserve">
+    <value>Invalid scheme value, must be http, or https, or {0}.</value>
+  </data>
+  <data name="InvalidServiceNameSpace" xml:space="preserve">
+    <value>Invalid service namespace: \"{0}\".</value>
+  </data>
+  <data name="InputURIPath" xml:space="preserve">
+    <value>Current environment is onebox but input Uri has an invalid path {0}.</value>
+  </data>
+  <data name="UnexpedtedURIHostName" xml:space="preserve">
+    <value>The Uri \"{0}\" has an unexpected hostname.</value>
+  </data>
+  <data name="URIServiceNameSpace" xml:space="preserve">
+    <value>The Uri \"{0}\" has an invalid service namespace.</value>
+  </data>
+  <data name="SystemTrackerHeaderMissing" xml:space="preserve">
+    <value>A SystemTracker header was not present.</value>
+  </data>
+  <data name="SystemTrackerPropertyMissing" xml:space="preserve">
+    <value>A SystemTracker property was not present.</value>
+  </data>
+  <data name="TrackingIDHeaderMissing" xml:space="preserve">
+    <value>A TrackingID header was not present.</value>
+  </data>
+  <data name="TrackingIDPropertyMissing" xml:space="preserve">
+    <value>A TrackingID property was not present.</value>
+  </data>
+  <data name="OpenChannelFailed" xml:space="preserve">
+    <value>Channel Open did not complete within the specified timeout of {0}.</value>
+  </data>
+  <data name="MessageLockLost" xml:space="preserve">
+    <value>The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue.</value>
+  </data>
+  <data name="SessionLockExpiredOnMessageSession" xml:space="preserve">
+    <value>The session lock has expired on the MessageSession. Accept a new MessageSession.</value>
+  </data>
+  <data name="IOThreadTimerCannotAcceptMaxTimeSpan" xml:space="preserve">
+    <value>IOThreadTimer cannot accept Timespan.MaxValue.</value>
+  </data>
+  <data name="ExtraParameterSpecifiedForSqlExpression" xml:space="preserve">
+    <value>The specified parameter ({0}) in Parameters property was not used in the expression specified in SqlExpression.</value>
+  </data>
+  <data name="ParameterNotSpecifiedForSqlExpression" xml:space="preserve">
+    <value>A parameter ({0}) used in the expression specified in SqlExpression is missing from the Parameters property.</value>
+  </data>
+  <data name="BadUriFormat" xml:space="preserve">
+    <value>Uri Bad format: {0}</value>
+  </data>
+  <data name="ConnectFailedCommunicationException" xml:space="preserve">
+    <value>Socket communication error.</value>
+  </data>
+  <data name="CreateSessionOnClosingConnection" xml:space="preserve">
+    <value>Can't create session when the connection is closing.</value>
+  </data>
+  <data name="ErroConvertingToChar" xml:space="preserve">
+    <value>Failed to convert to a char.</value>
+  </data>
+  <data name="InvalidLengthofReceivedContent" xml:space="preserve">
+    <value>The length of received content is not correct.</value>
+  </data>
+  <data name="InvalidReceivedContent" xml:space="preserve">
+    <value>Received empty content or invalid type of content.</value>
+  </data>
+  <data name="InvalidReceivedSessionId" xml:space="preserve">
+    <value>The session id from received content does not match.</value>
+  </data>
+  <data name="MoreThanOneAddressCandidate" xml:space="preserve">
+    <value>More than one address candidate exists for the given type.</value>
+  </data>
+  <data name="MoreThanOneIPEndPoint" xml:space="preserve">
+    <value>More than one IPEndPoint exists for the given type.</value>
+  </data>
+  <data name="NotSupportedTypeofChannel" xml:space="preserve">
+    <value>Given type of channel is not supported.</value>
+  </data>
+  <data name="NotSupportFrameCode" xml:space="preserve">
+    <value>Unsupported type {0} for array.</value>
+  </data>
+  <data name="NoValidHostAddress" xml:space="preserve">
+    <value>Can't find appropriate address.</value>
+  </data>
+  <data name="NullRawDataInToken" xml:space="preserve">
+    <value>Can't read raw data from token.</value>
+  </data>
+  <data name="NullRoot" xml:space="preserve">
+    <value>The root is null.</value>
+  </data>
+  <data name="MessagingEntityUpdateConflict" xml:space="preserve">
+    <value>Another update request is in progress for the entity {0}.</value>
+  </data>
+  <data name="NotSupportedPropertyType" xml:space="preserve">
+    <value>'{0}' is not a supported type.</value>
+  </data>
+  <data name="AppSettingsConfigDuplicateSetting" xml:space="preserve">
+    <value>A duplicate property '{0}' was found in the Service Bus connection string.</value>
+  </data>
+  <data name="AppSettingsConfigMissingSetting" xml:space="preserve">
+    <value>Configuration is missing required information. Make sure the property '{0}' is defined as part of '{1}' key within 'appSettings' section, or Windows Azure configuration settings.</value>
+  </data>
+  <data name="AppSettingsConfigSettingInvalidKey" xml:space="preserve">
+    <value>The Service Bus connection string contains invalid property. '{0}' is not a valid property within the connection string.</value>
+  </data>
+  <data name="AppSettingsConfigSettingInvalidValue" xml:space="preserve">
+    <value>The Service Bus connection string contains invalid value. The property '{0}' has invalid value '{1}'.</value>
+  </data>
+  <data name="AppSettingsCreateFactoryWithInvalidConnectionString" xml:space="preserve">
+    <value>Unable to create MessagingFactory using connection string. {0} See inner exception for details. Check your connection string and then try again. For more information please see http://go.microsoft.com/fwlink/?LinkID=249089</value>
+  </data>
+  <data name="AppSettingsCreateManagerWithInvalidConnectionString" xml:space="preserve">
+    <value>Unable to create NamespaceManager using connection string. {0} See inner exception for details. Check your connection string and then try again. For more information please see http://go.microsoft.com/fwlink/?LinkID=249089</value>
+  </data>
+  <data name="AppSettingsConfigIncompleteSettingCombination" xml:space="preserve">
+    <value>Some of the configuration is missing a required component. Make sure all or none of the following properties are defined as part of '{0}' key within 'appSettings' section, or Windows Azure configuration settings: [{1}]</value>
+  </data>
+  <data name="MessagingEntityMoved" xml:space="preserve">
+    <value>The messaging entity '{0}' has been moved to a different container</value>
+  </data>
+  <data name="ArgumentInvalidCombination" xml:space="preserve">
+    <value>Please make sure either all or none of the following arguments are defined: '{0}'.</value>
+  </data>
+  <data name="BrokeredMessageStreamNotCloneable" xml:space="preserve">
+    <value>The stream of type '{0}' within the BrokeredMessage is not cloneable.</value>
+  </data>
+  <data name="OnMessageAlreadyCalled" xml:space="preserve">
+    <value>The method 'OnMessage' or 'OnMessageAsync' has already been called.</value>
+  </data>
+  <data name="PropertyInvalidCombination" xml:space="preserve">
+    <value>The Value of Property '{0}' cannot be less than Value of Property '{1}'.</value>
+  </data>
+  <data name="InternalServerError" xml:space="preserve">
+    <value>The server was unable to process the request; please retry the operation. If the problem persists, please contact your Service Bus administrator and provide the tracking id.</value>
+  </data>
+  <data name="MessagingEntityIsDisabledForReceiveException" xml:space="preserve">
+    <value>Messaging entity '{0}' is currently disabled for Receive operations.</value>
+  </data>
+  <data name="MessagingEntityIsDisabledForSendException" xml:space="preserve">
+    <value>Messaging entity '{0}' is currently disabled for Send operations.</value>
+  </data>
+  <data name="InvalidCombinationOfManageRight" xml:space="preserve">
+    <value>Manage permission should also include Send and Listen.</value>
+  </data>
+  <data name="SqlSettingNotFound" xml:space="preserve">
+    <value>Could not find '{0}' setting in gateway</value>
+  </data>
+  <data name="MaxConcurrentCallsMustBeGreaterThanZero" xml:space="preserve">
+    <value>The specified value ({0}) is invalid. "maxConcurrentCalls" must be greater than zero.</value>
+  </data>
+  <data name="CannotHaveDuplicateAccessRights" xml:space="preserve">
+    <value>The AccessRights on an Authorization Rule must be unique.</value>
+  </data>
+  <data name="NotSupportedXMLFormatAsBodyTemplate" xml:space="preserve">
+    <value>The bodyTemplate is not in accepted XML format. The first node of the bodyTemplate should be Badge/Tile/Toast, except wns/raw template, which need to be a valid XML.</value>
+  </data>
+  <data name="NotSupportedXMLFormatAsPayload" xml:space="preserve">
+    <value>The payload is not in accepted XML format. The first node should be Badge/Tile/Toast. If want to send raw notification, please set header to wns/raw.</value>
+  </data>
+  <data name="ConnectionStringWithInvalidScheme" xml:space="preserve">
+    <value>Connection string contains unsupported schema for endPoint. Only "sb://" is supported.</value>
+  </data>
+  <data name="SetTokenScopeNotSupported" xml:space="preserve">
+    <value>This TokenProvider does not support changing the Token Scope.</value>
+  </data>
+  <data name="CannotHaveDuplicateSAARule" xml:space="preserve">
+    <value>Each Shared Access Authorization Rule key name must be unique.</value>
+  </data>
+  <data name="HttpServerAlreadyRunning" xml:space="preserve">
+    <value>This '{0}' instance has already been started once. To start another instance, please create a new '{0}' object and start that.</value>
+  </data>
+  <data name="PairedNamespaceOnlyCallOnce" xml:space="preserve">
+    <value>PairNamespace can only be called once per MessagingFactory.</value>
+  </data>
+  <data name="PairedNamespaceMessagingFactoryAlreadyPaired" xml:space="preserve">
+    <value>The secondary MessagingFactory inside the pairing option has already been paired to another MessagingFactory.</value>
+  </data>
+  <data name="PairedNamespaceMessagingFactoryInOptionsAlreadyPaired" xml:space="preserve">
+    <value>The MessagingFactory in the paired namespace option should not have any paired namespace option defined in itself.</value>
+  </data>
+  <data name="PairedNamespaceMessagingFactoyCannotBeChanged" xml:space="preserve">
+    <value>Cannot change the MessagingFactory once it has been set.</value>
+  </data>
+  <data name="BacklogDeadletterDescriptionNoQueuePath" xml:space="preserve">
+    <value>The message appears to have been placed in a backlog queue by an agent that does not use the SendAvailability feature in the Service Bus SDK. Please do not use this queue for general scenarios.</value>
+  </data>
+  <data name="BacklogDeadletterDescriptionNotRetryable" xml:space="preserve">
+    <value>An exception was received when sending the message to queue '{0}'. Exception: {1}: {2}</value>
+  </data>
+  <data name="BacklogDeadletterReasonNoQueuePath" xml:space="preserve">
+    <value>Destination queue not indicated in message when fetched from backlog.</value>
+  </data>
+  <data name="BacklogDeadletterReasonNotRetryable" xml:space="preserve">
+    <value>The message cannot be delivered to the destination.</value>
+  </data>
+  <data name="SendAvailabilityNoTransferQueuesCreated" xml:space="preserve">
+    <value>Send availability is not supported because no transfer queues were created or found.</value>
+  </data>
+  <data name="PairedNamespaceInvalidBacklogQueueCount" xml:space="preserve">
+    <value>The backlog queue cannot be empty.</value>
+  </data>
+  <data name="PairedNamespacePrimaryAndSecondaryEqual" xml:space="preserve">
+    <value>The primary and secondary paired namespaces are identical. The code must use different namespaces.</value>
+  </data>
+  <data name="PairedNamespaceValidTimespanRange" xml:space="preserve">
+    <value>Valid range is 1 to 30 minutes.</value>
+  </data>
+  <data name="PairedNamespacePrimaryEntityUnreachable" xml:space="preserve">
+    <value>The entity was created with a paired namespace. Ping detected that this entity is unreachable due to a non-transient error. The message will not be sent to the paired namespace. See the inner exception for more details.</value>
+  </data>
+  <data name="NullAsString" xml:space="preserve">
+    <value>(null)</value>
+  </data>
+  <data name="PairedNamespacePropertyExtractionDlqDescription" xml:space="preserve">
+    <value>Could not use property '{0}' in message id '{1}'. Expected type '{2}' but received type '{3}' with string value '{4}'.</value>
+  </data>
+  <data name="PairedNamespacePropertyExtractionDlqReason" xml:space="preserve">
+    <value>Invalid type in property.</value>
+  </data>
+  <data name="BodyIsNotSupportedExpression" xml:space="preserve">
+    <value>Expression type '$body' is not supported.</value>
+  </data>
+  <data name="ApnsCertificateExpired" xml:space="preserve">
+    <value>The certificate specified in apple credentials is expired.</value>
+  </data>
+  <data name="ApnsCertificateNotUsable" xml:space="preserve">
+    <value>Unable to use the certificate specified in apple credentials. The error is: '{0}'</value>
+  </data>
+  <data name="ApnsCertificateNotValid" xml:space="preserve">
+    <value>The certificate specified in apple credentials is not valid yet.</value>
+  </data>
+  <data name="ApnsCertificatePrivatekeyMissing" xml:space="preserve">
+    <value>The certificate specified in apple credentials does not have a private key.</value>
+  </data>
+  <data name="ApnsEndpointNotAllowed" xml:space="preserve">
+    <value>The specified APNS Endpoint is not allowed.</value>
+  </data>
+  <data name="ApnsEndpointNotSpecified" xml:space="preserve">
+    <value>A valid endpoint for APNS is required.</value>
+  </data>
+  <data name="ApnsPropertiesNotSpecified" xml:space="preserve">
+    <value>A valid set of token credentials or certificate credentials are needed.</value>
+  </data>
+  <data name="ApnsRequiredPropertiesError" xml:space="preserve">
+    <value>APNS Credential properties missing.</value>
+  </data>
+  <data name="ApnsCertificateRequiredPropertiesError" xml:space="preserve">
+    <value>To use a certificate as the APNS credentials a CertificateKey, ApnsCertificate and Endpoint are required.</value>
+  </data>
+  <data name="CannotSpecifyExpirationTime" xml:space="preserve">
+    <value>Cannot specify ExpirationTime.</value>
+  </data>
+  <data name="ChannelUriNullOrEmpty" xml:space="preserve">
+    <value>Channel URI is either null, empty or not absolute value.</value>
+  </data>
+  <data name="DeviceTokenHexaDecimalDigitError" xml:space="preserve">
+    <value>One or more characters in device token is not a hexadecimal digit.</value>
+  </data>
+  <data name="DeviceTokenIsEmpty" xml:space="preserve">
+    <value>Device token is either empty OR it has odd number of nibbles.</value>
+  </data>
+  <data name="EmptyExpiryValue" xml:space="preserve">
+    <value>Expiry value is empty. When specified, a valid expiry value is required.</value>
+  </data>
+  <data name="ExpiryDeserializationError" xml:space="preserve">
+    <value>Expiry value could not be deserialized to a date time.</value>
+  </data>
+  <data name="FailedToDeserializeBodyTemplate" xml:space="preserve">
+    <value>Failed to deserialize the body template.</value>
+  </data>
+  <data name="GcmEndpointNotSpecified" xml:space="preserve">
+    <value>GcmEndpoint is either not specified or invalid.</value>
+  </data>
+  <data name="GCMRegistrationInvalidId" xml:space="preserve">
+    <value>GCM Registration Id is invalid.</value>
+  </data>
+  <data name="GcmRequiredProperties" xml:space="preserve">
+    <value>Only GoogleApiKey and GcmEndpoint are required.</value>
+  </data>
+  <data name="GoogleApiKeyNotSpecified" xml:space="preserve">
+    <value>GoogleApiKey is either not specified or invalid.</value>
+  </data>
+  <data name="InvalidGcmEndpoint" xml:space="preserve">
+    <value>Invalid GcmEndpoint specified.</value>
+  </data>
+  <data name="NokiaXEndpointNotSpecified" xml:space="preserve">
+    <value>NokiaXEndpoint is either not specified or invalid.</value>
+  </data>
+  <data name="NokiaXRegistrationInvalidId" xml:space="preserve">
+    <value>NokiaX Registration Id is invalid.</value>
+  </data>
+  <data name="NokiaXRequiredProperties" xml:space="preserve">
+    <value>Only authorization key and NokiaXEndpoint are required.</value>
+  </data>
+  <data name="NokiaXAuthorizationKeyNotSpecified" xml:space="preserve">
+    <value>NokiaX Authorization Key is either not specified or invalid.</value>
+  </data>
+  <data name="InvalidNokiaXEndpoint" xml:space="preserve">
+    <value>Invalid NokiaXEndpoint specified.</value>
+  </data>
+  <data name="BaiduEndpointNotSpecified" xml:space="preserve">
+    <value>BaiduEndpoint is either not specified or invalid. </value>
+  </data>
+  <data name="BaiduRegistrationInvalidId" xml:space="preserve">
+    <value>Baidu Registration Id is invalid.</value>
+  </data>
+  <data name="BaiduRequiredProperties" xml:space="preserve">
+    <value>Only API key and NokiaXEndpoint are required.</value>
+  </data>
+  <data name="BaiduApiKeyNotSpecified" xml:space="preserve">
+    <value>Baidu Api Key is either not specified or invalid.</value>
+  </data>
+  <data name="InvalidBaiduEndpoint" xml:space="preserve">
+    <value>Invalid BaiduEndpoint specified.</value>
+  </data>
+  <data name="InvalidToken" xml:space="preserve">
+    <value>Invalid token '{0}' in expression :'{1}'.</value>
+  </data>
+  <data name="InvalidWindowsLiveEndpoint" xml:space="preserve">
+    <value>Invalid WindowsLiveEndpoint specified.</value>
+  </data>
+  <data name="LitteralMissing" xml:space="preserve">
+    <value>Expression is '{0}'. Literal is missing closing notation. Current invalid token is '{1}'.</value>
+  </data>
+  <data name="MissingWNSHeader" xml:space="preserve">
+    <value>Must contain WNS Header : '{0}'.</value>
+  </data>
+  <data name="PackageSidAndSecretKeyAreRequired" xml:space="preserve">
+    <value>Only 2 properties PackageSid and SecretKey are required.</value>
+  </data>
+  <data name="PackageSidOrSecretKeyInvalid" xml:space="preserve">
+    <value>PackageSid or SecretKey is either not specified or invalid"</value>
+  </data>
+  <data name="PropertyLengthError" xml:space="preserve">
+    <value>Property name is of length: ' {0}'. Maximum allowed length is '{1}'.</value>
+  </data>
+  <data name="PropertyNameError" xml:space="preserve">
+    <value>Property Name: '{0}', Only ASCII-7 alphanumeric characters and '_' are permitted in the property name.</value>
+  </data>
+  <data name="PropTokenNotAllowedInCompositeExpr" xml:space="preserve">
+    <value>Token type '#(prop)' is not allowed in composite expression.</value>
+  </data>
+  <data name="TokenBeginError" xml:space="preserve">
+    <value>Token has to begin with one of these characters . % ' "" $.  Invalid token is '{0}', Expression '{1}'.</value>
+  </data>
+  <data name="UnsupportedChannelUri" xml:space="preserve">
+    <value>Unsupported channel uri: '{0}'</value>
+  </data>
+  <data name="UnsupportedExpression" xml:space="preserve">
+    <value>Unsupported expression :'{0}'</value>
+  </data>
+  <data name="WNSHeaderNullOrEmpty" xml:space="preserve">
+    <value>WNS header '{0}' is null or empty.</value>
+  </data>
+  <data name="FaultingPairedMessagingFactory" xml:space="preserve">
+    <value>Pairing error: MessageFactory at '{0}' is open and MessagingFactory at '{1}' is not open. Faulting MessagingFactory at '{0}'.</value>
+  </data>
+  <data name="NotSupportedXMLFormatAsBodyTemplateForMpns" xml:space="preserve">
+    <value>The bodyTemplate is not in accepted XML format. The first node of the bodyTemplate should be Tile/Toast, except raw template.</value>
+  </data>
+  <data name="NotSupportedXMLFormatAsPayloadForMpns" xml:space="preserve">
+    <value>The payload is not in accepted XML format. The first node should be Tile/Toast. If want to send raw notification, please set "X-NotificationClass" to "3" in header.</value>
+  </data>
+  <data name="InvalidMpnsCertificate" xml:space="preserve">
+    <value>The certificate specified in mpns credentials is not valid yet.</value>
+  </data>
+  <data name="MissingMpnsHeader" xml:space="preserve">
+    <value>Must contain Mpns Header : '{0}'.</value>
+  </data>
+  <data name="MpnsCertificateError" xml:space="preserve">
+    <value>Unable to use the certificate specified in mpns credentials. The error is  : '{0}'.</value>
+  </data>
+  <data name="MpnsCertificateExpired" xml:space="preserve">
+    <value>The certificate specified in mpns credentials is expired.</value>
+  </data>
+  <data name="MpnsCertificatePrivatekeyMissing" xml:space="preserve">
+    <value>The certificate specified in mpns credentials does not have a private key.</value>
+  </data>
+  <data name="MpnsHeaderIsNullOrEmpty" xml:space="preserve">
+    <value>MPNS header '{0}' is null or empty.</value>
+  </data>
+  <data name="MpnsInvalidPropeties" xml:space="preserve">
+    <value>MpnsCertificate or CertificateKey is either not specified or invalid.</value>
+  </data>
+  <data name="MpnsRequiredPropertiesError" xml:space="preserve">
+    <value>Only 2 properties MpnsCertificate and CertificateKey are required.</value>
+  </data>
+  <data name="UnknownApiVersion" xml:space="preserve">
+    <value>The api-version '{0}' in the query string is not supported. Either remove it from the Uri or use one of '{1}'.</value>
+  </data>
+  <data name="PartitionKeyMustBeEqualsToNonNullSessionId" xml:space="preserve">
+    <value>PartitionKey must be equal to SessionId when SessionId has a value different than null. Assign null to SessionId to be able to set PartitionKey.</value>
+  </data>
+  <data name="UnsupportedBatchingDistinctPartitionKey" xml:space="preserve">
+    <value>Batching brokered messages with distinct SessionId or PartitionKey is not supported for an entity with partitioning enabled.</value>
+  </data>
+  <data name="UnsupportedDeDupBatchingDistinctPartitionKey" xml:space="preserve">
+    <value>Batching brokered messages with distinct SessionId, PartitionKey, or MessageId  is not supported for an entity with partitioning and duplicate detection enabled.</value>
+  </data>
+  <data name="TransactionPartitionKeyMissing" xml:space="preserve">
+    <value>PartitionKey or SessionId is missing. Transaction with partitioned entities require PartitionKey or SessionId to be set in the brokered message.</value>
+  </data>
+  <data name="PartitionedEntityViaSenderNeedsViaPatitionKey" xml:space="preserve">
+    <value>Sending message through a via message sender requires BrokeredMessage.ViaPartitionKey to be set.</value>
+  </data>
+  <data name="MessagingPartitioningUnsupportedBatchingLockTockens" xml:space="preserve">
+    <value>Batching lock tokens for different partitions is not supported for an entity with partitioning enabled.</value>
+  </data>
+  <data name="UnsupportedBatchingSequenceNumbersForDistinctPartitions" xml:space="preserve">
+    <value>ReceiveBatch of sequence numbers from different partitions is not supported for an entity with partitioning enabled. </value>
+  </data>
+  <data name="MessagingPartitioningInvalidOperation" xml:space="preserve">
+    <value>The operation is not supported for an entity with partitioning enabled.</value>
+  </data>
+  <data name="PropertyOverMaxValue" xml:space="preserve">
+    <value>The '{0}' property exceeds the maximum allowed size of {1} characters.</value>
+  </data>
+  <data name="InvalidPayLoadFormat" xml:space="preserve">
+    <value>Invalid payload format. Either Json object or valid Xml are allowed.</value>
+  </data>
+  <data name="SessionHandlerAlreadyRegistered" xml:space="preserve">
+    <value>A session handler is already registered or being registered.</value>
+  </data>
+  <data name="SessionHandlerDoesNotHaveDefaultConstructor" xml:space="preserve">
+    <value>The specified type ({0}) does not have a public default constructor.</value>
+  </data>
+  <data name="SessionHandlerMissingInterfaces" xml:space="preserve">
+    <value>The specified type ({0}) does not implement {1} or {2}.</value>
+  </data>
+  <data name="PropertyMustBeEqualOrLessThanOtherProperty" xml:space="preserve">
+    <value>{0} property must be equal or less than {1} property.</value>
+  </data>
+  <data name="ValueMustBePositive" xml:space="preserve">
+    <value>The specified value ({0}) is not valid. The value must be positive. </value>
+  </data>
+  <data name="MessagingEntityGone" xml:space="preserve">
+    <value>The messaging entity '{0}' is not valid anymore.</value>
+  </data>
+  <data name="InvalidAdmAuthTokenUrl" xml:space="preserve">
+    <value>AuthTokenUrl is invalid.</value>
+  </data>
+  <data name="ErrorNoCotent" xml:space="preserve">
+    <value>The message contain no data.</value>
+  </data>
+  <data name="OnlyNPropertiesRequired" xml:space="preserve">
+    <value>Only {0} properties are required: {1}.</value>
+  </data>
+  <data name="RequiredPropertiesNotSpecified" xml:space="preserve">
+    <value>Required properties are not specified: {0}.</value>
+  </data>
+  <data name="RequiredPropertyNotSpecified" xml:space="preserve">
+    <value>Required property is not specified: {0}.</value>
+  </data>
+  <data name="EventHubPathMismatch" xml:space="preserve">
+    <value>EventHubDescription.Path must either be null or match EventHubClient.Path.</value>
+  </data>
+  <data name="CannotCreateReceiverWithDispatcher" xml:space="preserve">
+    <value>Cannot explicitly create receiver when using a EventHubProcessor is attached.</value>
+  </data>
+  <data name="AdmRegistrationIdInvalid" xml:space="preserve">
+    <value>ADM Registration Id is invalid.</value>
+  </data>
+  <data name="InvalidAdmSendUrlTemplate" xml:space="preserve">
+    <value>ADM send notification endpoint URL template is invalid.</value>
+  </data>
+  <data name="ReceiveContextNull" xml:space="preserve">
+    <value>The operation cannot be completed because the ReceiveContext is null.</value>
+  </data>
+  <data name="InvalidMethodWhilePeeking" xml:space="preserve">
+    <value>The operation '{0}' cannot be completed because the message was received through Peek. Make sure the message is obtained from a Receive() call instead.</value>
+  </data>
+  <data name="TokenAudience" xml:space="preserve">
+    <value>The provided token does not specify the 'Audience' value.</value>
+  </data>
+  <data name="ObjectIsReadOnly" xml:space="preserve">
+    <value>This object is read-only and cannot be modified.</value>
+  </data>
+  <data name="DominatingPropertyMustBeEqualsToNonNullDormantProperty" xml:space="preserve">
+    <value>{0} must be equal to {1} when {1} has a value different than null. Assign null to {1} to be able to set {0}.</value>
+  </data>
+  <data name="InvalidEventHubCheckpointSettings" xml:space="preserve">
+    <value>EventHubReceiver can only have either client side starting offset or datetime, or create use a consumer group with checkpoint enabled (EnableCheckpoint={0})</value>
+  </data>
+  <data name="CannotCheckpointWithCurrentConsumerGroup" xml:space="preserve">
+    <value>Checkpoint is disabled for this ConsuemerGroup.</value>
+  </data>
+  <data name="EventHubUnsupportedOperation" xml:space="preserve">
+    <value>'{0}' is not a supported operation for EventHub.</value>
+  </data>
+  <data name="PartitionKeyMustBeEqualsToNonNullPublisher" xml:space="preserve">
+    <value>PartitionKey must be equal to Publisher while sending from Publisher</value>
+  </data>
+  <data name="PublisherMustBeEqualsToNonNullSessionId" xml:space="preserve">
+    <value>Publisher must be equal to SessionId when SessionId has a Value</value>
+  </data>
+  <data name="EventHubUnsupportedTransport" xml:space="preserve">
+    <value>'{0}' is not a supported transport type for EventHub. Use AMQP.</value>
+  </data>
+  <data name="MessagingEntityRequestConflict" xml:space="preserve">
+    <value>Request on entity {0} conflicted with another request</value>
+  </data>
+  <data name="NotificationHubOperationNotAllowedForSKU" xml:space="preserve">
+    <value>This operation is not available for your tier</value>
+  </data>
+  <data name="PartitionInvalidPartitionKey" xml:space="preserve">
+    <value>The specified partition key '{0}' is invalid for partition '{1}'. Do not set a value for partition key or send using EventHubClient.Send.</value>
+  </data>
+  <data name="CannotSendAnEmptyEvent" xml:space="preserve">
+    <value>Sending empty {0} is not a Valid Operation.</value>
+  </data>
+  <data name="UnknownRegistrationDescriptionType" xml:space="preserve">
+    <value>Unknown RegistrationDescription type.</value>
+  </data>
+  <data name="ExpressionIsNotPositiveInteger" xml:space="preserve">
+    <value>Expression is {0}. {2} is not a positive integer. The current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionErrorParseDotFormat" xml:space="preserve">
+    <value>Expression is {0}. Error trying to parse for .(prop , n) format. The current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionErrorParsePercentFormat" xml:space="preserve">
+    <value>Expression is {0}. The expression %(prop , n) is not a valid. The current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionMissingClosingParentheses" xml:space="preserve">
+    <value>Expression is {0}. Missing closing parentheses. Current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionMissingDefaultEnd" xml:space="preserve">
+    <value>Expression is {0}. Missing default's end. Current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionMissingProperty" xml:space="preserve">
+    <value>Expression is {0}. Missing property. Current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionMissingOpenParentheses" xml:space="preserve">
+    <value>Expression is {0}. The character following $ or . or % should be a ( The current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionLiteralMissingClosingNotation" xml:space="preserve">
+    <value>Expression is {0}. Literal is missing closing notation. Current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionHashInComposite" xml:space="preserve">
+    <value>Token type '#(prop)' is not allowed in composite expression.</value>
+  </data>
+  <data name="ExpressionInvalidCompositionOperator" xml:space="preserve">
+    <value>Expression is {0}. Only valid composition operator is +. Current invalid token is : {1}</value>
+  </data>
+  <data name="PropertyTooLong" xml:space="preserve">
+    <value>Property name is of length. {0}. Maximum allowed length is {1}</value>
+  </data>
+  <data name="PropertyNameIsBad" xml:space="preserve">
+    <value>Property name is {0}. Only ASCII-7 alphanumeric characters and '_' are permitted in the property name</value>
+  </data>
+  <data name="ExpressionInvalidTokenType" xml:space="preserve">
+    <value>Expression is {0}. Token has to begin with one of these characters . % ' "" $. Current invalid token is {1}</value>
+  </data>
+  <data name="ExpressionInvalidToken" xml:space="preserve">
+    <value>Expression is {0}. Error is it contains an invalid token : {1}</value>
+  </data>
+  <data name="ExpressionMissingClosingParenthesesNoToken" xml:space="preserve">
+    <value>Expression is {0}. Error is closing parenthesis is missing</value>
+  </data>
+  <data name="EmptyPriorityValue" xml:space="preserve">
+    <value>Priority value is empty. When specified, a valid priority value is required.</value>
+  </data>
+  <data name="PriorityDeserializationError" xml:space="preserve">
+    <value>Priority value could not be deserialized to a byte.</value>
+  </data>
+  <data name="ApnsProvideOnlyOneCredentialType" xml:space="preserve">
+    <value>Cannot set both token and certificate for APNS.</value>
+  </data>
+  <data name="ApnsTokenPropertiesMissing" xml:space="preserve">
+    <value>To use APNS token, the key id, application id and application name need to be set.</value>
+  </data>
+  <data name="ApnsExpiryHeaderDeserializationError" xml:space="preserve">
+    <value>APNS Header 'apns-expiration' is a unix epoch date expressed in ticks. It must be an integer.</value>
+  </data>
+  <data name="ApnsHeaderDeserializationError" xml:space="preserve">
+    <value>APNS Header '{0}' does not conform to Apple's guidelines that headers must begin with "apns-".</value>
+  </data>
+</root>

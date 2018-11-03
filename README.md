@@ -2,6 +2,14 @@
 
 This repository contains source code for Azure Notification Hubs .NET SDK as well as samples for using the client.
 
+## Building Code
+Building code requires Visual Studio 2017 or newer.
+
+Run the folowing in the command line:
+```
+msbuild Microsoft.Azure.NotificationHubs.sln
+```
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
