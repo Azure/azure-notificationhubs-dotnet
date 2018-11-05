@@ -109,9 +109,9 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3002)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(bool allowLocalMockPns, ApiVersion version)
+        internal override void OnValidate(ApiVersion version)
         {
-            base.OnValidate(allowLocalMockPns, version);
+            base.OnValidate(version);
 
             try
             {

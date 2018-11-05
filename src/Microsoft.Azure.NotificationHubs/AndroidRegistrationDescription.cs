@@ -92,7 +92,7 @@ namespace Microsoft.Azure.NotificationHubs
             this.GcmRegistrationId = pnsHandle;
         }
 
-        internal override void OnValidate(bool allowLocalMockPns, ApiVersion version)
+        internal override void OnValidate(ApiVersion version)
         {
             if (string.IsNullOrWhiteSpace(this.GcmRegistrationId))
             {

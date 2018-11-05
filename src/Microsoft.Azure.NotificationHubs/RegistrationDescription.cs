@@ -250,7 +250,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public string Serialize()
         {
-            this.Validate(true, ApiVersion.Four, false);
+            this.Validate(ApiVersion.Four, false);
 
             var serializer = new EntityDescriptionSerializer();
             return serializer.Serialize(this);
@@ -274,17 +274,17 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal void Validate(bool allowLocalMockPns, ApiVersion version, bool checkExpirationTime = true)
+        internal void Validate(ApiVersion version, bool checkExpirationTime = true)
         {
             if (checkExpirationTime && this.ExpirationTime != null)
             {
                 throw new InvalidDataContractException(SRClient.CannotSpecifyExpirationTime);
             }
 
-            this.OnValidate(allowLocalMockPns, version);
+            this.OnValidate(version);
         } 
 
-        internal virtual void OnValidate(bool allowLocalMockPns, ApiVersion version)
+        internal virtual void OnValidate(ApiVersion version)
         {
         }
 

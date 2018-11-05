@@ -112,9 +112,9 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal override void OnValidate(bool allowLocalMockPns, ApiVersion version)
+        internal override void OnValidate(ApiVersion version)
         {
-            base.OnValidate(allowLocalMockPns, version);
+            base.OnValidate(version);
 
             try
             {

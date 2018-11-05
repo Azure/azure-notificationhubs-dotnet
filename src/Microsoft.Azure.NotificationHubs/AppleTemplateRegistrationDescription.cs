@@ -170,9 +170,9 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.ApnsHeaders, IsRequired = false, Order = 3005, EmitDefaultValue = false)]
         public ApnsHeaderCollection ApnsHeaders { get; set; }
 
-        internal override void OnValidate(bool allowLocalMockPns, ApiVersion version)
+        internal override void OnValidate(ApiVersion version)
         {
-            base.OnValidate(allowLocalMockPns, version);
+            base.OnValidate(version);
 
             if (this.Expiry != null)
             {

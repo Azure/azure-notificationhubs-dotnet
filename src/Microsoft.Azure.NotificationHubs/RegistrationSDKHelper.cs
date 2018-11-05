@@ -34,7 +34,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             // validate
-            registration.Validate(true, ApiVersion.Four);
+            registration.Validate(ApiVersion.Four);
         }
 
         /// <summary>

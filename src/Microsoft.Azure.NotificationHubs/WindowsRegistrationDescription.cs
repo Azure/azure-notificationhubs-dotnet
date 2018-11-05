@@ -152,10 +152,9 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Called when validate event occurs.
         /// </summary>
-        /// <param name="allowLocalMockPns">if set to <c>true</c> [allow local mock PNS].</param>
         /// <param name="version">The version.</param>
         /// <exception cref="System.Runtime.Serialization.InvalidDataContractException"></exception>
-        internal override void OnValidate(bool allowLocalMockPns, ApiVersion version)
+        internal override void OnValidate(ApiVersion version)
         {
             // Channel URI validations
             if (string.IsNullOrWhiteSpace(this.ChannelUri.ToString()) || !this.ChannelUri.IsAbsoluteUri)
