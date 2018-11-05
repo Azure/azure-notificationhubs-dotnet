@@ -144,11 +144,6 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.SecondaryTileName, Order = 2002, IsRequired = false, EmitDefaultValue = false)]
         public string SecondaryTileName { get; set; }
 
-        internal bool IsMockWns()
-        {
-            return this.ChannelUri.Host.ToUpperInvariant().Contains("CLOUDAPP.NET");
-        }
-
         /// <summary>
         /// Called when validate event occurs.
         /// </summary>

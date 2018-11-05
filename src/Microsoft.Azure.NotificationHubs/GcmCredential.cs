@@ -66,11 +66,6 @@ namespace Microsoft.Azure.NotificationHubs
             get { return GcmCredential.AppPlatformName; }
         }
 
-        internal static bool IsMockGcm(string endpoint)
-        {
-            return endpoint.ToUpperInvariant().Contains("CLOUDAPP.NET");
-        }
-
         /// <summary>
         /// Specifies whether the credential is equal with the specific object.
         /// </summary>

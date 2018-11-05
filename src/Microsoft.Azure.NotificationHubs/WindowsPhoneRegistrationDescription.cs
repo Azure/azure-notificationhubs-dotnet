@@ -110,11 +110,6 @@ namespace Microsoft.Azure.NotificationHubs
             get { return MpnsCredential.AppPlatformName; }
         }
 
-        internal bool IsMockMpns()
-        {
-            return this.ChannelUri.Host.ToUpperInvariant().Contains("CLOUDAPP.NET");
-        }
-
         /// <summary>
         /// Gets or sets the channel URI.
         /// </summary>
