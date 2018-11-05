@@ -18,29 +18,11 @@ namespace Microsoft.Azure.NotificationHubs
     public class WindowsRegistrationDescription : RegistrationDescription
     {
         // Request
-        internal const string WnsHeaderPrefix = "X-WNS-";
         internal const string Type = "X-WNS-Type";
         internal const string Raw = "wns/raw";
         internal const string Badge = "wns/badge";
         internal const string Tile = "wns/tile";
         internal const string Toast = "wns/toast";
-
-        // Valid Channel URI Parts
-        internal const string ProdChannelUriPart = @"notify.windows.com";
-        internal const string MockChannelUriPart = @"localhost:8450/WNS/Mock";
-        internal const string MockRunnerChannelUriPart = @"pushtestservice.cloudapp.net";
-        internal const string MockIntChannelUriPart = @"pushtestservice4.cloudapp.net";
-        internal const string MockPerformanceChannelUriPart = @"pushperfnotificationserver.cloudapp.net";
-        internal const string MockEnduranceChannelUriPart = @"pushstressnotificationserver.cloudapp.net";
-        internal const string MockEnduranceChannelUriPart1 = @"pushnotificationserver.cloudapp.net";
-
-        internal static HashSet<string> SupportedWnsTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            Raw,
-            Badge,
-            Toast,
-            Tile
-        };
 
         internal override string AppPlatForm
         {

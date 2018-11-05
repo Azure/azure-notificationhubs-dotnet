@@ -86,19 +86,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal void Validate(bool allowLocalMockPns)
-        {
-            this.OnValidate(allowLocalMockPns);
-        }
-
-        /// <summary>
-        /// Validates the credential.
-        /// </summary>
-        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
-        protected virtual void OnValidate(bool allowLocalMockPns)
-        {
-        }
-
         /// <summary>
         /// Specifies whether the two credentials are equal.
         /// </summary>

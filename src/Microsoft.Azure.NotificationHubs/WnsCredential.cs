@@ -18,13 +18,6 @@ namespace Microsoft.Azure.NotificationHubs
     {
         internal const string AppPlatformName = "windows";
         internal const string ProdAccessTokenServiceUrl = @"https://login.live.com/accesstoken.srf";
-        internal const string MockAccessTokenServiceUrl = @"http://localhost:8450/LiveID/accesstoken.srf";
-        internal const string MockIntAccessTokenServiceUrl = @"http://pushtestservice.cloudapp.net/LiveID/accesstoken.srf";
-        internal const string MockRunnerAccessTokenServiceUrl = @"http://pushtestservice4.cloudapp.net/LiveID/accesstoken.srf";
-        internal const string MockIntInvalidAccessTokenServiceUrl = @"http://pushtestserviceInvalid.cloudapp.net/LiveID/accesstoken.srf";
-        internal const string MockPerformanceAccessTokenServiceUrl = @"http://pushperfnotificationserver.cloudapp.net/LiveID/accesstoken.srf";
-        internal const string MockEnduranceAccessTokenServiceUrl = @"http://pushstressnotificationserver.cloudapp.net/LiveID/accesstoken.srf";
-        internal const string MockEnduranceAccessTokenServiceUrl1 = @"http://pushnotificationserver.cloudapp.net/LiveID/accesstoken.srf";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WnsCredential"/> class.
@@ -90,34 +83,6 @@ namespace Microsoft.Azure.NotificationHubs
         {
             get { return base["WindowsLiveEndpoint"] ?? WnsCredential.ProdAccessTokenServiceUrl; }
             set { base["WindowsLiveEndpoint"] = value; }
-        }
-
-        /// <summary>
-        /// Validates the credential.
-        /// </summary>
-        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
-        protected override void OnValidate(bool allowLocalMockPns)
-        {
-            if (this.Properties == null || this.Properties.Count > 3)
-            {
-                throw new InvalidDataContractException(SRClient.PackageSidAndSecretKeyAreRequired);
-            }
-
-            if (this.Properties.Count < 2 || string.IsNullOrWhiteSpace(this.PackageSid) || string.IsNullOrWhiteSpace(this.SecretKey))
-            {
-                throw new InvalidDataContractException(SRClient.PackageSidOrSecretKeyInvalid);
-            }
-
-            if (this.Properties.Count == 3 && string.IsNullOrEmpty(base["WindowsLiveEndpoint"]))
-            {
-                throw new InvalidDataContractException(SRClient.PackageSidAndSecretKeyAreRequired);
-            }
-            
-            Uri windowsLiveUri;
-            if (!Uri.TryCreate(this.WindowsLiveEndpoint, UriKind.Absolute, out windowsLiveUri))
-            {
-                throw new InvalidDataContractException(SRClient.InvalidWindowsLiveEndpoint);
-            }
         }
 
         /// <summary>

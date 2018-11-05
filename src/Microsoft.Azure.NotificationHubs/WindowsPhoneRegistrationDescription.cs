@@ -31,16 +31,6 @@ namespace Microsoft.Azure.NotificationHubs
         internal const string NamespaceName = "WPNotification";
         internal const string NotificationElementName = "Notification";
 
-        // Valid Channel URI Parts
-        internal const string ProdChannelUriPart = @".notify.live.net";
-        internal const string MockChannelUriPart = @"localhost:8450/MPNS/Mock";
-        internal const string MockSSLChannelUriPart = @"localhost:8451/MPNS/Mock";
-        internal const string MockRunnerChannelUriPart = @"pushtestservice.cloudapp.net";
-        internal const string MockIntChannelUriPart = @"pushtestservice4.cloudapp.net";
-        internal const string MockPerformanceChannelUriPart = @"pushperfnotificationserver.cloudapp.net";
-        internal const string MockEnduranceChannelUriPart = @"pushstressnotificationserver.cloudapp.net";
-        internal const string MockEnduranceChannelUriPart1 = @"pushnotificationserver.cloudapp.net";
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MpnsRegistrationDescription"/> class.
         /// </summary>

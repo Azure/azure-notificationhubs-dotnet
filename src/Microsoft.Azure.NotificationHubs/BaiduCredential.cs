@@ -6,9 +6,8 @@
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Runtime.Serialization;
     using Microsoft.Azure.NotificationHubs.Messaging;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Represents Baidu credentials
@@ -17,15 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     public class BaiduCredential : PnsCredential
     {
         internal const string AppPlatformName = "baidu";
-
         internal const string ProdAccessTokenServiceUrl = @"https://channel.api.duapp.com/rest/2.0/channel/channel";
-        internal const string NokiaProdAccessTokenServiceUrl = @"https://nnapi.ovi.com/nnapi/2.0/send";
-        internal const string MockAccessTokenServiceUrl = @"http://localhost:8450/gcm/send";
-        internal const string MockRunnerAccessTokenServiceUrl = @"http://pushtestservice.cloudapp.net/gcm/send";
-        internal const string MockIntAccessTokenServiceUrl = @"http://pushtestservice4.cloudapp.net/gcm/send";
-        internal const string MockPerformanceAccessTokenServiceUrl = @"http://pushperfnotificationserver.cloudapp.net/gcm/send";
-        internal const string MockEnduranceAccessTokenServiceUrl = @"http://pushstressnotificationserver.cloudapp.net/gcm/send";
-        internal const string MockEnduranceAccessTokenServiceUrl1 = @"http://pushnotificationserver.cloudapp.net/gcm/send";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaiduCredential"/> class.
@@ -116,47 +107,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             return this.BaiduApiKey.GetHashCode();
-        }
-
-        internal static bool IsMockBaidu(string endPoint)
-        {
-            return endPoint.ToUpperInvariant().Contains("CLOUDAPP.NET");
-        }
-
-        /// <summary>
-        /// Validates the credential.
-        /// </summary>
-        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
-        /// <exception cref="System.Runtime.Serialization.InvalidDataContractException">
-        /// </exception>
-        protected override void OnValidate(bool allowLocalMockPns)
-        {
-            if (this.Properties == null || this.Properties.Count > 2)
-            {
-                throw new InvalidDataContractException(SRClient.BaiduRequiredProperties);
-            }
-
-            if (this.Properties.Count < 1 || string.IsNullOrWhiteSpace(this.BaiduApiKey))
-            {
-                throw new InvalidDataContractException(SRClient.BaiduApiKeyNotSpecified);
-            }
-
-            Uri baiduEndpointUri;
-
-            bool cond =
-                !string.Equals(this.BaiduEndPoint, ProdAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(this.BaiduEndPoint, NokiaProdAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(this.BaiduEndPoint, MockRunnerAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(this.BaiduEndPoint, MockIntAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(this.BaiduEndPoint, MockPerformanceAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(this.BaiduEndPoint, MockEnduranceAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(this.BaiduEndPoint, MockEnduranceAccessTokenServiceUrl1, StringComparison.OrdinalIgnoreCase) &&
-                !(allowLocalMockPns && string.Equals(this.BaiduEndPoint, MockAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase));
-
-            if (!Uri.TryCreate(this.BaiduEndPoint, UriKind.Absolute, out baiduEndpointUri) || cond)
-            {
-                throw new InvalidDataContractException(SRClient.InvalidBaiduEndpoint);
-            }
         }
     }
 }

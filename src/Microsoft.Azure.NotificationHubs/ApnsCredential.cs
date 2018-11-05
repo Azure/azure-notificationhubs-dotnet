@@ -6,14 +6,11 @@
 
 namespace Microsoft.Azure.NotificationHubs
 {
+    using Microsoft.Azure.NotificationHubs.Messaging;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization;
-    using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
-    using Microsoft.Azure.NotificationHubs.Common;
-    using Microsoft.Azure.NotificationHubs.Messaging;
 
     /// <summary>
     /// Represents an Apple Push Notification Service (APNS) credential.
@@ -23,11 +20,6 @@ namespace Microsoft.Azure.NotificationHubs
     {
         internal const string AppPlatformName = "apple";
         internal const string ApnsGatewayEndpoint = "gateway.push.apple.com";
-        internal const string ApnsGatewaySandboxEndpoint = "gateway.sandbox.push.apple.com";
-        internal const string ApnsFeedbackEndpoint = "feedback.push.apple.com";
-        internal const string ApnsFeedbackSandboxEndpoint = "feedback.sandbox.push.apple.com";
-        internal const string Apns2GatewayProductionEndpoint = @"https://api.push.apple.com:443/3/device";
-        internal const string Apns2GatewayDevelopmentEndpoint = @"https://api.development.push.apple.com:443/3/device";
 
 		/// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.ApnsCredential"/> class.
@@ -87,11 +79,6 @@ namespace Microsoft.Azure.NotificationHubs
             this.KeyId = keyId;
             this.AppId = appId;
             this.AppName = appName;
-        }
-
-        internal static bool IsMockApns(string endpoint)
-        {
-            return endpoint.ToUpperInvariant().Contains("CLOUDAPP.NET");
         }
 
         internal override string AppPlatform
@@ -217,76 +204,6 @@ namespace Microsoft.Azure.NotificationHubs
 
                 return Convert.ToBase64String(certificateBuffer);
             }
-        }
-
-		/// <summary>
-        /// Validates the APNS credential.
-        /// </summary>
-        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
-        protected override void OnValidate(bool allowLocalMockPns)
-        {
-            if (this.Properties == null)
-            {
-                throw new InvalidDataContractException(SRClient.ApnsRequiredPropertiesError);
-            }
-			
-            if (string.IsNullOrWhiteSpace(this.Endpoint))
-            {
-                throw new InvalidDataContractException(SRClient.ApnsEndpointNotSpecified);
-            }
-			
-			if (string.IsNullOrWhiteSpace(this.Token) && string.IsNullOrWhiteSpace(this.ApnsCertificate))
-            {
-                throw new InvalidDataContractException(SRClient.ApnsPropertiesNotSpecified);
-            }
-			
-            if (!string.IsNullOrWhiteSpace(this.Token) && !string.IsNullOrWhiteSpace(this.ApnsCertificate))
-            {
-                throw new InvalidDataContractException(SRClient.ApnsProvideOnlyOneCredentialType);
-            }
-			
-            if (!string.IsNullOrWhiteSpace(this.Token) &&
-                (string.IsNullOrWhiteSpace(this.KeyId) || string.IsNullOrWhiteSpace(this.AppId) || string.IsNullOrWhiteSpace(this.AppName)))
-            {
-                throw new InvalidDataContractException(SRClient.ApnsTokenPropertiesMissing);
-            }
-
-            if (string.IsNullOrWhiteSpace(this.Token))
-                try
-                {
-                    if (this.CertificateKey != null)
-                    {
-                        this.NativeCertificate = new X509Certificate2(Convert.FromBase64String(this.ApnsCertificate),
-                            this.CertificateKey);
-                    }
-                    else
-                    {
-                        this.NativeCertificate = new X509Certificate2(Convert.FromBase64String(this.ApnsCertificate));
-                    }
-
-                    if (!this.NativeCertificate.HasPrivateKey)
-                    {
-                        throw new InvalidDataContractException(SRClient.ApnsCertificatePrivatekeyMissing);
-                    }
-
-                    if (DateTime.UtcNow > this.NativeCertificate.NotAfter)
-                    {
-                        throw new InvalidDataContractException(SRClient.ApnsCertificateExpired);
-                    }
-
-                    if (DateTime.UtcNow < this.NativeCertificate.NotBefore)
-                    {
-                        throw new InvalidDataContractException(SRClient.ApnsCertificateNotValid);
-                    }
-                }
-                catch (CryptographicException cryptException)
-                {
-                    throw new InvalidDataContractException(SRClient.ApnsCertificateNotUsable(cryptException.Message));
-                }
-                catch (FormatException formatException)
-                {
-                    throw new InvalidDataContractException(SRClient.ApnsCertificateNotUsable(formatException.Message));
-                }
         }
 
 		/// <summary>

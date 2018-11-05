@@ -18,19 +18,13 @@ namespace Microsoft.Azure.NotificationHubs
     {
         internal const string AppPlatformName = "gcm";
         internal const string ProdAccessTokenServiceUrl = @"https://android.googleapis.com/gcm/send";
-        internal const string MockAccessTokenServiceUrl = @"http://localhost:8450/gcm/send";
-        internal const string MockRunnerAccessTokenServiceUrl = @"http://pushtestservice.cloudapp.net/gcm/send";
-        internal const string MockIntAccessTokenServiceUrl = @"http://pushtestservice4.cloudapp.net/gcm/send";
-        internal const string MockPerformanceAccessTokenServiceUrl = @"http://pushperfnotificationserver.cloudapp.net/gcm/send";
-        internal const string MockEnduranceAccessTokenServiceUrl = @"http://pushstressnotificationserver.cloudapp.net/gcm/send";
-        internal const string MockEnduranceAccessTokenServiceUrl1 = @"http://pushnotificationserver.cloudapp.net/gcm/send";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmCredential"/> class.
         /// </summary>
-    public GcmCredential()
-    {
-    }
+        public GcmCredential()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmCredential"/> class.
@@ -75,44 +69,6 @@ namespace Microsoft.Azure.NotificationHubs
         internal static bool IsMockGcm(string endpoint)
         {
             return endpoint.ToUpperInvariant().Contains("CLOUDAPP.NET");
-        }
-
-        /// <summary>
-        /// Called to validate the given credential.
-        /// </summary>
-        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
-        protected override void OnValidate(bool allowLocalMockPns)
-        {
-            if (this.Properties == null || this.Properties.Count > 2)
-            {
-                throw new InvalidDataContractException(SRClient.GcmRequiredProperties);
-            }
-
-            if (this.Properties.Count < 1 || string.IsNullOrWhiteSpace(this.GoogleApiKey))
-            {
-                throw new InvalidDataContractException(SRClient.GoogleApiKeyNotSpecified);
-            }
-
-            if (this.Properties.Count == 2 && string.IsNullOrEmpty(base["GcmEndpoint"]))
-            {
-                throw new InvalidDataContractException(SRClient.GcmEndpointNotSpecified);
-            }
-
-            Uri gcmEndpointUri;
-            if (!Uri.TryCreate(this.GcmEndpoint, UriKind.Absolute, out gcmEndpointUri) ||
-                (
-                    !string.Equals(this.GcmEndpoint, ProdAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(this.GcmEndpoint, MockRunnerAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(this.GcmEndpoint, MockIntAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(this.GcmEndpoint, MockPerformanceAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(this.GcmEndpoint, MockEnduranceAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(this.GcmEndpoint, MockEnduranceAccessTokenServiceUrl1, StringComparison.OrdinalIgnoreCase) &&
-                    !(allowLocalMockPns && string.Equals(this.GcmEndpoint, MockAccessTokenServiceUrl, StringComparison.OrdinalIgnoreCase))
-                )
-               )
-            {
-                throw new InvalidDataContractException(SRClient.InvalidGcmEndpoint);
-            }
         }
 
         /// <summary>

@@ -124,64 +124,6 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        /// Validates the MPNS credential.
-        /// </summary>
-        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
-        protected override void OnValidate(bool allowLocalMockPns)
-        {
-            // if this.Properties == null, MPNSCredential object used for indicating Unauthorized push notifications
-            if (this.Properties != null && this.Properties.Count > 0)
-            {
-                if (this.Properties.Count > 2)
-                {
-                    throw new InvalidDataContractException(SRClient.MpnsRequiredPropertiesError);
-                }
-
-                if (this.Properties.Count < 2
-                    || string.IsNullOrWhiteSpace(this.MpnsCertificate))
-                {
-                    throw new InvalidDataContractException(SRClient.MpnsInvalidPropeties);
-                }
-
-                try
-                {
-                    X509Certificate2 cert = null;
-                    if (this.CertificateKey != null)
-                    {
-                        cert = new X509Certificate2(Convert.FromBase64String(this.MpnsCertificate), this.CertificateKey);
-                    }
-                    else
-                    {
-                        cert = new X509Certificate2(Convert.FromBase64String(this.MpnsCertificate));
-                    }
-
-                    if (!cert.HasPrivateKey)
-                    {
-                        throw new InvalidDataContractException(SRClient.MpnsCertificatePrivatekeyMissing);
-                    }
-
-                    if (DateTime.Now > cert.NotAfter)
-                    {
-                        throw new InvalidDataContractException(SRClient.MpnsCertificateExpired);
-                    }
-
-                    if (DateTime.Now < cert.NotBefore)
-                    {
-                        throw new InvalidDataContractException(SRClient.InvalidMpnsCertificate);
-                    }
-                }
-                catch (CryptographicException cryptException)
-                {
-                    throw new InvalidDataContractException(SRClient.MpnsCertificateError(cryptException.Message));
-                }
-                catch (FormatException formatException)
-                {
-                    throw new InvalidDataContractException(SRClient.MpnsCertificateError(formatException.Message));
-                }
-            }
-        }
-
-        /// <summary>
         /// Specifies whether the credential is the same with a specific object.
         /// </summary>
         /// 
