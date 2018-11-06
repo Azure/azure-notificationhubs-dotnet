@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionItemIsAlreadyScheduled" xml:space="preserve">
+    <value>The ActionItem was scheduled for execution but has not completed yet.</value>
+  </data>
+  <data name="ArgumentNullOrEmpty" xml:space="preserve">
+    <value>The argument {0} is null or empty.</value>
+  </data>
+  <data name="AsyncCallbackThrewException" xml:space="preserve">
+    <value>An AsyncCallback threw an exception.</value>
+  </data>
+  <data name="AsyncResultAlreadyEnded" xml:space="preserve">
+    <value>End cannot be called twice on the same AsyncResult.</value>
+  </data>
+  <data name="AsyncResultCompletedTwice" xml:space="preserve">
+    <value>The IAsyncResult implementation '{0}' tried to complete a single operation multiple times. This could be caused by an incorrect application of IAsyncResult implementation or other extensibility code, such as an IAsyncResult that returns incorrect CompletedSynchronously values, or invokes the AsyncCallback multiple times.</value>
+  </data>
+  <data name="AsyncTransactionException" xml:space="preserve">
+    <value>An exception was thrown from a TransactionScope used to flow a transaction into an asynchronous operation.</value>
+  </data>
+  <data name="BufferIsNotRightSizeForBufferManager" xml:space="preserve">
+    <value>This buffer cannot be returned to the buffer manager because it is the wrong size.</value>
+  </data>
+  <data name="EtwAPIMaxStringCountExceeded" xml:space="preserve">
+    <value>Number of string arguments passed to Etw WriteEvent has exceeded the maximum allowed limit of {0}.</value>
+  </data>
+  <data name="EtwMaxNumberArgumentsExceeded" xml:space="preserve">
+    <value>Number of arguments passed to Etw WriteEvent has exceeded the maximum allowed limit of {0}.</value>
+  </data>
+  <data name="EtwRegistrationFailed" xml:space="preserve">
+    <value>Etw registration failed with error code {0}.</value>
+  </data>
+  <data name="InvalidAsyncResult" xml:space="preserve">
+    <value>An incorrect IAsyncResult was provided to an 'End' method. The IAsyncResult object passed to 'End' must be the one returned from the matching 'Begin' or passed to the callback provided to 'Begin'.</value>
+  </data>
+  <data name="InvalidAsyncResultImplementation" xml:space="preserve">
+    <value>An incorrect implementation of the IAsyncResult interface may be returning incorrect values from the CompletedSynchronously property or calling the AsyncCallback more than once. The type {0} could be the incorrect implementation.</value>
+  </data>
+  <data name="InvalidAsyncResultImplementationGeneric" xml:space="preserve">
+    <value>An incorrect implementation of the IAsyncResult interface may be returning incorrect values from the CompletedSynchronously property or calling the AsyncCallback more than once.</value>
+  </data>
+  <data name="InvalidNullAsyncResult" xml:space="preserve">
+    <value>A null value was returned from an asynchronous 'Begin' method or passed to an AsyncCallback. Asynchronous 'Begin' implementations must return a non-null IAsyncResult and pass the same IAsyncResult object as the parameter to the AsyncCallback.</value>
+  </data>
+  <data name="InvalidSemaphoreExit" xml:space="preserve">
+    <value>Object synchronization method was called from an unsynchronized block of code.</value>
+  </data>
+  <data name="ShipAssertExceptionMessage" xml:space="preserve">
+    <value>An unexpected failure occurred. Applications should not attempt to handle this error. For diagnostic purposes, this English message is associated with the failure: {0}.</value>
+  </data>
+  <data name="TimeoutInputQueueDequeue" xml:space="preserve">
+    <value>A de-queue operation timed out after {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="TimeoutMustBeNonNegative" xml:space="preserve">
+    <value>Argument {0} must be a non-negative timeout value. The provided value was {1}.</value>
+  </data>
+  <data name="TimeoutMustBePositive" xml:space="preserve">
+    <value>Argument {0} must be a positive timeout value. The provided value was {1}.</value>
+  </data>
+  <data name="TimeoutOnOperation" xml:space="preserve">
+    <value>The operation did not complete within the allotted timeout of {0}. The time allotted to this operation may have been a portion of a longer timeout.</value>
+  </data>
+  <data name="MustCancelOldTimer" xml:space="preserve">
+    <value>You must cancel the previous timer before setting a new one.</value>
+  </data>
+  <data name="FailFastMessage" xml:space="preserve">
+    <value>An unrecoverable error occurred. For diagnostic purposes, this English message is associated with the failure: '{0}'.</value>
+  </data>
+  <data name="ResourceCountExceeded" xml:space="preserve">
+    <value>The maximum number of resources of type {0} has been reached or exceeded. Actual: {1}, Max allowed: {2}.</value>
+  </data>
+  <data name="ArgumentNullOrWhiteSpace" xml:space="preserve">
+    <value>The argument {0} is null or white space.</value>
+  </data>
+  <data name="UnsupportedEnumerationValue" xml:space="preserve">
+    <value>The enumeration value {0} is unsupported.</value>
+  </data>
+  <data name="UnsupportedOperation" xml:space="preserve">
+    <value>The operation {0} is not allowed.</value>
+  </data>
+  <data name="UnsupportedTransport" xml:space="preserve">
+    <value>The operation {0} is not supported for the {1} transport type.</value>
+  </data>
+  <data name="AutoForwardToSelf" xml:space="preserve">
+    <value>The entity {0} has an auto-forwarding policy to itself.</value>
+  </data>
+  <data name="NullOrEmptyConfigurationAttribute" xml:space="preserve">
+    <value>The attribute '{0}' for configuration element '{1}' cannot be null or empty.</value>
+  </data>
+  <data name="MultipleTransportSettingConfigurationElement" xml:space="preserve">
+    <value>Multiple transport setting elements are not allowed in '{0}' section. Make sure only one is defined.</value>
+  </data>
+  <data name="DictionaryKeyIsModified" xml:space="preserve">
+    <value>Dictionary key {0} is being modified by a different transaction.</value>
+  </data>
+  <data name="DictionaryKeyNotExist" xml:space="preserve">
+    <value>Dictionary key {0} does not exist</value>
+  </data>
+  <data name="EndOfInnerExceptionStackTrace" xml:space="preserve">
+    <value>--- End of inner exception stack trace ---</value>
+  </data>
+  <data name="AsyncSemaphoreExitCalledWithoutEnter" xml:space="preserve">
+    <value>Exit() is called without successfully entering the semaphore.</value>
+  </data>
+  <data name="ArgumentStringTooBig" xml:space="preserve">
+    <value>The argument {0} cannot exceed {1} characters</value>
+  </data>
+  <data name="SharedAccessAuthorizationRuleKeyContainsInvalidCharacters" xml:space="preserve">
+    <value>The Key Name specified for the SharedAccessAuthorizationRule contains invalid or unsupported characters.</value>
+  </data>
+  <data name="SharedAccessAuthorizationRuleKeyNameTooBig" xml:space="preserve">
+    <value>The Key Name specified for the SharedAccessAuthorizationRule exceeds the limit of {0} characters.</value>
+  </data>
+  <data name="SharedAccessAuthorizationRuleKeyTooBig" xml:space="preserve">
+    <value>The Key specified for the SharedAccessAuthorizationRule exceeds the limit of {0} characters.</value>
+  </data>
+  <data name="SharedAccessAuthorizationRuleRequiresPrimaryKey" xml:space="preserve">
+    <value>A SharedAccessAuthorizationRule requires a Primary Key of non-zero length.</value>
+  </data>
+  <data name="SharedAccessKeyShouldbeBase64" xml:space="preserve">
+    <value>A SharedAccessAuthorizationRule supports only base64 keys.</value>
+  </data>
+  <data name="SharedAccessRuleAllowsFixedLengthKeys" xml:space="preserve">
+    <value>A SharedAccessAuthorizationRule only supports keys of size {0} bytes.</value>
+  </data>
+  <data name="ArgumentOutOfRange" xml:space="preserve">
+    <value>The argument is out of range. It should be between {0} and {1}.</value>
+  </data>
+</root>

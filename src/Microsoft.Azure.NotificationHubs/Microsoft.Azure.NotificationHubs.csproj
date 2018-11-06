@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <VersionPrefix>2.0.1.0</VersionPrefix>
+    <PackageId>Microsoft.Azure.NotificationHubs</PackageId>
+    <PackageVersion>2.0.1</PackageVersion>
+    <Authors>Microsoft</Authors>
+    <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=218949</PackageLicenseUrl>
+    <PackageProjectUrl>https://aka.ms/NHNuget</PackageProjectUrl>
+    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288890</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Description>
+      Use this for Microsoft Azure Notification Hubs back end operations.
+
+      It adds Microsoft.Azure.NotificationHubs.dll to your project. Notification Hubs support sending push notifications to Windows, Windows Phone, iOS, Android, Amazon, and Baidu.
+
+      For more information on Notification Hub, please visit: http://azure.microsoft.com/en-us/documentation/articles/notification-hubs-overview/
+    </Description>
+    <PackageReleaseNotes>Version 2.0.1 of the SDK, that supports .NET Standard 2.0</PackageReleaseNotes>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <PackageTags>Microsoft Azure windowsazureofficial NotificationHub Notifications Notification Hub Push Windows Phone iOS Android Baidu Kindle Amazon</PackageTags>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>true</DelaySign>
+    <AssemblyOriginatorKeyFile>35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+</Project>

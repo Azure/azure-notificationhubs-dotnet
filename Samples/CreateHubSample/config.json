@@ -1,0 +1,7 @@
+{
+    "subscriptionId": "29cfa613-cbbc-4512-b1d6-1b3a92c7fa40",
+    "location": "West US",
+    "resourceGroupName": "sdk-sample",
+    "namespaceName": "sdk-sample-namespace",
+    "hubName": "sdk-sample-nh"
+}

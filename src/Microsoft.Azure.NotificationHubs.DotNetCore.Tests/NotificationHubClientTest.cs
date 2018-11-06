@@ -1,0 +1,810 @@
+//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved. 
+// Licensed under the MIT License. See License.txt in the project root for 
+// license information.
+//------------------------------------------------------------
+
+namespace Microsoft.Azure.NotificationHubs.Tests
+{
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Extensions.Configuration;
+    using Messaging;
+    using Xunit;
+
+    public class NotificationHubClientTest
+    {
+        private readonly IConfigurationRoot _configuration;
+        private readonly NotificationHubClient _hubClient;
+
+        public NotificationHubClientTest()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            _configuration = builder.Build();
+
+            _hubClient = NotificationHubClient.CreateClientFromConnectionString(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"]);
+        }
+
+        public async Task DeleteAllRegistrationsAndInstallations()
+        {
+            string continuationToken;
+
+            do
+            {
+                var registrations = await _hubClient.GetAllRegistrationsAsync(100);
+                continuationToken = registrations.ContinuationToken;
+
+                foreach (var registrationDescription in registrations)
+                {
+                   await _hubClient.DeleteRegistrationAsync(registrationDescription.RegistrationId);
+                }
+            } while (continuationToken != null);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidAdmNativeRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AdmRegistrationDescription(_configuration["AdmDeviceToken"]);
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>(){"tag1"};
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string,string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.AdmRegistrationId, createdRegistration.AdmRegistrationId);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidAdmTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AdmTemplateRegistrationDescription(_configuration["AdmDeviceToken"], "{\"data\":{\"key1\":\"value1\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.AdmRegistrationId, createdRegistration.AdmRegistrationId);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidAppleNativeRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.DeviceToken, createdRegistration.DeviceToken);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidAppleTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleTemplateRegistrationDescription(_configuration["AppleDeviceToken"], "{\"aps\":{\"alert\":\"alert!\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.DeviceToken, createdRegistration.DeviceToken);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidBaiduNativeRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new BaiduRegistrationDescription(_configuration["BaiduUserId"], _configuration["BaiduChannelId"], new []{"tag1"});
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.BaiduUserId, createdRegistration.BaiduUserId);
+            Assert.Equal(registration.BaiduChannelId, createdRegistration.BaiduChannelId);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidBaiduTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new BaiduTemplateRegistrationDescription(_configuration["BaiduUserId"], _configuration["BaiduChannelId"], "{\"title\":\"Title\",\"description\":\"Description\"}", new[] { "tag1" });
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.BaiduUserId, createdRegistration.BaiduUserId);
+            Assert.Equal(registration.BaiduChannelId, createdRegistration.BaiduChannelId);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidGcmNativeRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.GcmRegistrationId, createdRegistration.GcmRegistrationId);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidGcmTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.GcmRegistrationId, createdRegistration.GcmRegistrationId);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidMpnsNativeRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new MpnsRegistrationDescription(_configuration["MpnsDeviceToken"]);
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.SecondaryTileName = "Tile name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.ChannelUri, createdRegistration.ChannelUri);
+            Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidMpnsTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new MpnsTemplateRegistrationDescription(_configuration["MpnsDeviceToken"], "<wp:Notification xmlns:wp=\"WPNotification\" Version=\"2.0\"><wp:Tile Id=\"TileId\" Template=\"IconicTile\"><wp:Title Action=\"Clear\">Title</wp:Title></wp:Tile></wp:Notification>", new []{ "tag1" });
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.SecondaryTileName = "Tile name";
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.ChannelUri, createdRegistration.ChannelUri);
+            Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidWindowsNativeRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new WindowsRegistrationDescription(_configuration["WindowsDeviceToken"]);
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.SecondaryTileName = "Tile name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.ChannelUri, createdRegistration.ChannelUri);
+            Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidWindowsTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new WindowsTemplateRegistrationDescription(_configuration["WindowsDeviceToken"], "<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>", new[] { "tag1" });
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.SecondaryTileName = "Tile name";
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.ChannelUri, createdRegistration.ChannelUri);
+            Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateRegistrationAsync_UpsertAppleNativeRegistration_GetUpsertedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            createdRegistration.Tags = new HashSet<string>() { "tag1" };
+
+            var updatedRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(createdRegistration);
+
+            Assert.Contains("tag1", updatedRegistration.Tags);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateRegistrationAsync_UpsertAppleNativeRegistrationWithCustomId_GetUpsertedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+
+            registration.RegistrationId = "123-234-1";
+
+            var createdRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(registration);
+
+            Assert.Equal(registration.RegistrationId, createdRegistration.RegistrationId);
+        }
+
+        [Fact]
+        public async Task GetAllRegistrationsAsync_CreateTwoRegistrations_GetAllCreatedRegistrations()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var appleRegistration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+            var gcmRegistration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+
+            var createdAppleRegistration = await _hubClient.CreateRegistrationAsync(appleRegistration);
+            var createdGcmRegistration = await _hubClient.CreateRegistrationAsync(gcmRegistration);
+
+            var allRegistrations = await _hubClient.GetAllRegistrationsAsync(100);
+            var allRegistrationIds = allRegistrations.Select(r => r.RegistrationId).ToArray();
+
+            Assert.Equal(2, allRegistrationIds.Count());
+            Assert.Contains(createdAppleRegistration.RegistrationId, allRegistrationIds);
+            Assert.Contains(createdGcmRegistration.RegistrationId, allRegistrationIds);
+        }
+
+        [Fact]
+        public async Task GetAllRegistrationsAsync_UsingTopLessThenNumberOfRegistrations_CorrectContinuationTokenIsReturnedThatAllowsToReadAllRegistrations()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+            var appleRegistration2 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+            var appleRegistration3 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+
+            await _hubClient.CreateRegistrationAsync(appleRegistration1);
+            await _hubClient.CreateRegistrationAsync(appleRegistration2);
+            await _hubClient.CreateRegistrationAsync(appleRegistration3);
+
+            string continuationToken = null;
+            var allRegistrationIds = new List<string>();
+            var numberOfCalls = 0;
+
+            do
+            {
+                var registrations = await (continuationToken == null ? _hubClient.GetAllRegistrationsAsync(2) : _hubClient.GetAllRegistrationsAsync(continuationToken, 2));
+                continuationToken = registrations.ContinuationToken;
+                allRegistrationIds.AddRange(registrations.Select(r => r.RegistrationId));
+                numberOfCalls++;
+            } while (continuationToken != null);
+
+            Assert.Equal(2, numberOfCalls);
+            Assert.Equal(3, allRegistrationIds.Count);
+        }
+
+        [Fact]
+        public async Task GetRegistrationsByChannelAsync_CreateTwoRegistrationsWithTheSameChannel_GetCreatedRegistrationsWithRequestedChannel()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+            var appleRegistration2 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+            var gcmRegistration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+
+            var createdAppleRegistration1 = await _hubClient.CreateRegistrationAsync(appleRegistration1);
+            var createdAppleRegistration2 = await _hubClient.CreateRegistrationAsync(appleRegistration2);
+            // Create a registration with another channel to make sure that SDK passes correct channel and two registrations will be returned
+            var createdGcmRegistration = await _hubClient.CreateRegistrationAsync(gcmRegistration);
+
+            var allRegistrations = await _hubClient.GetRegistrationsByChannelAsync(_configuration["AppleDeviceToken"], 100);
+            var allRegistrationIds = allRegistrations.Select(r => r.RegistrationId).ToArray();
+
+            Assert.Equal(2, allRegistrationIds.Count());
+            Assert.Contains(createdAppleRegistration1.RegistrationId, allRegistrationIds);
+            Assert.Contains(createdAppleRegistration2.RegistrationId, allRegistrationIds);
+        }
+
+        [Fact]
+        public async Task GetRegistrationsByTagAsync_CreateTwoRegistrationsWithTheSameTag_GetCreatedRegistrationsWithRequestedTag()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new []{ "tag1" });
+            var appleRegistration2 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new[] { "tag1" });
+            var gcmRegistration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+
+            var createdAppleRegistration1 = await _hubClient.CreateRegistrationAsync(appleRegistration1);
+            var createdAppleRegistration2 = await _hubClient.CreateRegistrationAsync(appleRegistration2);
+            // Create a registration with another channel to make sure that SDK passes correct tag and two registrations will be returned
+            var createdGcmRegistration = await _hubClient.CreateRegistrationAsync(gcmRegistration);
+
+            var allRegistrations = await _hubClient.GetRegistrationsByTagAsync("tag1", 100);
+            var allRegistrationIds = allRegistrations.Select(r => r.RegistrationId).ToArray();
+
+            Assert.Equal(2, allRegistrationIds.Count());
+            Assert.Contains(createdAppleRegistration1.RegistrationId, allRegistrationIds);
+            Assert.Contains(createdAppleRegistration2.RegistrationId, allRegistrationIds);
+        }
+
+        [Fact]
+        public async Task UpdateRegistrationAsync_UpdateAppleNativeRegistration_GetUpdatedRegistrationBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            createdRegistration.Tags = new HashSet<string>(){"tag1"};
+
+            var updatedRegistration = await _hubClient.UpdateRegistrationAsync(createdRegistration);
+
+            Assert.Contains("tag1", updatedRegistration.Tags);
+        }
+
+        [Fact]
+        public async Task DeleteRegistrationAsync_DeleteAppleNativeRegistration_RegistrationIsDeleted()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            await _hubClient.DeleteRegistrationAsync(createdRegistration);
+
+            await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetRegistrationAsync<AppleRegistrationDescription>(createdRegistration.RegistrationId));
+        }
+
+        [Fact]
+        public async Task DeleteRegistrationAsync_DeleteAppleNativeRegistrationByRegistrationId_RegistrationIsDeleted()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            await _hubClient.DeleteRegistrationAsync(createdRegistration.RegistrationId);
+
+            await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetRegistrationAsync<AppleRegistrationDescription>(createdRegistration.RegistrationId));
+        }
+
+        [Fact]
+        public async Task DeleteRegistrationsByChannelAsync_DeleteAppleNativeRegistrationByChannel_RegistrationIsDeleted()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            await _hubClient.DeleteRegistrationsByChannelAsync(_configuration["AppleDeviceToken"]);
+
+            await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetRegistrationAsync<AppleRegistrationDescription>(createdRegistration.RegistrationId));
+        }
+
+        [Fact]
+        private async Task CreateRegistrationIdAsync_CallMethod_GetRegistrationId()
+        {
+            var registrationId = await _hubClient.CreateRegistrationIdAsync();
+
+            Assert.NotNull(registrationId);
+        }
+
+        [Fact]
+        private async Task CreateOrUpdateInstallationAsync_CreateInstallationWithExpiryInTemplate_GetCreatedInstallationWithExpiryInTemplateBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"],
+                PushVariables = new Dictionary<string, string> {{"var1", "value1"}},
+                Tags = new List<string> {"tag1"},
+                Templates = new Dictionary<string, InstallationTemplate>
+                {
+                    {
+                        "Template Name", new InstallationTemplate
+                        {
+                            Body = "{\"aps\":{\"alert\":\"alert!\"}}",
+                            Expiry = DateTime.Now.AddDays(1).ToString("o")
+                        }
+                    }
+                }
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            Assert.Equal(installation.InstallationId, createdInstallation.InstallationId);
+            Assert.Equal(installation.Platform, createdInstallation.Platform);
+            Assert.Equal(installation.PushChannel, createdInstallation.PushChannel);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdInstallation.PushVariables);
+            Assert.Contains("tag1", createdInstallation.Tags);
+            Assert.Contains("Template Name", createdInstallation.Templates.Keys);
+            Assert.Equal(installation.Templates["Template Name"].Body, createdInstallation.Templates["Template Name"].Body);
+            Assert.Equal(installation.Templates["Template Name"].Expiry, createdInstallation.Templates["Template Name"].Expiry);
+        }
+
+        [Fact]
+        private async Task CreateOrUpdateInstallationAsync_CreateInstallationWithHeadersInTemplate_GetCreatedInstallationWithHeadersInTemplateBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Wns,
+                PushChannel = _configuration["WindowsDeviceToken"],
+                Templates = new Dictionary<string, InstallationTemplate>
+                {
+                    {
+                        "Template Name", new InstallationTemplate
+                        {
+                            Body = "{\"aps\":{\"alert\":\"alert!\"}}",
+                            Headers = new Dictionary<string, string>
+                            {
+                                {"X-WNS-Type", "wns/toast"}
+                            }
+                        }
+                    }
+                }
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            Assert.Contains("Template Name", createdInstallation.Templates.Keys);
+            Assert.Contains(new KeyValuePair<string, string>("X-WNS-Type", "wns/toast"), createdInstallation.Templates["Template Name"].Headers);
+        }
+
+        [Fact]
+        private async Task PatchInstallationAsync_CreateInstallationWithoutTagsAndAddTagThroughPatch_GetInstallationWithAddedTagBack()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"]
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await _hubClient.PatchInstallationAsync(installationId, new List<PartialUpdateOperation>
+            {
+                new PartialUpdateOperation()
+                {
+                    Operation = UpdateOperationType.Add,
+                    Path = "/tags",
+                    Value = "tag1"
+                }
+            });
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            Assert.Contains("tag1", updatedInstallation.Tags);
+        }
+
+        [Fact]
+        private async Task DeleteInstallationAsync_CreateAndDeleteInstallation_InstallationIsDeleted()
+        {
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"]
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            await _hubClient.DeleteInstallationAsync(createdInstallation.InstallationId);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetInstallationAsync(createdInstallation.InstallationId));
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendAdmNativeNotification_GetSuccessfulResultBack()
+        {
+            var notification = new AdmNotification("{\"data\":{\"key1\":\"value1\"}}");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendAppleNativeNotification_GetSuccessfulResultBack()
+        {
+            var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
+            notification.Expiry = DateTime.Now.AddDays(1);
+            notification.Priority = 5;
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendBaiduNativeNotification_GetSuccessfulResultBack()
+        {
+            var notification = new BaiduNotification("{\"title\":\"Title\",\"description\":\"Description\"}");
+            notification.MessageType = 1;
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendGcmNativeNotification_GetSuccessfulResultBack()
+        {
+            var notification = new GcmNotification("{\"data\":{\"message\":\"Message\"}}");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendMpnsNativeNotification_GetSuccessfulResultBack()
+        {
+            var notification = new MpnsNotification("<wp:Notification xmlns:wp=\"WPNotification\" Version=\"2.0\"><wp:Tile Id=\"TileId\" Template=\"IconicTile\"><wp:Title Action=\"Clear\">Title</wp:Title></wp:Tile></wp:Notification>");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendWindowsNativeNotification_GetSuccessfulResultBack()
+        {
+            var notification = new WindowsNotification("<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendTemplateNotification_GetSuccessfulResultBack()
+        {
+            var notification = new TemplateNotification(new Dictionary<string, string>());
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendDirectNotificationAsync_SendDirectAppleNotification_GetSuccessfulResultBack()
+        {
+            var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
+
+            var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, _configuration["AppleDeviceToken"]);
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task SendDirectNotificationAsync_SendDirectAppleBatchNotification_GetSuccessfulResultBack()
+        {
+            var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
+            notification.Expiry = DateTime.Now.AddDays(1);
+            notification.Priority = 5;
+
+            var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, new [] {_configuration["AppleDeviceToken"]});
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+        }
+
+        [Fact]
+        private async Task ScheduleNotificationAsync_SendAppleNativeNotification_GetSuccessfulResultBack()
+        {
+            var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
+            notification.Expiry = DateTime.Now.AddDays(1);
+            notification.Priority = 5;
+
+            var notificationResult = await _hubClient.ScheduleNotificationAsync(notification, DateTimeOffset.Now.AddDays(1));
+
+            Assert.NotNull(notificationResult.ScheduledNotificationId);
+        }
+
+        [Fact]
+        private async Task GetNotificationHubJobAsync_SumbitJob_GetSubmittedJobBack()
+        {
+            var job = new NotificationHubJob
+            {
+                JobType = NotificationHubJobType.ExportRegistrations,
+                OutputContainerUri = new Uri(_configuration["BlobContainer"])
+            };
+
+            var createdJob = await _hubClient.SubmitNotificationHubJobAsync(job);
+
+            createdJob = await _hubClient.GetNotificationHubJobAsync(createdJob.JobId);
+
+            Assert.NotNull(createdJob.JobId);
+            Assert.Equal(job.JobType, createdJob.JobType);
+            Assert.Equal(job.OutputContainerUri, createdJob.OutputContainerUri);
+        }
+
+        [Fact]
+        private async Task GetNotificationHubJobsAsync_SumbitJob_GetSubmittedJobBack()
+        {
+            var job = new NotificationHubJob
+            {
+                JobType = NotificationHubJobType.ExportRegistrations,
+                OutputContainerUri = new Uri(_configuration["BlobContainer"])
+            };
+
+            var createdJob = await _hubClient.SubmitNotificationHubJobAsync(job);
+
+            var allJobs = await _hubClient.GetNotificationHubJobsAsync();
+            createdJob = allJobs.SingleOrDefault(j => j.JobId == createdJob.JobId);
+
+            Assert.NotNull(createdJob);
+            Assert.Equal(job.JobType, createdJob.JobType);
+            Assert.Equal(job.OutputContainerUri, createdJob.OutputContainerUri);
+        }
+    }
+}
