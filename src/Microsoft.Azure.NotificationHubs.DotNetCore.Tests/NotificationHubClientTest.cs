@@ -39,10 +39,15 @@ namespace Microsoft.Azure.NotificationHubs.Tests
                 MessageHandler = _testServer
             };
 
-            //if (_configuration["NotificationHubConnectionString"] != "<insert value here before running tests>")
-            //{
-            //    _testServer.RecordingMode = true;
-            //}
+            if (_configuration["NotificationHubConnectionString"] != "<insert value here before running tests>")
+            {
+                _testServer.RecordingMode = true;
+            }
+            else
+            { 
+                _configuration["NotificationHubConnectionString"] = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
+                _configuration["NotificationHubName"] = "test";
+            }
             _hubClient = new NotificationHubClient(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"], settings);
         }
 
@@ -886,7 +891,10 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
         private void RecordTestResults([CallerMemberName]string methodName = "")
         {
-            File.WriteAllText($"{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
+            if (_testServer.RecordingMode)
+            {
+                File.WriteAllText($"{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
+            }
         }
     }
 }
