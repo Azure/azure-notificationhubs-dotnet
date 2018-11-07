@@ -39,11 +39,22 @@ namespace Microsoft.Azure.NotificationHubs
         private readonly string _notificationHubPath;
         private readonly TokenProvider _tokenProvider;
 
-        private NotificationHubClient(string connectionString, string notificationHubPath) : this(connectionString, notificationHubPath, null)
+        /// <summary>
+        /// Initializes a new instance of <see cref="NotificationHubClient"/>
+        /// </summary>
+        /// <param name="connectionString">Namespace connection string</param>
+        /// <param name="notificationHubPath">Hub name</param>
+        public NotificationHubClient(string connectionString, string notificationHubPath) : this(connectionString, notificationHubPath, null)
         {                       
         }
 
-        private NotificationHubClient(string connectionString, string notificationHubPath, NotificationHubClientSettings settings)
+        /// <summary>
+        /// Initializes a new instance of <see cref="NotificationHubClient"/> with settings
+        /// </summary>
+        /// <param name="connectionString">Namespace connection string</param>
+        /// <param name="notificationHubPath">Hub name</param>
+        /// <param name="settings">Settings</param>
+        public NotificationHubClient(string connectionString, string notificationHubPath, NotificationHubClientSettings settings)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -60,7 +71,12 @@ namespace Microsoft.Azure.NotificationHubs
             var configurationManager = new KeyValueConfigurationManager(connectionString);
             _baseUri = GetBaseUri(configurationManager);
 
-            if (settings?.Proxy != null)
+            if (settings?.MessageHandler != null)
+            {
+                var httpClientHandler = settings?.MessageHandler;
+                _httpClient = new HttpClient(httpClientHandler);
+            }
+            else if (settings?.Proxy != null)
             {
                 var httpClientHandler = new HttpClientHandler();
                 httpClientHandler.UseProxy = true;

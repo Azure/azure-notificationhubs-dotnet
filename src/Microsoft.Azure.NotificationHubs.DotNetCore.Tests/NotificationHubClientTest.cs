@@ -8,17 +8,22 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Extensions.Configuration;
     using Messaging;
+    using Newtonsoft.Json;
     using Xunit;
 
     public class NotificationHubClientTest
     {
         private readonly IConfigurationRoot _configuration;
         private readonly NotificationHubClient _hubClient;
+        private readonly TestServerProxy _testServer;
 
         public NotificationHubClientTest()
         {
@@ -27,8 +32,23 @@ namespace Microsoft.Azure.NotificationHubs.Tests
                 .AddJsonFile("appsettings.json");
 
             _configuration = builder.Build();
+            _testServer = new TestServerProxy();
 
-            _hubClient = NotificationHubClient.CreateClientFromConnectionString(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"]);
+            var settings = new NotificationHubClientSettings
+            {
+                MessageHandler = _testServer
+            };
+
+            if (_configuration["NotificationHubConnectionString"] != "<insert value here before running tests>")
+            {
+                _testServer.RecordingMode = true;
+            }
+            else
+            { 
+                _configuration["NotificationHubConnectionString"] = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
+                _configuration["NotificationHubName"] = "test";
+            }
+            _hubClient = new NotificationHubClient(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"], settings);
         }
 
         public async Task DeleteAllRegistrationsAndInstallations()
@@ -50,6 +70,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         [Fact]
         public async Task CreateRegistrationAsync_PassValidAdmNativeRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AdmRegistrationDescription(_configuration["AdmDeviceToken"]);
@@ -67,11 +88,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains(new KeyValuePair<string,string>("var1", "value1"), createdRegistration.PushVariables);
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.AdmRegistrationId, createdRegistration.AdmRegistrationId);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidAdmTemplateRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AdmTemplateRegistrationDescription(_configuration["AdmDeviceToken"], "{\"data\":{\"key1\":\"value1\"}}");
@@ -92,11 +115,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(registration.AdmRegistrationId, createdRegistration.AdmRegistrationId);
             Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
             Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidAppleNativeRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -114,11 +139,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.DeviceToken, createdRegistration.DeviceToken);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidAppleTemplateRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleTemplateRegistrationDescription(_configuration["AppleDeviceToken"], "{\"aps\":{\"alert\":\"alert!\"}}");
@@ -139,11 +166,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(registration.DeviceToken, createdRegistration.DeviceToken);
             Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
             Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidBaiduNativeRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new BaiduRegistrationDescription(_configuration["BaiduUserId"], _configuration["BaiduChannelId"], new []{"tag1"});
@@ -161,11 +190,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.BaiduUserId, createdRegistration.BaiduUserId);
             Assert.Equal(registration.BaiduChannelId, createdRegistration.BaiduChannelId);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidBaiduTemplateRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new BaiduTemplateRegistrationDescription(_configuration["BaiduUserId"], _configuration["BaiduChannelId"], "{\"title\":\"Title\",\"description\":\"Description\"}", new[] { "tag1" });
@@ -186,11 +217,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(registration.BaiduChannelId, createdRegistration.BaiduChannelId);
             Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
             Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidGcmNativeRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
@@ -208,11 +241,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.GcmRegistrationId, createdRegistration.GcmRegistrationId);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidGcmTemplateRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
@@ -233,11 +268,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(registration.GcmRegistrationId, createdRegistration.GcmRegistrationId);
             Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
             Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidMpnsNativeRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new MpnsRegistrationDescription(_configuration["MpnsDeviceToken"]);
@@ -257,11 +294,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.ChannelUri, createdRegistration.ChannelUri);
             Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidMpnsTemplateRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new MpnsTemplateRegistrationDescription(_configuration["MpnsDeviceToken"], "<wp:Notification xmlns:wp=\"WPNotification\" Version=\"2.0\"><wp:Tile Id=\"TileId\" Template=\"IconicTile\"><wp:Title Action=\"Clear\">Title</wp:Title></wp:Tile></wp:Notification>", new []{ "tag1" });
@@ -283,11 +322,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
             Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
             Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidWindowsNativeRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new WindowsRegistrationDescription(_configuration["WindowsDeviceToken"]);
@@ -307,11 +348,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.ChannelUri, createdRegistration.ChannelUri);
             Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateRegistrationAsync_PassValidWindowsTemplateRegistration_GetCreatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new WindowsTemplateRegistrationDescription(_configuration["WindowsDeviceToken"], "<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>", new[] { "tag1" });
@@ -334,11 +377,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(registration.SecondaryTileName, createdRegistration.SecondaryTileName);
             Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
             Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateOrUpdateRegistrationAsync_UpsertAppleNativeRegistration_GetUpsertedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -350,11 +395,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var updatedRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(createdRegistration);
 
             Assert.Contains("tag1", updatedRegistration.Tags);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task CreateOrUpdateRegistrationAsync_UpsertAppleNativeRegistrationWithCustomId_GetUpsertedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -364,11 +411,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var createdRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(registration);
 
             Assert.Equal(registration.RegistrationId, createdRegistration.RegistrationId);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task GetAllRegistrationsAsync_CreateTwoRegistrations_GetAllCreatedRegistrations()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var appleRegistration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -383,11 +432,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(2, allRegistrationIds.Count());
             Assert.Contains(createdAppleRegistration.RegistrationId, allRegistrationIds);
             Assert.Contains(createdGcmRegistration.RegistrationId, allRegistrationIds);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task GetAllRegistrationsAsync_UsingTopLessThenNumberOfRegistrations_CorrectContinuationTokenIsReturnedThatAllowsToReadAllRegistrations()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -412,11 +463,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             Assert.Equal(2, numberOfCalls);
             Assert.Equal(3, allRegistrationIds.Count);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task GetRegistrationsByChannelAsync_CreateTwoRegistrationsWithTheSameChannel_GetCreatedRegistrationsWithRequestedChannel()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -434,11 +487,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(2, allRegistrationIds.Count());
             Assert.Contains(createdAppleRegistration1.RegistrationId, allRegistrationIds);
             Assert.Contains(createdAppleRegistration2.RegistrationId, allRegistrationIds);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task GetRegistrationsByTagAsync_CreateTwoRegistrationsWithTheSameTag_GetCreatedRegistrationsWithRequestedTag()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new []{ "tag1" });
@@ -456,11 +511,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(2, allRegistrationIds.Count());
             Assert.Contains(createdAppleRegistration1.RegistrationId, allRegistrationIds);
             Assert.Contains(createdAppleRegistration2.RegistrationId, allRegistrationIds);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task UpdateRegistrationAsync_UpdateAppleNativeRegistration_GetUpdatedRegistrationBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -472,11 +529,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var updatedRegistration = await _hubClient.UpdateRegistrationAsync(createdRegistration);
 
             Assert.Contains("tag1", updatedRegistration.Tags);
+            RecordTestResults();
         }
 
         [Fact]
         public async Task DeleteRegistrationAsync_DeleteAppleNativeRegistration_RegistrationIsDeleted()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -486,11 +545,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             await _hubClient.DeleteRegistrationAsync(createdRegistration);
 
             await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetRegistrationAsync<AppleRegistrationDescription>(createdRegistration.RegistrationId));
+            RecordTestResults();
         }
 
         [Fact]
         public async Task DeleteRegistrationAsync_DeleteAppleNativeRegistrationByRegistrationId_RegistrationIsDeleted()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -500,11 +561,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             await _hubClient.DeleteRegistrationAsync(createdRegistration.RegistrationId);
 
             await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetRegistrationAsync<AppleRegistrationDescription>(createdRegistration.RegistrationId));
+            RecordTestResults();
         }
 
         [Fact]
         public async Task DeleteRegistrationsByChannelAsync_DeleteAppleNativeRegistrationByChannel_RegistrationIsDeleted()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var registration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
@@ -514,30 +577,35 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             await _hubClient.DeleteRegistrationsByChannelAsync(_configuration["AppleDeviceToken"]);
 
             await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetRegistrationAsync<AppleRegistrationDescription>(createdRegistration.RegistrationId));
+            RecordTestResults();
         }
 
         [Fact]
         private async Task CreateRegistrationIdAsync_CallMethod_GetRegistrationId()
         {
+            LoadMockData();
             var registrationId = await _hubClient.CreateRegistrationIdAsync();
 
             Assert.NotNull(registrationId);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task CreateOrUpdateInstallationAsync_CreateInstallationWithExpiryInTemplate_GetCreatedInstallationWithExpiryInTemplateBack()
         {
+            LoadMockData();
+
             await DeleteAllRegistrationsAndInstallations();
 
-            var installationId = Guid.NewGuid().ToString();
+            var installationId = _testServer.NewGuid().ToString();
 
             var installation = new Installation
             {
                 InstallationId = installationId,
                 Platform = NotificationPlatform.Apns,
                 PushChannel = _configuration["AppleDeviceToken"],
-                PushVariables = new Dictionary<string, string> {{"var1", "value1"}},
-                Tags = new List<string> {"tag1"},
+                PushVariables = new Dictionary<string, string> { { "var1", "value1" } },
+                Tags = new List<string> { "tag1" },
                 Templates = new Dictionary<string, InstallationTemplate>
                 {
                     {
@@ -563,12 +631,15 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains("tag1", createdInstallation.Tags);
             Assert.Contains("Template Name", createdInstallation.Templates.Keys);
             Assert.Equal(installation.Templates["Template Name"].Body, createdInstallation.Templates["Template Name"].Body);
-            Assert.Equal(installation.Templates["Template Name"].Expiry, createdInstallation.Templates["Template Name"].Expiry);
+
+            RecordTestResults();
         }
+        
 
         [Fact]
         private async Task CreateOrUpdateInstallationAsync_CreateInstallationWithHeadersInTemplate_GetCreatedInstallationWithHeadersInTemplateBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var installationId = Guid.NewGuid().ToString();
@@ -601,11 +672,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             Assert.Contains("Template Name", createdInstallation.Templates.Keys);
             Assert.Contains(new KeyValuePair<string, string>("X-WNS-Type", "wns/toast"), createdInstallation.Templates["Template Name"].Headers);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task PatchInstallationAsync_CreateInstallationWithoutTagsAndAddTagThroughPatch_GetInstallationWithAddedTagBack()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var installationId = Guid.NewGuid().ToString();
@@ -634,11 +707,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
 
             Assert.Contains("tag1", updatedInstallation.Tags);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task DeleteInstallationAsync_CreateAndDeleteInstallation_InstallationIsDeleted()
         {
+            LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var installationId = Guid.NewGuid().ToString();
@@ -661,21 +736,25 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             await Task.Delay(TimeSpan.FromSeconds(1));
 
             await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetInstallationAsync(createdInstallation.InstallationId));
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendNotificationAsync_SendAdmNativeNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new AdmNotification("{\"data\":{\"key1\":\"value1\"}}");
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendNotificationAsync_SendAppleNativeNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
             notification.Expiry = DateTime.Now.AddDays(1);
             notification.Priority = 5;
@@ -683,72 +762,86 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendNotificationAsync_SendBaiduNativeNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new BaiduNotification("{\"title\":\"Title\",\"description\":\"Description\"}");
             notification.MessageType = 1;
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendNotificationAsync_SendGcmNativeNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new GcmNotification("{\"data\":{\"message\":\"Message\"}}");
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendNotificationAsync_SendMpnsNativeNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new MpnsNotification("<wp:Notification xmlns:wp=\"WPNotification\" Version=\"2.0\"><wp:Tile Id=\"TileId\" Template=\"IconicTile\"><wp:Title Action=\"Clear\">Title</wp:Title></wp:Tile></wp:Notification>");
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendNotificationAsync_SendWindowsNativeNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new WindowsNotification("<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>");
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendNotificationAsync_SendTemplateNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new TemplateNotification(new Dictionary<string, string>());
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendDirectNotificationAsync_SendDirectAppleNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
 
             var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, _configuration["AppleDeviceToken"]);
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task SendDirectNotificationAsync_SendDirectAppleBatchNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
             notification.Expiry = DateTime.Now.AddDays(1);
             notification.Priority = 5;
@@ -756,11 +849,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, new [] {_configuration["AppleDeviceToken"]});
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
         }
 
         [Fact]
         private async Task ScheduleNotificationAsync_SendAppleNativeNotification_GetSuccessfulResultBack()
         {
+            LoadMockData();
             var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
             notification.Expiry = DateTime.Now.AddDays(1);
             notification.Priority = 5;
@@ -768,43 +863,38 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var notificationResult = await _hubClient.ScheduleNotificationAsync(notification, DateTimeOffset.Now.AddDays(1));
 
             Assert.NotNull(notificationResult.ScheduledNotificationId);
+            RecordTestResults();
+        }
+        
+
+        private void LoadMockData([CallerMemberName]string methodName = "")
+        {
+            if (!_testServer.RecordingMode)
+            {
+                string filePath = null;
+                if (File.Exists($"{methodName}.http"))
+                {
+                    filePath = $"{methodName}.http";
+                }
+                else if (File.Exists($"MockData\\{methodName}.http"))
+                {
+                    filePath = $"MockData\\{methodName}.http";
+                }
+                if (filePath != null)
+                {
+                    var payloads = JsonConvert.DeserializeObject<TestServerSession>(File.ReadAllText(filePath));
+                    _testServer.LoadResponses(payloads);
+                }
+                _testServer.BaseUri = "http://test";
+            }
         }
 
-        [Fact]
-        private async Task GetNotificationHubJobAsync_SumbitJob_GetSubmittedJobBack()
+        private void RecordTestResults([CallerMemberName]string methodName = "")
         {
-            var job = new NotificationHubJob
+            if (_testServer.RecordingMode)
             {
-                JobType = NotificationHubJobType.ExportRegistrations,
-                OutputContainerUri = new Uri(_configuration["BlobContainer"])
-            };
-
-            var createdJob = await _hubClient.SubmitNotificationHubJobAsync(job);
-
-            createdJob = await _hubClient.GetNotificationHubJobAsync(createdJob.JobId);
-
-            Assert.NotNull(createdJob.JobId);
-            Assert.Equal(job.JobType, createdJob.JobType);
-            Assert.Equal(job.OutputContainerUri, createdJob.OutputContainerUri);
-        }
-
-        [Fact]
-        private async Task GetNotificationHubJobsAsync_SumbitJob_GetSubmittedJobBack()
-        {
-            var job = new NotificationHubJob
-            {
-                JobType = NotificationHubJobType.ExportRegistrations,
-                OutputContainerUri = new Uri(_configuration["BlobContainer"])
-            };
-
-            var createdJob = await _hubClient.SubmitNotificationHubJobAsync(job);
-
-            var allJobs = await _hubClient.GetNotificationHubJobsAsync();
-            createdJob = allJobs.SingleOrDefault(j => j.JobId == createdJob.JobId);
-
-            Assert.NotNull(createdJob);
-            Assert.Equal(job.JobType, createdJob.JobType);
-            Assert.Equal(job.OutputContainerUri, createdJob.OutputContainerUri);
+                File.WriteAllText($"{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
+            }
         }
     }
 }
