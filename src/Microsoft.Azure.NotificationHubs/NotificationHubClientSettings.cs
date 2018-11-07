@@ -8,6 +8,7 @@ namespace Microsoft.Azure.NotificationHubs
 {
     using System;
     using System.Net;
+    using System.Net.Http;
 
     /// <summary>
     /// Notification Hubs client settings
@@ -19,6 +20,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// Gets or sets the proxy
         /// </summary>
         public IWebProxy Proxy { get; set; }
+
+        /// <summary>
+        /// Gets or sets http message handler. If set will override Proxy.
+        /// </summary>
+        public HttpMessageHandler MessageHandler { get; set; }
 
         /// <summary>
         /// Gets or sets operation timeout of the HTTP operations.
