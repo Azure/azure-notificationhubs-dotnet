@@ -866,25 +866,37 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             RecordTestResults();
         }
         
+        private string GetMockDataFilePath(string methodName)
+        {
+            string[] dataFilePaths = new string[]
+            {
+                $"{methodName}.http",
+                Path.Combine("MockData", $"{methodName}.http"),
+            };
+
+            foreach (var dataFilePath in dataFilePaths)
+            {
+                if (File.Exists(dataFilePath))
+                {
+                    return dataFilePath;
+                }
+            }
+            return null;
+        }
 
         private void LoadMockData([CallerMemberName]string methodName = "")
         {
             if (!_testServer.RecordingMode)
             {
-                string filePath = null;
-                if (File.Exists($"{methodName}.http"))
+                string filePath = GetMockDataFilePath(methodName);
+                if (filePath == null)
                 {
-                    filePath = $"{methodName}.http";
+                    throw new Exception($"Cannot find data file for method '{methodName}'. Test data must be recorded first.");
                 }
-                else if (File.Exists($"MockData\\{methodName}.http"))
-                {
-                    filePath = $"MockData\\{methodName}.http";
-                }
-                if (filePath != null)
-                {
-                    var payloads = JsonConvert.DeserializeObject<TestServerSession>(File.ReadAllText(filePath));
-                    _testServer.LoadResponses(payloads);
-                }
+
+                var payloads = JsonConvert.DeserializeObject<TestServerSession>(File.ReadAllText(filePath));
+
+                _testServer.LoadResponses(payloads);
                 _testServer.BaseUri = "http://test";
             }
         }
