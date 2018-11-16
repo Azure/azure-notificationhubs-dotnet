@@ -14,23 +14,21 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 
     internal abstract class TokenProvider : IDisposable
     {
-        private static readonly TimeSpan MaxWait = TimeSpan.FromMilliseconds(int.MaxValue);
-        private const int DefaultCacheSize = 1000;
-        private readonly TimeSpan DefaultCacheExpiration = TimeSpan.FromMinutes(1);
-
-
         private readonly IMemoryCache _tokenCache;
         private readonly bool _cacheTokens;
+        private readonly TimeSpan _cacheExpirationTime;
 
-        protected TokenProvider()
-            : this(true)
+
+        protected TokenProvider(TimeSpan cacheExpirationTime)
+            : this(true, cacheExpirationTime)
         {
         }
 
-        protected TokenProvider(bool cacheTokens)
+        protected TokenProvider(bool cacheTokens, TimeSpan cacheExpirationTime)
         {
             this._tokenCache = new MemoryCache(new MemoryCacheOptions() { Clock = new SystemClock() });
-            this._cacheTokens = cacheTokens;
+            this._cacheTokens = cacheTokens && cacheExpirationTime > TimeSpan.Zero;
+            this._cacheExpirationTime = cacheExpirationTime;
         }
 
         protected abstract string GenerateToken(string appliesTo);
@@ -96,7 +94,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             if(!bypassCache && _cacheTokens)
             {
                 var cacheKey = BuildKey(appliesTo, action);
-                _tokenCache.Set(cacheKey, token, new MemoryCacheEntryOptions().SetSlidingExpiration(DefaultCacheExpiration));
+                _tokenCache.Set(cacheKey, token, new MemoryCacheEntryOptions().SetAbsoluteExpiration(_cacheExpirationTime));
             }
         }
 

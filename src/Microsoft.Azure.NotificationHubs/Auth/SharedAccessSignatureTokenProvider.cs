@@ -9,7 +9,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     using Common;
     using System;
     using System.Text;
-
+    
     internal class SharedAccessSignatureTokenProvider : TokenProvider
     {
         private const int MaxKeyNameLength = 256;
@@ -18,9 +18,12 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         internal readonly byte[] _encodedSharedAccessKey;
         internal readonly string _keyName;
         internal readonly TimeSpan _tokenTimeToLive;
-        private static readonly TimeSpan DefaultTokenTimeout = TimeSpan.FromMinutes(20);
 
-        internal SharedAccessSignatureTokenProvider(string connectionString)
+        private static readonly TimeSpan DefaultTokenTimeout = TimeSpan.FromMinutes(20);
+        private static readonly TimeSpan DefaultTokenRefreshTimeMargin = TimeSpan.FromMinutes(2);
+
+        internal SharedAccessSignatureTokenProvider(string connectionString):
+            base(DefaultTokenTimeout - DefaultTokenRefreshTimeMargin)
         {
             var builder = new NotificationHubConnectionStringBuilder(connectionString);
             this._keyName = builder.SharedAccessKeyName;
@@ -31,10 +34,10 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         internal SharedAccessSignatureTokenProvider(string keyName, string sharedAccessKey)
             : this(keyName, sharedAccessKey, DefaultTokenTimeout)
         {
-            
         }
 
         internal SharedAccessSignatureTokenProvider(string keyName, string sharedAccessKey, TimeSpan tokenTimeToLive)
+            : base(tokenTimeToLive - DefaultTokenRefreshTimeMargin)
         {
             if (string.IsNullOrEmpty(keyName))
             {
