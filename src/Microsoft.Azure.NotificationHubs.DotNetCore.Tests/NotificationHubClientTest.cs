@@ -429,7 +429,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var allRegistrations = await _hubClient.GetAllRegistrationsAsync(100);
             var allRegistrationIds = allRegistrations.Select(r => r.RegistrationId).ToArray();
 
-            Assert.Equal(3, allRegistrationIds.Count());
+            Assert.Equal(2, allRegistrationIds.Count());
             Assert.Contains(createdAppleRegistration.RegistrationId, allRegistrationIds);
             Assert.Contains(createdGcmRegistration.RegistrationId, allRegistrationIds);
             RecordTestResults();
