@@ -205,7 +205,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmTemplateRegistrationDescription"/> class using given Firebase Cloud Messaging registration id
         /// </summary>
-        /// <param name="fcmRegistrationId">Registration id obtained from the Google Cloud Messaging service</param>
+        /// <param name="fcmRegistrationId">Registration id obtained from the Firebase Cloud Messaging service</param>
         public FcmTemplateRegistrationDescription(string fcmRegistrationId)
             : base(fcmRegistrationId)
         {
