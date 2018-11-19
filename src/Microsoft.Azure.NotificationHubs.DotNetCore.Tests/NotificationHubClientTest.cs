@@ -245,6 +245,30 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        public async Task CreateRegistrationAsync_PassValidFcmNativeRegistration_GetCreatedRegistrationBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new FcmRegistrationDescription(_configuration["FcmDeviceToken"]);
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.FcmRegistrationId, createdRegistration.FcmRegistrationId);
+            RecordTestResults();
+        }
+
+        [Fact]
         public async Task CreateRegistrationAsync_PassValidGcmTemplateRegistration_GetCreatedRegistrationBack()
         {
             LoadMockData();
@@ -266,6 +290,33 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.GcmRegistrationId, createdRegistration.GcmRegistrationId);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidFcmTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new FcmTemplateRegistrationDescription(_configuration["FcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.FcmRegistrationId, createdRegistration.FcmRegistrationId);
             Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
             Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
             RecordTestResults();
@@ -415,23 +466,26 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
-        public async Task GetAllRegistrationsAsync_CreateTwoRegistrations_GetAllCreatedRegistrations()
+        public async Task GetAllRegistrationsAsync_CreateRegistrations_GetAllCreatedRegistrations()
         {
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
             var appleRegistration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"]);
             var gcmRegistration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+            var fcmRegistration = new FcmRegistrationDescription(_configuration["FcmDeviceToken"]);
 
             var createdAppleRegistration = await _hubClient.CreateRegistrationAsync(appleRegistration);
             var createdGcmRegistration = await _hubClient.CreateRegistrationAsync(gcmRegistration);
+            var createdFcmRegistration = await _hubClient.CreateRegistrationAsync(fcmRegistration);
 
             var allRegistrations = await _hubClient.GetAllRegistrationsAsync(100);
             var allRegistrationIds = allRegistrations.Select(r => r.RegistrationId).ToArray();
 
-            Assert.Equal(2, allRegistrationIds.Count());
+            Assert.Equal(3, allRegistrationIds.Count());
             Assert.Contains(createdAppleRegistration.RegistrationId, allRegistrationIds);
             Assert.Contains(createdGcmRegistration.RegistrationId, allRegistrationIds);
+            Assert.Contains(createdFcmRegistration.RegistrationId, allRegistrationIds);
             RecordTestResults();
         }
 
@@ -783,6 +837,18 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             LoadMockData();
             var notification = new GcmNotification("{\"data\":{\"message\":\"Message\"}}");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendFcmNativeNotification_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 

@@ -16,6 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     [DataContract(Name = ManagementStrings.PnsCredential, Namespace = ManagementStrings.Namespace)]
     [KnownType(typeof(ApnsCredential))]
     [KnownType(typeof(GcmCredential))]
+    [KnownType(typeof(FcmCredential))]
     [KnownType(typeof(MpnsCredential))]
     [KnownType(typeof(WnsCredential))]
     [KnownType(typeof(AdmCredential))]

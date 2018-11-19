@@ -9,16 +9,15 @@ namespace Microsoft.Azure.NotificationHubs
     using System;
 
     /// <summary>
-    /// Represents a Google Cloud Messaging notification.
+    /// Represents a Firebase Cloud Messaging notification.
     /// </summary>
-    [Obsolete("GcmNotification is deprecated, please use FcmNotification instead.")]
-    public sealed class GcmNotification : Notification, INativeNotification
+    public sealed class FcmNotification : Notification, INativeNotification
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class.
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmNotification"/> class.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload.</param>
-        public GcmNotification(string jsonPayload)
+        public FcmNotification(string jsonPayload)
             : base(null, null)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
@@ -30,11 +29,11 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class.
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmNotification"/> class.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload.</param><param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
-        public GcmNotification(string jsonPayload, string tag)
+        public FcmNotification(string jsonPayload, string tag)
             : base(null, tag)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
@@ -53,7 +52,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </value>
         protected override string PlatformType
         {
-            get { return GcmCredential.AppPlatformName; }
+            get { return FcmCredential.AppPlatformName; }
         }
 
         /// <summary>

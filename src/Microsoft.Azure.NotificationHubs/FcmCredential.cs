@@ -11,43 +11,41 @@ namespace Microsoft.Azure.NotificationHubs
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Represents the Google Cloud Messaging credential.
+    /// Represents the Firebase Cloud Messaging credential.
     /// </summary>
-    [DataContract(Name = ManagementStrings.GcmCredential, Namespace = ManagementStrings.Namespace)]
-    [Obsolete("GcmCredential is deprecated, please use FcmCredential instead.")]
-    
-    public class GcmCredential : PnsCredential
+    [DataContract(Name = ManagementStrings.FcmCredential, Namespace = ManagementStrings.Namespace)]
+    public class FcmCredential : PnsCredential
     {
-        internal const string AppPlatformName = "gcm";
-        internal const string ProdAccessTokenServiceUrl = @"https://android.googleapis.com/gcm/send";
+        internal const string AppPlatformName = "fcm";
+        internal const string ProdAccessTokenServiceUrl = @"https://fcm.googleapis.com/fcm/send";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmCredential"/> class.
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmCredential"/> class.
         /// </summary>
-        public GcmCredential()
+        public FcmCredential()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmCredential"/> class.
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmCredential"/> class.
         /// </summary>
         /// <param name="googleApiKey">The Google API key.</param>
-        public GcmCredential(string googleApiKey)
+        public FcmCredential(string googleApiKey)
         {
             this.GoogleApiKey = googleApiKey;
         }
 
         /// <summary>
-        /// Gets or sets the GCM endpoint.
+        /// Gets or sets the FCM endpoint.
         /// </summary>
         /// 
         /// <returns>
-        /// The GCM endpoint.
+        /// The FCM endpoint.
         /// </returns>
-        public string GcmEndpoint
+        public string FcmEndpoint
         {
-            get { return base["GcmEndpoint"] ?? GcmCredential.ProdAccessTokenServiceUrl; }
-            set { base["GcmEndpoint"] = value; }
+            get { return base["FcmEndpoint"] ?? FcmCredential.ProdAccessTokenServiceUrl; }
+            set { base["FcmEndpoint"] = value; }
         }
 
         /// <summary>
@@ -65,7 +63,7 @@ namespace Microsoft.Azure.NotificationHubs
 
         internal override string AppPlatform
         {
-            get { return GcmCredential.AppPlatformName; }
+            get { return FcmCredential.AppPlatformName; }
         }
 
         /// <summary>
@@ -78,7 +76,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="other">The other object to compare.</param>
         public override bool Equals(object other)
         {
-            GcmCredential otherCredential = other as GcmCredential;
+            FcmCredential otherCredential = other as FcmCredential;
             if (otherCredential == null)
             {
                 return false;

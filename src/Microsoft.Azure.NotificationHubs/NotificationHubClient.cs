@@ -360,6 +360,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
+        [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
         public Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload)
         {
             return SendGcmNativeNotificationAsync(jsonPayload, string.Empty);
@@ -373,6 +374,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
+        [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
         public Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, string tagExpression)
         {
             return SendNotificationAsync(new GcmNotification(jsonPayload), tagExpression);
@@ -386,9 +388,48 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
+        [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
         public Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
         {
             return SendNotificationAsync(new GcmNotification(jsonPayload), tags);
+        }
+
+        /// <summary>
+        /// Sends Firebase Cloud Messaging (FCM) native notification.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload)
+        {
+            return SendFcmNativeNotificationAsync(jsonPayload, string.Empty);
+        }
+
+        /// <summary>
+        /// Sends FCM native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression)
+        {
+            return SendNotificationAsync(new FcmNotification(jsonPayload), tagExpression);
+        }
+
+        /// <summary>
+        /// Sends a FCM native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
+        {
+            return SendNotificationAsync(new FcmNotification(jsonPayload), tags);
         }
 
         /// <summary>
@@ -994,6 +1035,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
+        [Obsolete("CreateGcmNativeRegistrationAsync is deprecated, please use CreateFcmNativeRegistrationAsync instead.")]
         public Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId)
         {
             return CreateGcmNativeRegistrationAsync(gcmRegistrationId, null);
@@ -1007,6 +1049,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
+        [Obsolete("CreateGcmNativeRegistrationAsync is deprecated, please use CreateFcmNativeRegistrationAsync instead.")]
         public Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new GcmRegistrationDescription(gcmRegistrationId, tags));
@@ -1020,6 +1063,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
+        [Obsolete("CreateGcmTemplateRegistrationAsync is deprecated, please use CreateFcmTemplateRegistrationAsync instead.")]
         public Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload)
         {
             return CreateGcmTemplateRegistrationAsync(gcmRegistrationId, jsonPayload, null);
@@ -1034,9 +1078,62 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
+        [Obsolete("CreateGcmTemplateRegistrationAsync is deprecated, please use CreateFcmTemplateRegistrationAsync instead.")]
         public Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new GcmTemplateRegistrationDescription(gcmRegistrationId, jsonPayload, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM native registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId)
+        {
+            return CreateFcmNativeRegistrationAsync(fcmRegistrationId, null);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM native registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId, IEnumerable<string> tags)
+        {
+            return CreateRegistrationAsync(new FcmRegistrationDescription(fcmRegistrationId, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM template registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload)
+        {
+            return CreateFcmTemplateRegistrationAsync(fcmRegistrationId, jsonPayload, null);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM template registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
+        {
+            return CreateRegistrationAsync(new FcmTemplateRegistrationDescription(fcmRegistrationId, jsonPayload, tags));
         }
 
         #region Baidu Create Registration

@@ -26,6 +26,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     [DataContract(Namespace = ManagementStrings.Namespace)]
     [KnownType(typeof(GcmRegistrationDescription))]
+    [KnownType(typeof(FcmRegistrationDescription))]
     [KnownType(typeof(AppleRegistrationDescription))]
     [KnownType(typeof(AppleTemplateRegistrationDescription))]
     [KnownType(typeof(WindowsRegistrationDescription))]
@@ -33,6 +34,7 @@ namespace Microsoft.Azure.NotificationHubs
     [KnownType(typeof(MpnsRegistrationDescription))]
     [KnownType(typeof(MpnsTemplateRegistrationDescription))]
     [KnownType(typeof(GcmTemplateRegistrationDescription))]
+    [KnownType(typeof(FcmTemplateRegistrationDescription))]
     [KnownType(typeof(AdmRegistrationDescription))]
     [KnownType(typeof(AdmTemplateRegistrationDescription))]
     [KnownType(typeof(BaiduRegistrationDescription))]
