@@ -740,6 +740,35 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        private async Task InstallationExists_ChecksInstallation()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"]
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            Assert.True(await _hubClient.InstallationExistsAsync(installationId));
+
+            await _hubClient.DeleteInstallationAsync(installationId);
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            Assert.False(await _hubClient.InstallationExistsAsync(installationId));
+            RecordTestResults();
+        }
+
+        [Fact]
         private async Task SendNotificationAsync_SendAdmNativeNotification_GetSuccessfulResultBack()
         {
             LoadMockData();

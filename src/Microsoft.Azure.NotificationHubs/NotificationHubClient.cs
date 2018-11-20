@@ -602,7 +602,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">notificationId</exception>
         public async Task<NotificationDetails> GetNotificationOutcomeDetailsAsync(string notificationId)
         {
-            if (String.IsNullOrWhiteSpace(notificationId))
+            if (string.IsNullOrWhiteSpace(notificationId))
             {
                 throw new ArgumentNullException("notificationId");
             }
@@ -663,7 +663,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException("installation");
             }
 
-            if (String.IsNullOrWhiteSpace(installation.InstallationId))
+            if (string.IsNullOrWhiteSpace(installation.InstallationId))
             {
                 throw new InvalidOperationException("InstallationId must be specified");
             }
@@ -703,9 +703,9 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.InvalidOperationException">Thrown when the operations list is empty</exception>
         public async Task PatchInstallationAsync(string installationId, IList<PartialUpdateOperation> operations)
         {
-            if (String.IsNullOrWhiteSpace(installationId))
+            if (string.IsNullOrWhiteSpace(installationId))
             {
-                throw new ArgumentNullException("installationId");
+                throw new ArgumentNullException(nameof(installationId));
             }
 
             if (operations == null)
@@ -749,9 +749,9 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">Thrown when the installationId object is null</exception>
         public async Task DeleteInstallationAsync(string installationId)
         {
-            if (String.IsNullOrWhiteSpace(installationId))
+            if (string.IsNullOrWhiteSpace(installationId))
             {
-                throw new ArgumentNullException("installationId");
+                throw new ArgumentNullException(nameof(installationId));
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -761,6 +761,41 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.NoContent, CancellationToken.None).ConfigureAwait(false))
                 {
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the given installation exists based upon the installation identifier.
+        /// </summary>
+        /// <param name="installationId">The installation identifier.</param>
+        /// <returns>true if the installation exists, else false.</returns>
+        public bool InstallationExists(string installationId)
+        {
+            return SyncOp(() => InstallationExistsAsync(installationId));
+        }
+
+        /// <summary>
+        /// Determines whether the given installation exists based upon the installation identifier.
+        /// </summary>
+        /// <param name="installationId">The installation identifier.</param>
+        /// <param name="token">Token used for cancellation</param>
+        /// <returns>Returns a task which is true if the installation exists, else false.</returns>
+        public async Task<bool> InstallationExistsAsync(string installationId, CancellationToken token = default(CancellationToken))
+        {
+            if (string.IsNullOrWhiteSpace(installationId))
+            {
+                throw new ArgumentNullException(nameof(installationId));
+            }
+
+            var requestUri = GetGenericRequestUriBuilder();
+            requestUri.Path += $"installations/{installationId}";
+
+            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
+            {
+                using (var response = await SendRequestAsync(request, trackingId, new [] { HttpStatusCode.OK, HttpStatusCode.NotFound }, token))
+                {
+                    return response.StatusCode == HttpStatusCode.OK;
                 }
             }
         }
@@ -783,9 +818,9 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">Thrown when the installationId object is null</exception>
         public async Task<Installation> GetInstallationAsync(string installationId)
         {
-            if (String.IsNullOrWhiteSpace(installationId))
+            if (string.IsNullOrWhiteSpace(installationId))
             {
-                throw new ArgumentNullException("installationId");
+                throw new ArgumentNullException(nameof(installationId));
             }
 
             var requestUri = GetGenericRequestUriBuilder();
