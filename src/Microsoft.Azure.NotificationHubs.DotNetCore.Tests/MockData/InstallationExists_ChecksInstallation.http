@@ -1,0 +1,82 @@
+{
+    "HttpCalls": [
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations?api-version=2017-04&$top=100",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:34 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/atom+xml; type=feed; charset=utf-8"
+            },
+            "Content": "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100</id><updated>2018-11-07T00:18:34Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/123-234-1?api-version=2017-04&amp;$top=100</id><title type=\"text\">123-234-1</title><published>2018-11-07T00:18:34Z</published><updated>2018-11-07T00:18:34Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/123-234-1?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>123-234-1</RegistrationId><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry></feed>"
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/123-234-1?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:34 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/installations/94018932-9656-48dd-aea1-0c2253b4e093?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:34 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/xml; charset=utf-8"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/installations/94018932-9656-48dd-aea1-0c2253b4e093?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:35 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/xml; charset=utf-8"
+            },
+            "Content": "{\"installationId\":\"94018932-9656-48dd-aea1-0c2253b4e093\",\"pushChannel\":\"62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA\",\"pushChannelExpired\":false,\"platform\":\"apns\",\"expirationTime\":\"9999-12-31T23:59:59.9999999Z\"}"
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/installations/94018932-9656-48dd-aea1-0c2253b4e093?api-version=2017-04",
+            "StatusCode": 204,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:35 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0",
+                "Content-Type": "application/xml; charset=utf-8"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/installations/94018932-9656-48dd-aea1-0c2253b4e093?api-version=2017-04",
+            "StatusCode": 404,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:36 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/xml; charset=utf-8"
+            },
+            "Content": "<Error><Code>404</Code><Detail>Installation not found.TrackingId:cc8c4f9b-fd82-4cfa-8f99-7a089eb4cd69_G3,TimeStamp:11/7/2018 12:18:37 AM</Detail></Error>"
+        }
+    ],
+    "Guids": []
+}
