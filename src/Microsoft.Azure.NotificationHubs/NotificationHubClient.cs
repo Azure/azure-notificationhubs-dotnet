@@ -779,9 +779,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// Determines whether the given installation exists based upon the installation identifier.
         /// </summary>
         /// <param name="installationId">The installation identifier.</param>
-        /// <param name="token">Token used for cancellation</param>
         /// <returns>Returns a task which is true if the installation exists, else false.</returns>
-        public async Task<bool> InstallationExistsAsync(string installationId, CancellationToken token = default(CancellationToken))
+        public async Task<bool> InstallationExistsAsync(string installationId)
         {
             if (string.IsNullOrWhiteSpace(installationId))
             {
@@ -793,7 +792,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
             {
-                using (var response = await SendRequestAsync(request, trackingId, new [] { HttpStatusCode.OK, HttpStatusCode.NotFound }, token))
+                using (var response = await SendRequestAsync(request, trackingId, new [] { HttpStatusCode.OK, HttpStatusCode.NotFound }, CancellationToken.None))
                 {
                     return response.StatusCode == HttpStatusCode.OK;
                 }
