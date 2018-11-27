@@ -51,7 +51,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             _hubClient = new NotificationHubClient(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"], settings);
         }
 
-        public async Task DeleteAllRegistrationsAndInstallations()
+        Task Sleep(TimeSpan delay) => _testServer.RecordingMode ? Task.Delay(delay) : Task.FromResult(false);
+
+        async Task DeleteAllRegistrationsAndInstallations()
         {
             string continuationToken;
 
@@ -620,7 +622,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             await _hubClient.CreateOrUpdateInstallationAsync(installation);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Sleep(TimeSpan.FromSeconds(1));
 
             var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
 
@@ -666,7 +668,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             await _hubClient.CreateOrUpdateInstallationAsync(installation);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Sleep(TimeSpan.FromSeconds(1));
 
             var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
 
@@ -702,7 +704,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
                 }
             });
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Sleep(TimeSpan.FromSeconds(1));
 
             var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
 
@@ -727,13 +729,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             await _hubClient.CreateOrUpdateInstallationAsync(installation);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Sleep(TimeSpan.FromSeconds(1));
 
             var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
 
             await _hubClient.DeleteInstallationAsync(createdInstallation.InstallationId);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Sleep(TimeSpan.FromSeconds(1));
 
             await Assert.ThrowsAsync<MessagingEntityNotFoundException>(async () => await _hubClient.GetInstallationAsync(createdInstallation.InstallationId));
             RecordTestResults();
@@ -756,13 +758,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             await _hubClient.CreateOrUpdateInstallationAsync(installation);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Sleep(TimeSpan.FromSeconds(1));
 
             Assert.True(await _hubClient.InstallationExistsAsync(installationId));
 
             await _hubClient.DeleteInstallationAsync(installationId);
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Sleep(TimeSpan.FromSeconds(1));
 
             Assert.False(await _hubClient.InstallationExistsAsync(installationId));
             RecordTestResults();
