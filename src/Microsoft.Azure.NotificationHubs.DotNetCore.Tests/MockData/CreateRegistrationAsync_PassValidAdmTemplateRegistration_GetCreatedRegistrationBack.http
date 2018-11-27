@@ -1,1 +1,45 @@
-{"HttpCalls":[{"RequestUriPath":"/sdk-sample-nh/registrations?api-version=2017-04&$top=100","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:27 GMT","Transfer-Encoding":"chunked","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Type":"application/atom+xml; type=feed; charset=utf-8"},"Content":"<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100</id><updated>2018-11-07T00:18:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2584949134662302221-3341630566194549344-2?api-version=2017-04&amp;$top=100</id><title type=\"text\">2584949134662302221-3341630566194549344-2</title><published>2018-11-07T00:18:27Z</published><updated>2018-11-07T00:18:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2584949134662302221-3341630566194549344-2?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><WindowsTemplateRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>2584949134662302221-3341630566194549344-2</RegistrationId><Tags>tag1</Tags><PushVariables>{\"var1\":\"value1\"}</PushVariables><ChannelUri>https://some.url/</ChannelUri><SecondaryTileName>Tile name</SecondaryTileName><BodyTemplate><![CDATA[<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>]]></BodyTemplate><WnsHeaders><WnsHeader><Header>X-WNS-Type</Header><Value>wns/toast</Value></WnsHeader></WnsHeaders><TemplateName>Template Name</TemplateName></WindowsTemplateRegistrationDescription></content></entry></feed>"},{"RequestUriPath":"/sdk-sample-nh/registrations/2584949134662302221-3341630566194549344-2?api-version=2017-04","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:27 GMT","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Length":"0"},"Content":null},{"RequestUriPath":"/sdk-sample-nh/registrations?api-version=2017-04","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:27 GMT","Transfer-Encoding":"chunked","ETag":"W/\"1\"","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Type":"application/atom+xml; type=entry; charset=utf-8","Content-Location":"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2771056624138478806-6659449069476860719-1?api-version=2017-04"},"Content":"<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2771056624138478806-6659449069476860719-1?api-version=2017-04</id><title type=\"text\">2771056624138478806-6659449069476860719-1</title><published>2018-11-07T00:18:28Z</published><updated>2018-11-07T00:18:28Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2771056624138478806-6659449069476860719-1?api-version=2017-04\"/><content type=\"application/xml\"><AdmTemplateRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>2771056624138478806-6659449069476860719-1</RegistrationId><Tags>tag1</Tags><PushVariables>{\"var1\":\"value1\"}</PushVariables><AdmRegistrationId>amzn1.adm-registration.v2.123</AdmRegistrationId><BodyTemplate><![CDATA[{\"data\":{\"key1\":\"value1\"}}]]></BodyTemplate><TemplateName>Template Name</TemplateName></AdmTemplateRegistrationDescription></content></entry>"}],"Guids":[]}
+{
+    "HttpCalls": [
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations?api-version=2017-04&$top=100",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:27 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/atom+xml; type=feed; charset=utf-8"
+            },
+            "Content": "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100</id><updated>2018-11-07T00:18:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2584949134662302221-3341630566194549344-2?api-version=2017-04&amp;$top=100</id><title type=\"text\">2584949134662302221-3341630566194549344-2</title><published>2018-11-07T00:18:27Z</published><updated>2018-11-07T00:18:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2584949134662302221-3341630566194549344-2?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><WindowsTemplateRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>2584949134662302221-3341630566194549344-2</RegistrationId><Tags>tag1</Tags><PushVariables>{\"var1\":\"value1\"}</PushVariables><ChannelUri>https://some.url/</ChannelUri><SecondaryTileName>Tile name</SecondaryTileName><BodyTemplate><![CDATA[<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>]]></BodyTemplate><WnsHeaders><WnsHeader><Header>X-WNS-Type</Header><Value>wns/toast</Value></WnsHeader></WnsHeaders><TemplateName>Template Name</TemplateName></WindowsTemplateRegistrationDescription></content></entry></feed>"
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/2584949134662302221-3341630566194549344-2?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:27 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:27 GMT",
+                "Transfer-Encoding": "chunked",
+                "ETag": "W/\"1\"",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/atom+xml; type=entry; charset=utf-8",
+                "Content-Location": "https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2771056624138478806-6659449069476860719-1?api-version=2017-04"
+            },
+            "Content": "<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2771056624138478806-6659449069476860719-1?api-version=2017-04</id><title type=\"text\">2771056624138478806-6659449069476860719-1</title><published>2018-11-07T00:18:28Z</published><updated>2018-11-07T00:18:28Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2771056624138478806-6659449069476860719-1?api-version=2017-04\"/><content type=\"application/xml\"><AdmTemplateRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>2771056624138478806-6659449069476860719-1</RegistrationId><Tags>tag1</Tags><PushVariables>{\"var1\":\"value1\"}</PushVariables><AdmRegistrationId>amzn1.adm-registration.v2.123</AdmRegistrationId><BodyTemplate><![CDATA[{\"data\":{\"key1\":\"value1\"}}]]></BodyTemplate><TemplateName>Template Name</TemplateName></AdmTemplateRegistrationDescription></content></entry>"
+        }
+    ],
+    "Guids": []
+}

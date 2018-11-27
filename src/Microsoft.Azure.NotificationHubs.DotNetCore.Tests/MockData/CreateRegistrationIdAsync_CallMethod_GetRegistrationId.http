@@ -1,1 +1,18 @@
-{"HttpCalls":[{"RequestUriPath":"/sdk-sample-nh/registrationids?api-version=2017-04","StatusCode":201,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:31 GMT","Location":"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrationids/7260336227650468927-4200236381151834034-1?api-version=2017-04","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Length":"0"},"Content":null}],"Guids":[]}
+{
+    "HttpCalls": [
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrationids?api-version=2017-04",
+            "StatusCode": 201,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:31 GMT",
+                "Location": "https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrationids/7260336227650468927-4200236381151834034-1?api-version=2017-04",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        }
+    ],
+    "Guids": []
+}

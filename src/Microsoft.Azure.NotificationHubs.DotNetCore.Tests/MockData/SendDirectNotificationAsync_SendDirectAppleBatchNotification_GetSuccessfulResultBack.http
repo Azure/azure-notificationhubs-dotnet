@@ -1,1 +1,19 @@
-{"HttpCalls":[{"RequestUriPath":"/sdk-sample-nh/messages/$batch?api-version=2017-04&direct","StatusCode":201,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:27 GMT","Transfer-Encoding":"chunked","Location":"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/messages/$batch/b755f9e4bb0844c8a2881986777aadb0-20181107001827-33331921-16?api-version=2017-04&direct","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Type":"application/xml; charset=utf-8"},"Content":null}],"Guids":[]}
+{
+    "HttpCalls": [
+        {
+            "RequestUriPath": "/sdk-sample-nh/messages/$batch?api-version=2017-04&direct",
+            "StatusCode": 201,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:27 GMT",
+                "Transfer-Encoding": "chunked",
+                "Location": "https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/messages/$batch/b755f9e4bb0844c8a2881986777aadb0-20181107001827-33331921-16?api-version=2017-04&direct",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/xml; charset=utf-8"
+            },
+            "Content": null
+        }
+    ],
+    "Guids": []
+}

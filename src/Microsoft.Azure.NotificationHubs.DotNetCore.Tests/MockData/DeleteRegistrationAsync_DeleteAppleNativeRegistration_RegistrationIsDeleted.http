@@ -1,1 +1,94 @@
-{"HttpCalls":[{"RequestUriPath":"/sdk-sample-nh/registrations?api-version=2017-04&$top=100","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:22 GMT","Transfer-Encoding":"chunked","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Type":"application/atom+xml; type=feed; charset=utf-8"},"Content":"<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100</id><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/1493776553344450975-2363723502764053081-2?api-version=2017-04&amp;$top=100</id><title type=\"text\">1493776553344450975-2363723502764053081-2</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/1493776553344450975-2363723502764053081-2?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>1493776553344450975-2363723502764053081-2</RegistrationId><Tags>tag1</Tags><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/3013254082390575573-1236119253991496323-3?api-version=2017-04&amp;$top=100</id><title type=\"text\">3013254082390575573-1236119253991496323-3</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/3013254082390575573-1236119253991496323-3?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>3013254082390575573-1236119253991496323-3</RegistrationId><Tags>tag1</Tags><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/7238708048734759735-5609107910300889883-3?api-version=2017-04&amp;$top=100</id><title type=\"text\">7238708048734759735-5609107910300889883-3</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/7238708048734759735-5609107910300889883-3?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><GcmRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>7238708048734759735-5609107910300889883-3</RegistrationId><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId></GcmRegistrationDescription></content></entry></feed>"},{"RequestUriPath":"/sdk-sample-nh/registrations/1493776553344450975-2363723502764053081-2?api-version=2017-04","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:22 GMT","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Length":"0"},"Content":null},{"RequestUriPath":"/sdk-sample-nh/registrations/3013254082390575573-1236119253991496323-3?api-version=2017-04","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:22 GMT","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Length":"0"},"Content":null},{"RequestUriPath":"/sdk-sample-nh/registrations/7238708048734759735-5609107910300889883-3?api-version=2017-04","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:22 GMT","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Length":"0"},"Content":null},{"RequestUriPath":"/sdk-sample-nh/registrations?api-version=2017-04","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:22 GMT","Transfer-Encoding":"chunked","ETag":"W/\"1\"","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Type":"application/atom+xml; type=entry; charset=utf-8","Content-Location":"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04"},"Content":"<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04</id><title type=\"text\">8232609228942132396-8422145413482104103-3</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>8232609228942132396-8422145413482104103-3</RegistrationId><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry>"},{"RequestUriPath":"/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04","StatusCode":200,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:22 GMT","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Length":"0"},"Content":null},{"RequestUriPath":"/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04","StatusCode":404,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:22 GMT","Transfer-Encoding":"chunked","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Type":"application/xml; charset=utf-8"},"Content":"<Error><Code>404</Code><Detail>.TrackingId:3cea7cfd-f90c-4063-bf3f-2feb286f60ea_G7,TimeStamp:11/7/2018 12:18:23 AM</Detail></Error>"}],"Guids":[]}
+{
+    "HttpCalls": [
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations?api-version=2017-04&$top=100",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:22 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/atom+xml; type=feed; charset=utf-8"
+            },
+            "Content": "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100</id><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/1493776553344450975-2363723502764053081-2?api-version=2017-04&amp;$top=100</id><title type=\"text\">1493776553344450975-2363723502764053081-2</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/1493776553344450975-2363723502764053081-2?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>1493776553344450975-2363723502764053081-2</RegistrationId><Tags>tag1</Tags><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/3013254082390575573-1236119253991496323-3?api-version=2017-04&amp;$top=100</id><title type=\"text\">3013254082390575573-1236119253991496323-3</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/3013254082390575573-1236119253991496323-3?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>3013254082390575573-1236119253991496323-3</RegistrationId><Tags>tag1</Tags><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/7238708048734759735-5609107910300889883-3?api-version=2017-04&amp;$top=100</id><title type=\"text\">7238708048734759735-5609107910300889883-3</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/7238708048734759735-5609107910300889883-3?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><GcmRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>7238708048734759735-5609107910300889883-3</RegistrationId><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId></GcmRegistrationDescription></content></entry></feed>"
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/1493776553344450975-2363723502764053081-2?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:22 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/3013254082390575573-1236119253991496323-3?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:22 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/7238708048734759735-5609107910300889883-3?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:22 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:22 GMT",
+                "Transfer-Encoding": "chunked",
+                "ETag": "W/\"1\"",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/atom+xml; type=entry; charset=utf-8",
+                "Content-Location": "https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04"
+            },
+            "Content": "<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04</id><title type=\"text\">8232609228942132396-8422145413482104103-3</title><published>2018-11-07T00:18:23Z</published><updated>2018-11-07T00:18:23Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>8232609228942132396-8422145413482104103-3</RegistrationId><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry>"
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:22 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/8232609228942132396-8422145413482104103-3?api-version=2017-04",
+            "StatusCode": 404,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:22 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/xml; charset=utf-8"
+            },
+            "Content": "<Error><Code>404</Code><Detail>.TrackingId:3cea7cfd-f90c-4063-bf3f-2feb286f60ea_G7,TimeStamp:11/7/2018 12:18:23 AM</Detail></Error>"
+        }
+    ],
+    "Guids": []
+}

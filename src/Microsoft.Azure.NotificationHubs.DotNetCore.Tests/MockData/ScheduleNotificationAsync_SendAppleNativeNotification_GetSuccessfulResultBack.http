@@ -1,1 +1,19 @@
-{"HttpCalls":[{"RequestUriPath":"/sdk-sample-nh/schedulednotifications?api-version=2017-04","StatusCode":201,"Headers":{"Date":"Wed, 07 Nov 2018 00:18:31 GMT","Transfer-Encoding":"chunked","Location":"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/schedulednotifications/af14e491a7994a65b7b3a5681a373337_20181107001832_33331921_17_QNHQueue930aa64c90d1481bb6b462578a54f1e0-S68116944391983712?api-version=2017-04","Server":"Microsoft-HTTPAPI/2.0"},"ContentHeaders":{"Content-Type":"application/xml; charset=utf-8"},"Content":null}],"Guids":[]}
+{
+    "HttpCalls": [
+        {
+            "RequestUriPath": "/sdk-sample-nh/schedulednotifications?api-version=2017-04",
+            "StatusCode": 201,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:31 GMT",
+                "Transfer-Encoding": "chunked",
+                "Location": "https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/schedulednotifications/af14e491a7994a65b7b3a5681a373337_20181107001832_33331921_17_QNHQueue930aa64c90d1481bb6b462578a54f1e0-S68116944391983712?api-version=2017-04",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/xml; charset=utf-8"
+            },
+            "Content": null
+        }
+    ],
+    "Guids": []
+}
