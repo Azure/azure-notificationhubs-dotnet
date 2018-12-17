@@ -149,6 +149,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 OmitXmlDeclaration = true
             };
 
+            // Convert FCM descriptions into their GCM counterparts
+            if (description.GetType().Name == "FcmRegistrationDescription")
+            {
+                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
+            }
+
+            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
+            {
+                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
+            }
+
             var serializer = GetSerializer(description.GetType().Name);
             using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
@@ -160,6 +171,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
         public void Serialize(EntityDescription description, XmlWriter writer)
         {
+            // Convert FCM descriptions into their GCM counterparts
+            if (description.GetType().Name == "FcmRegistrationDescription")
+            {
+                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
+            }
+
+            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
+            {
+                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
+            }
+
             var serializer = GetSerializer(description.GetType().Name);
             serializer.WriteObject(writer, description);
         }
