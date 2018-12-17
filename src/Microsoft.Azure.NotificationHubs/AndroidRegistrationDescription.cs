@@ -15,6 +15,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// Represents Notification Hub registration description for Google Cloud Messaging
     /// </summary>
     [DataContract(Name = ManagementStrings.GcmRegistrationDescription, Namespace = ManagementStrings.Namespace)]
+    [Obsolete("GcmRegistrationDescription is deprecated, please use FcmRegistrationDescription instead.")]
     public class GcmRegistrationDescription : RegistrationDescription
     {
         /// <summary>
@@ -103,6 +104,101 @@ namespace Microsoft.Azure.NotificationHubs
         internal override RegistrationDescription Clone()
         {
             return new GcmRegistrationDescription(this);
+        }
+    }
+
+    /// <summary>
+    /// Represents Notification Hub registration description for Firebase Cloud Messaging
+    /// </summary>
+    [DataContract(Name = ManagementStrings.FcmRegistrationDescription, Namespace = ManagementStrings.Namespace)]
+    public class FcmRegistrationDescription : RegistrationDescription
+    {
+        /// <summary>
+        /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmRegistrationDescription"/> class by copying fields from the given instance
+        /// </summary>
+        /// <param name="sourceRegistration">Another <see cref="T:Microsoft.Azure.NotificationHubs.FcmRegistrationDescription"/> instance fields values are copyed from</param>
+        public FcmRegistrationDescription(FcmRegistrationDescription sourceRegistration)
+            : base(sourceRegistration)
+        {
+            this.FcmRegistrationId = sourceRegistration.FcmRegistrationId;
+        }
+
+        /// <summary>
+        /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmRegistrationDescription"/> class using given Firebase Cloud Messaging registration id
+        /// </summary>
+        /// <param name="fcmRegistrationId">Registration id obtained from the Firebase Cloud Messaging service</param>
+        public FcmRegistrationDescription(string fcmRegistrationId)
+            : this(string.Empty, fcmRegistrationId, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmRegistrationDescription"/> class using given Firebase Cloud Messaging registration id and collection of tags
+        /// </summary>
+        /// <param name="fcmRegistrationId">Registration id obtained from the Firebase Cloud Messaging service</param>
+        /// <param name="tags">Collection of tags. Tags can be used for audience targeting purposes.</param>
+        public FcmRegistrationDescription(string fcmRegistrationId, IEnumerable<string> tags)
+            : this(string.Empty, fcmRegistrationId, tags)
+        {
+        }
+
+        internal FcmRegistrationDescription(string notificationHubPath, string fcmRegistrationId, IEnumerable<string> tags)
+            : base(notificationHubPath)
+        {
+            if (string.IsNullOrWhiteSpace(fcmRegistrationId))
+            {
+                throw new ArgumentNullException("fcmRegistrationId");
+            }
+
+            this.FcmRegistrationId = fcmRegistrationId;
+            if (tags != null)
+            {
+                this.Tags = new HashSet<string>(tags);
+            }
+        }
+
+        /// <summary>
+        /// Registration id obtained from the Firebase Messaging service
+        /// </summary>
+        [DataMember(Name = ManagementStrings.FcmRegistrationId, Order = 2001, IsRequired = true)]
+        public string FcmRegistrationId { get; set; }
+
+        internal override string AppPlatForm
+        {
+            get { return FcmCredential.AppPlatformName; }
+        }
+
+        internal override string RegistrationType
+        {
+            get { return FcmCredential.AppPlatformName; }
+        }
+
+        internal override string PlatformType
+        {
+            get { return FcmCredential.AppPlatformName; }
+        }
+
+        internal override string GetPnsHandle()
+        {
+            return this.FcmRegistrationId;
+        }
+
+        internal override void SetPnsHandle(string pnsHandle)
+        {
+            this.FcmRegistrationId = pnsHandle;
+        }
+
+        internal override void OnValidate(ApiVersion version)
+        {
+            if (string.IsNullOrWhiteSpace(this.FcmRegistrationId))
+            {
+                throw new InvalidDataContractException(SRClient.FCMRegistrationInvalidId);
+            }
+        }
+
+        internal override RegistrationDescription Clone()
+        {
+            return new FcmRegistrationDescription(this);
         }
     }
 }

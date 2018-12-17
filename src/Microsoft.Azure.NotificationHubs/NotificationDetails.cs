@@ -144,6 +144,15 @@ namespace Microsoft.Azure.NotificationHubs
         public NotificationOutcomeCollection GcmOutcomeCounts { get; set; }
 
         /// <summary>
+        /// Gets or sets the notification FCM outcome counts.
+        /// </summary>
+        /// <value>
+        /// The notification FCM outcome counts.
+        /// </value>
+        [DataMember(Name = ManagementStrings.FcmOutcomeCounts, IsRequired = false, Order = 1016, EmitDefaultValue = false)]
+        public NotificationOutcomeCollection FcmOutcomeCounts { get; set; }
+
+        /// <summary>
         /// Gets or sets the notification ADM outcome counts.
         /// </summary>
         /// <value>
