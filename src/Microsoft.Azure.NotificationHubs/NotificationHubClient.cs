@@ -1995,6 +1995,23 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     {
+
+                        // Convert GcmRegistrationDescription returned by service into FcmRegistrationDescription to match method's return type.
+                        if (registration is FcmRegistrationDescription)
+                        {
+                            var gcmRegistrationResponse = await ReadEntityAsync<GcmRegistrationDescription>(responseStream).ConfigureAwait(false);
+                            var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationResponse);;
+                            return (fcmRegistrationDescription as TRegistration);
+                        }
+                        
+                        // Convert GcmTemplateRegistrationDescription returned by service into FcmTemplateRegistrationDescription to match method's return type.
+                        if (registration is FcmTemplateRegistrationDescription)
+                        {
+                            var gcmTemplateRegistrationResponse = await ReadEntityAsync<GcmTemplateRegistrationDescription>(responseStream).ConfigureAwait(false);
+                            var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationResponse);
+                            return (fcmTemplateRegistrationDescription as TRegistration);
+                        }
+                        
                         return await ReadEntityAsync<TRegistration>(responseStream).ConfigureAwait(false);
                     }
                 }

@@ -152,6 +152,16 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
+        /// <summary>
+        /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmRegistrationDescription"/> class from <see cref="T:Microsoft.Azure.NotificationHubs.GcmRegistrationDescription"/> object.
+        /// </summary>
+        /// <param name="gcmRegistration">GcmRegistrationDescription object to create new FcmRegistrationDescription from.</param>
+        public FcmRegistrationDescription(GcmRegistrationDescription gcmRegistration)
+            : base(gcmRegistration)
+        {
+            this.FcmRegistrationId = gcmRegistration.GcmRegistrationId;
+        }
+
         internal FcmRegistrationDescription(string notificationHubPath, string fcmRegistrationId, IEnumerable<string> tags)
             : base(notificationHubPath)
         {
