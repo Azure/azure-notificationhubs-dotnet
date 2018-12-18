@@ -46,6 +46,17 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class from <see cref="T:Microsoft.Azure.NotificationHubs.FcmNotification"/> object.
+        /// </summary>
+        /// <param name="fcmNotification">The FcmNotification object to create a new GcmNotifications from.</param>
+        [Obsolete("This method is obsolete.")]
+        public GcmNotification(FcmNotification fcmNotification)
+            : base(fcmNotification.Headers, fcmNotification.Tag)
+        {
+            this.Body = fcmNotification.Body;
+        }
+
+        /// <summary>
         /// Gets the type of the platform.
         /// </summary>
         /// <value>

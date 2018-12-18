@@ -1780,6 +1780,11 @@ namespace Microsoft.Azure.NotificationHubs
                 AddToQuery(requestUri, "&direct");
             }
 
+            // Convert FcmNotification into GcmNotification
+            if (notification.GetType().Name == "FcmNotification")
+            {
+                notification = new GcmNotification((FcmNotification) notification);
+            }
 
             notification.ValidateAndPopulateHeaders();
 
@@ -1835,6 +1840,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += "schedulednotifications";
+
+            // Convert FcmNotification into GcmNotification
+            if (notification.GetType().Name == "FcmNotification")
+            {
+                notification = new GcmNotification((FcmNotification) notification);
+            }
 
             notification.ValidateAndPopulateHeaders();
 

@@ -146,11 +146,23 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Gets or sets the notification FCM outcome counts.
         /// </summary>
+        ///
+        /// <remarks>
+        /// This field acts as proxy for GcmOutcomeCounts at the moment as FcmNotificaiton instances are converted to GcmNotification when
+        /// sent out to the Notification Hub, making it impossible to distinguish the two in the response as from the NH's perspective, the
+        /// GcmNotification was received. See <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationImplAsync"/> and
+        /// <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendScheduledNotificationImplAsync"/> methods for conversion details.
+        /// </remarks>
+        /// 
         /// <value>
         /// The notification FCM outcome counts.
         /// </value>
         [DataMember(Name = ManagementStrings.FcmOutcomeCounts, IsRequired = false, Order = 1016, EmitDefaultValue = false)]
-        public NotificationOutcomeCollection FcmOutcomeCounts { get; set; }
+        public NotificationOutcomeCollection FcmOutcomeCounts
+        {
+            get { return GcmOutcomeCounts; }
+            set { GcmOutcomeCounts = value; }
+        }
 
         /// <summary>
         /// Gets or sets the notification ADM outcome counts.
