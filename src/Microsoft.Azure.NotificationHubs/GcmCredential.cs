@@ -16,7 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     [DataContract(Name = ManagementStrings.GcmCredential, Namespace = ManagementStrings.Namespace)]
     [Obsolete("GcmCredential is deprecated, please use FcmCredential instead.")]
     
-    public class GcmCredential : PnsCredential
+    internal class GcmCredential : PnsCredential
     {
         internal const string AppPlatformName = "gcm";
         internal const string ProdAccessTokenServiceUrl = @"https://android.googleapis.com/gcm/send";

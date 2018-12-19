@@ -20,7 +20,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     [DataContract(Name = ManagementStrings.GcmTemplateRegistrationDescription, Namespace = ManagementStrings.Namespace)]
     [Obsolete("GcmTemplateRegistrationDescription is deprecated, please use FcmTemplateRegistrationDescription instead.")]
-    public class GcmTemplateRegistrationDescription : GcmRegistrationDescription
+    internal class GcmTemplateRegistrationDescription : GcmRegistrationDescription
     {
         internal override string AppPlatForm
         {
@@ -247,7 +247,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmTemplateRegistrationDescription"/> class from  <see cref="T:Microsoft.Azure.NotificationHubs.GcmTemplateRegistrationDescription"/> object.
         /// </summary>
         /// <param name="gcmRegistration">The GcmTempalteRegistration object to create new FcmTemplateRegistraitonDescription from.</param>
-        public FcmTemplateRegistrationDescription(GcmTemplateRegistrationDescription gcmRegistration)
+        internal FcmTemplateRegistrationDescription(GcmTemplateRegistrationDescription gcmRegistration)
             : base(gcmRegistration)
         {
             this.BodyTemplate = gcmRegistration.BodyTemplate;

@@ -4,6 +4,11 @@
 // license information.
 //----------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
+
+[assembly:  InternalsVisibleTo("Microsoft.Azure.NotificationHubs.DotNetCore.Tests"),
+            InternalsVisibleTo("Microsoft.Azure.NotificationHubs.Framework.Tests")]
+
 namespace Microsoft.Azure.NotificationHubs
 {
     using Auth;
@@ -23,6 +28,8 @@ namespace Microsoft.Azure.NotificationHubs
     using System.Threading.Tasks;
     using System.Web;
     using System.Xml;
+
+
 
     /// <summary>
     /// Represents a notification hub client.
@@ -361,7 +368,7 @@ namespace Microsoft.Azure.NotificationHubs
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
         [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
-        public Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload)
+        internal Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload)
         {
             return SendGcmNativeNotificationAsync(jsonPayload, string.Empty);
         }
@@ -375,7 +382,7 @@ namespace Microsoft.Azure.NotificationHubs
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
         [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
-        public Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, string tagExpression)
+        internal Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, string tagExpression)
         {
             return SendNotificationAsync(new GcmNotification(jsonPayload), tagExpression);
         }
@@ -389,7 +396,7 @@ namespace Microsoft.Azure.NotificationHubs
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
         [Obsolete("SendGcmNativeNotificationAsync is deprecated, please use SendFcmNativeNotificationAsync instead.")]
-        public Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
+        internal Task<NotificationOutcome> SendGcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
         {
             return SendNotificationAsync(new GcmNotification(jsonPayload), tags);
         }
@@ -1070,7 +1077,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation.
         /// </returns>
         [Obsolete("CreateGcmNativeRegistrationAsync is deprecated, please use CreateFcmNativeRegistrationAsync instead.")]
-        public Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId)
+        internal Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId)
         {
             return CreateGcmNativeRegistrationAsync(gcmRegistrationId, null);
         }
@@ -1084,7 +1091,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation.
         /// </returns>
         [Obsolete("CreateGcmNativeRegistrationAsync is deprecated, please use CreateFcmNativeRegistrationAsync instead.")]
-        public Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId, IEnumerable<string> tags)
+        internal Task<GcmRegistrationDescription> CreateGcmNativeRegistrationAsync(string gcmRegistrationId, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new GcmRegistrationDescription(gcmRegistrationId, tags));
         }
@@ -1098,7 +1105,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation.
         /// </returns>
         [Obsolete("CreateGcmTemplateRegistrationAsync is deprecated, please use CreateFcmTemplateRegistrationAsync instead.")]
-        public Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload)
+        internal Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload)
         {
             return CreateGcmTemplateRegistrationAsync(gcmRegistrationId, jsonPayload, null);
         }
@@ -1113,7 +1120,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation.
         /// </returns>
         [Obsolete("CreateGcmTemplateRegistrationAsync is deprecated, please use CreateFcmTemplateRegistrationAsync instead.")]
-        public Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
+        internal Task<GcmTemplateRegistrationDescription> CreateGcmTemplateRegistrationAsync(string gcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new GcmTemplateRegistrationDescription(gcmRegistrationId, jsonPayload, tags));
         }

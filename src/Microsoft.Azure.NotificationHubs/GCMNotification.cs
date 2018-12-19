@@ -12,7 +12,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// Represents a Google Cloud Messaging notification.
     /// </summary>
     [Obsolete("GcmNotification is deprecated, please use FcmNotification instead.")]
-    public sealed class GcmNotification : Notification, INativeNotification
+    internal sealed class GcmNotification : Notification, INativeNotification
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class.
