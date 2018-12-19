@@ -16,7 +16,7 @@ namespace ParseFeedbackSample
     class Program
     {
 
-        private const string GcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification from SDK sample\"}}";
+        private const string FcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification from SDK sample\"}}";
 
         static async Task Main(string[] args)
         {
@@ -25,41 +25,41 @@ namespace ParseFeedbackSample
             var nhClient = NotificationHubClient.CreateClientFromConnectionString(config.PrimaryConnectionString, config.HubName);
 
             // Register some fake devices
-            var gcmDeviceId1 = Guid.NewGuid().ToString();
-            var gcmInstallation1 = new Installation
+            var fcmDeviceId1 = Guid.NewGuid().ToString();
+            var fcmInstallation1 = new Installation
             {
-                InstallationId = "fake-gcm-install-id1",
-                Platform = NotificationPlatform.Gcm,
-                PushChannel = gcmDeviceId1,
+                InstallationId = "fake-fcm-install-id1",
+                Platform = NotificationPlatform.Fcm,
+                PushChannel = fcmDeviceId1,
                 PushChannelExpired = false,
-                Tags = new [] { "gcm" }
+                Tags = new [] { "fcm" }
             };
-            var gcmDeviceId2 = Guid.NewGuid().ToString();
-            var gcmInstallation2 = new Installation
+            var fcmDeviceId2 = Guid.NewGuid().ToString();
+            var fcmInstallation2= new Installation
             {
-                InstallationId = "fake-gcm-install-id2",
-                Platform = NotificationPlatform.Gcm,
-                PushChannel = gcmDeviceId2,
+                InstallationId = "fake-fcm-install-id2",
+                Platform = NotificationPlatform.Fcm,
+                PushChannel = fcmDeviceId2,
                 PushChannelExpired = false,
-                Tags = new[] { "gcm" }
+                Tags = new[] { "fcm" }
             };
-            await nhClient.CreateOrUpdateInstallationAsync(gcmInstallation1);
-            await nhClient.CreateOrUpdateInstallationAsync(gcmInstallation2);
+            await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation1);
+            await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation2);
 
             await Task.Delay(5000);
 
             // Send notifications to all users
-            var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
+            var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent);
             
             // Gather send outcome
-            var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
+            var fcmOutcomeDetails = await WaitForThePushStatusAsync("FCM", nhClient, outcomeFcm);
 
-            Console.WriteLine($"GCM error details URL: {gcmOutcomeDetails.PnsErrorDetailsUri}");
+            Console.WriteLine($"FCM error details URL: {fcmOutcomeDetails.PnsErrorDetailsUri}");
 
-            if (gcmOutcomeDetails.PnsErrorDetailsUri != null)
+            if (fcmOutcomeDetails.PnsErrorDetailsUri != null)
             {
                 var httpClient = new HttpClient();
-                var pnsFeedbackXmlStrings = await httpClient.GetStringAsync(gcmOutcomeDetails.PnsErrorDetailsUri);
+                var pnsFeedbackXmlStrings = await httpClient.GetStringAsync(fcmOutcomeDetails.PnsErrorDetailsUri);
 
                 // Parse XML
                 var pnsFeedbackXmlStringsSplit = pnsFeedbackXmlStrings.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -67,7 +67,7 @@ namespace ParseFeedbackSample
                 {
                     var xdoc = XDocument.Parse(pnsFeedbackXmlString);
                     XNamespace ns = "http://schemas.microsoft.com/netservices/2010/10/servicebus/connect";
-                    Console.WriteLine($"GCM PNS Feedback Content: \n{xdoc}");
+                    Console.WriteLine($"FCM PNS Feedback Content: \n{xdoc}");
                     PnsFeedback feedback = new PnsFeedback
                     {
                         FeedbackTime = DateTime.Parse(xdoc.Root.Element(ns + "FeedbackTime").Value),
