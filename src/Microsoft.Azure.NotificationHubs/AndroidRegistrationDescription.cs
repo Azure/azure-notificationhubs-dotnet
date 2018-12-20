@@ -160,6 +160,9 @@ namespace Microsoft.Azure.NotificationHubs
             : base(gcmRegistration)
         {
             this.FcmRegistrationId = gcmRegistration.GcmRegistrationId;
+            this.ExpirationTime = gcmRegistration.ExpirationTime;
+            this.ExtensionData = gcmRegistration.ExtensionData;
+            this.PushVariables = gcmRegistration.PushVariables;
         }
 
         internal FcmRegistrationDescription(string notificationHubPath, string fcmRegistrationId, IEnumerable<string> tags)
