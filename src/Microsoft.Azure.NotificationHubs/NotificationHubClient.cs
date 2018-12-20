@@ -6,9 +6,6 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly:  InternalsVisibleTo("Microsoft.Azure.NotificationHubs.DotNetCore.Tests"),
-            InternalsVisibleTo("Microsoft.Azure.NotificationHubs.Framework.Tests")]
-
 namespace Microsoft.Azure.NotificationHubs
 {
     using Auth;
