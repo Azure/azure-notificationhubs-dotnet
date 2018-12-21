@@ -33,7 +33,9 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             public const string Name = "Name";
             public const string RegistrationCollection = "Registrations";
             public const string GcmRegistrationDescription = "GcmRegistrationDescription";
+            public const string FcmRegistrationDescription = "FcmRegistrationDescription";
             public const string GcmTemplateRegistrationDescription = "GcmTemplateRegistrationDescription";
+            public const string FcmTemplateRegistrationDescription = "FcmTemplateRegistrationDescription";
             public const string BaiduRegistrationDescription = "BaiduRegistrationDescription";
             public const string BaiduTemplateRegistrationDescription = "BaiduTemplateRegistrationDescription";
             public const string WindowsRegistrationDescription = "WindowsRegistrationDescription";
@@ -47,12 +49,14 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             public const string PnsCredential = "PnsCredential";
             public const string PnsCredentials = "PnsCredentials";
             public const string GcmCredential = "GcmCredential";
+            public const string FcmCredential = "FcmCredential";
             public const string BaiduCredential = "BaiduCredential";
             public const string WnsCredential = "WnsCredential";
             public const string ApnsCredential = "ApnsCredential";
             public const string AdmCredential = "AdmCredential";
             public const string EmailAddress = "EmailAddress";
             public const string GcmRegistrationId = "GcmRegistrationId";
+            public const string FcmRegistrationId = "FcmRegistrationId";
             public const string BaiduUserId = "BaiduUserId";
             public const string BaiduChannelId = "BaiduChannelId";
             public const string MpnsCredential = "MpnsCredential";
@@ -151,6 +155,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             public const string MpnsOutcomeCounts = "MpnsOutcomeCounts";
             public const string WnsOutcomeCounts = "WnsOutcomeCounts";
             public const string GcmOutcomeCounts = "GcmOutcomeCounts";
+            public const string FcmOutcomeCounts = "FcmOutcomeCounts";
             public const string AdmOutcomeCounts = "AdmOutcomeCounts";
             public const string BaiduOutcomeCounts = "BaiduOutcomeCounts";
             public const string NotificationBody = "NotificationBody";

@@ -14,8 +14,8 @@ namespace SendPushSample
 {
     class Program
     {
-        private const string GcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification from SDK sample\"}}";
-        private const string GcmSampleSilentNotificationContent = "{ \"message\":{\"data\":{ \"Nick\": \"Mario\", \"body\": \"great match!\", \"Room\": \"PortugalVSDenmark\" } }}";
+        private const string FcmSampleNotificationContent = "{\"data\":{\"message\":\"Notification Hub test notification from SDK sample\"}}";
+        private const string FcmSampleSilentNotificationContent = "{ \"message\":{\"data\":{ \"Nick\": \"Mario\", \"body\": \"great match!\", \"Room\": \"PortugalVSDenmark\" } }}";
         private const string AppleSampleNotificationContent = "{\"aps\":{\"alert\":\"Notification Hub test notification from SDK sample\"}}";
         private const string AppleSampleSilentNotificationContent = "{\"aps\":{\"content-available\":1}, \"foo\": 2 }";
         private const string WnsSampleNotification = "<?xml version=\"1.0\" encoding=\"utf-8\"?><toast><visual><binding template=\"ToastText01\"><text id=\"1\">Notification Hub test notification from SDK sample</text></binding></visual></toast>";
@@ -27,16 +27,16 @@ namespace SendPushSample
             var nhClient = NotificationHubClient.CreateClientFromConnectionString(config.PrimaryConnectionString, config.HubName);
 
             // Register some fake devices
-            var gcmDeviceId = Guid.NewGuid().ToString();
-            var gcmInstallation = new Installation
+            var fcmDeviceId = Guid.NewGuid().ToString();
+            var fcmInstallation = new Installation
             {
-                InstallationId = "fake-gcm-install-id",
-                Platform = NotificationPlatform.Gcm,
-                PushChannel = gcmDeviceId,
+                InstallationId = "fake-fcm-install-id",
+                Platform = NotificationPlatform.Fcm,
+                PushChannel = fcmDeviceId,
                 PushChannelExpired = false,
-                Tags = new [] { "gcm" }
+                Tags = new [] { "fcm" }
             };
-            await nhClient.CreateOrUpdateInstallationAsync(gcmInstallation);
+            await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation);
             
             var appleDeviceId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
             var apnsInstallation = new Installation
@@ -53,42 +53,42 @@ namespace SendPushSample
             {
                 case SampleConfiguration.Operation.Broadcast:
                     // Send notifications to all users
-                    var outcomeGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent);
-                    var outcomeSilentGcm = await nhClient.SendGcmNativeNotificationAsync(GcmSampleSilentNotificationContent);
+                    var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent);
+                    var outcomeSilentFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleSilentNotificationContent);
                     var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
                     var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
                     var outcomeWns = await nhClient.SendWindowsNativeNotificationAsync(WnsSampleNotification);
 
                     // Gather send outcome
-                    var gcmOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeGcm);
-                    var gcmSilentOutcomeDetails = await WaitForThePushStatusAsync("GCM", nhClient, outcomeSilentGcm);
+                    var fcmOutcomeDetails = await WaitForThePushStatusAsync("FCM", nhClient, outcomeFcm);
+                    var fcmSilentOutcomeDetails = await WaitForThePushStatusAsync("FCM", nhClient, outcomeSilentFcm);
                     var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
                     var apnsSilentOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeSilentApns);
                     var wnsOutcomeDetails = await WaitForThePushStatusAsync("WNS", nhClient, outcomeWns);
-                    PrintPushOutcome("GCM", gcmOutcomeDetails, gcmOutcomeDetails.GcmOutcomeCounts);
-                    PrintPushOutcome("GCM Silent ", gcmSilentOutcomeDetails, gcmSilentOutcomeDetails.GcmOutcomeCounts);
+                    PrintPushOutcome("FCM", fcmOutcomeDetails, fcmOutcomeDetails.FcmOutcomeCounts);
+                    PrintPushOutcome("FCM Silent ", fcmSilentOutcomeDetails, fcmSilentOutcomeDetails.FcmOutcomeCounts);
                     PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
                     PrintPushOutcome("APNS Silent", apnsSilentOutcomeDetails, apnsSilentOutcomeDetails.ApnsOutcomeCounts);
                     PrintPushOutcome("WNS", wnsOutcomeDetails, wnsOutcomeDetails.WnsOutcomeCounts);
                     break;
                 case SampleConfiguration.Operation.SendByTag:
                     // Send notifications by tag
-                    var outcomeGcmByTag = await nhClient.SendGcmNativeNotificationAsync(GcmSampleNotificationContent, config.Tag ?? "gcm");
+                    var outcomeFcmByTag = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, config.Tag ?? "fcm");
                     var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, config.Tag ?? "apns");
                     // Gather send outcome
-                    var gcmTagOutcomeDetails = await WaitForThePushStatusAsync("GCM Tags", nhClient, outcomeGcmByTag);
+                    var fcmTagOutcomeDetails = await WaitForThePushStatusAsync("FCM Tags", nhClient, outcomeFcmByTag);
                     var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
-                    PrintPushOutcome("GCM Tags", gcmTagOutcomeDetails, gcmTagOutcomeDetails.GcmOutcomeCounts);
+                    PrintPushOutcome("FCM Tags", fcmTagOutcomeDetails, fcmTagOutcomeDetails.FcmOutcomeCounts);
                     PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
                     break;
                 case SampleConfiguration.Operation.SendByDevice:
                     // Send notifications by deviceId
-                    var outcomeGcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateGcmNotification(), config.GcmDeviceId ?? gcmDeviceId);
+                    var outcomeFcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateFcmNotification(), config.FcmDeviceId ?? fcmDeviceId);
                     var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), config.AppleDeviceId ?? appleDeviceId);
                     // Gather send outcome
-                    var gcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("GCM direct", nhClient, outcomeGcmByDeviceId);
+                    var fcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("FCM direct", nhClient, outcomeFcmByDeviceId);
                     var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
-                    PrintPushOutcome("GCM Direct", gcmDirectSendOutcomeDetails, gcmDirectSendOutcomeDetails.ApnsOutcomeCounts);
+                    PrintPushOutcome("FCM Direct", fcmDirectSendOutcomeDetails, fcmDirectSendOutcomeDetails.ApnsOutcomeCounts);
                     PrintPushOutcome("APNS Direct", apnsDirectSendOutcomeDetails, apnsDirectSendOutcomeDetails.ApnsOutcomeCounts);
                     break;
                 default:
@@ -97,9 +97,9 @@ namespace SendPushSample
             }
         }
 
-        private static Notification CreateGcmNotification()
+        private static Notification CreateFcmNotification()
         {
-            return new GcmNotification(GcmSampleNotificationContent);
+            return new FcmNotification(FcmSampleNotificationContent);
         }
 
         private static Notification CreateApnsNotification()

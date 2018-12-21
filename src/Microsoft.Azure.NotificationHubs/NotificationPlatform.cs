@@ -32,10 +32,18 @@ namespace Microsoft.Azure.NotificationHubs
         Mpns=3,
 
         /// <summary>
-        /// GCM Installation Platform
+        /// FCM Installation Platform
         /// </summary>
+        ///
+        /// <remarks>
+        /// The "gcm" value is intentional. As of version 3.0.0, all GCM related methods are hidden from
+        /// the end-user in order to incentivize them to switch their code over to FCM methods. However,
+        /// due to the backend having issues dealing with FCM models, the SDK converts them to GCM prior
+        /// sending to the service, so the "Fcm" value will be sent as "Gcm". Both SDK and backend still
+        /// transparently operate GCM models while allowing end-user to work with FCM classes.
+        /// </remarks>
         [EnumMember(Value = "gcm")]
-        Gcm=4,
+        Fcm=4,
 
         /// <summary>
         /// ADM Installation Platform

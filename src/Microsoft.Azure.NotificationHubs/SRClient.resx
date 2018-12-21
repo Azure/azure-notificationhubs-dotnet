@@ -988,6 +988,9 @@
   <data name="GcmRequiredProperties" xml:space="preserve">
     <value>Only GoogleApiKey and GcmEndpoint are required.</value>
   </data>
+  <data name="FCMRegistrationInvalidId" xml:space="preserve">
+    <value>FCM Registration Id is invalid.</value>
+  </data>
   <data name="GoogleApiKeyNotSpecified" xml:space="preserve">
     <value>GoogleApiKey is either not specified or invalid.</value>
   </data>

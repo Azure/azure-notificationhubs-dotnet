@@ -5,9 +5,9 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <VersionPrefix>2.0.2.0</VersionPrefix>
+    <VersionPrefix>3.0.0.0</VersionPrefix>
     <PackageId>Microsoft.Azure.NotificationHubs</PackageId>
-    <PackageVersion>2.0.2</PackageVersion>
+    <PackageVersion>3.0.0</PackageVersion>
     <Authors>Microsoft</Authors>
     <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=218949</PackageLicenseUrl>
     <PackageProjectUrl>https://aka.ms/NHNuget</PackageProjectUrl>
