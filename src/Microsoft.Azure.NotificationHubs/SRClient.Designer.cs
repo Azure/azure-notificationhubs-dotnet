@@ -1201,6 +1201,13 @@ namespace Microsoft.Azure.NotificationHubs {
                 return ResourceManager.GetString("GcmRequiredProperties", Culture);
             }
         }
+
+        /// <summary>Gets localized string like: FCM Registration Id is invalid.</summary>
+        internal static string FCMRegistrationInvalidId {
+            get {
+                return ResourceManager.GetString("FCMRegistrationInvalidId", Culture);
+            }
+        }
         
         /// <summary>Gets localized string like: GoogleApiKey is either not specified or invalid.</summary>
         internal static string GoogleApiKeyNotSpecified {

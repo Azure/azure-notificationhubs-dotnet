@@ -44,8 +44,16 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 this.CreateSerializer<GcmRegistrationDescription>());
 
             this.entirySerializers.Add(
+                typeof(FcmRegistrationDescription).Name,
+                this.CreateSerializer<FcmRegistrationDescription>());
+
+            this.entirySerializers.Add(
                 typeof(GcmTemplateRegistrationDescription).Name,
                 this.CreateSerializer<GcmTemplateRegistrationDescription>());
+
+            this.entirySerializers.Add(
+                typeof(FcmTemplateRegistrationDescription).Name,
+                this.CreateSerializer<FcmTemplateRegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(MpnsRegistrationDescription).Name,
@@ -141,6 +149,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 OmitXmlDeclaration = true
             };
 
+            // Convert FCM descriptions into their GCM counterparts
+            if (description.GetType().Name == "FcmRegistrationDescription")
+            {
+                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
+            }
+
+            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
+            {
+                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
+            }
+
             var serializer = GetSerializer(description.GetType().Name);
             using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
@@ -152,6 +171,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
         public void Serialize(EntityDescription description, XmlWriter writer)
         {
+            // Convert FCM descriptions into their GCM counterparts
+            if (description.GetType().Name == "FcmRegistrationDescription")
+            {
+                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
+            }
+
+            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
+            {
+                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
+            }
+
             var serializer = GetSerializer(description.GetType().Name);
             serializer.WriteObject(writer, description);
         }

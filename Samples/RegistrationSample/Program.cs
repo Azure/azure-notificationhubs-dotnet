@@ -26,45 +26,45 @@ namespace RegistrationSample
         private static async Task CreateAndDeleteRegistrationAsync(NotificationHubClient nhClient)
         {
             var registrationId = await nhClient.CreateRegistrationIdAsync();
-            var registrationDescr = await nhClient.CreateGcmNativeRegistrationAsync(registrationId);
-            Console.WriteLine($"Created GCM registration {registrationDescr.GcmRegistrationId}");
+            var registrationDescr = await nhClient.CreateFcmNativeRegistrationAsync(registrationId);
+            Console.WriteLine($"Created FCM registration {registrationDescr.FcmRegistrationId}");
 
             var allRegistrations = await nhClient.GetAllRegistrationsAsync(1000);
             foreach (var regFromServer in allRegistrations)
             {
                 if (regFromServer.RegistrationId == registrationDescr.RegistrationId)
                 {
-                    Console.WriteLine($"Found GCM registration {registrationDescr.GcmRegistrationId}");
+                    Console.WriteLine($"Found FCM registration {registrationDescr.FcmRegistrationId}");
                     break;
                 }
             }
 
-            //registrationDescr = await nhClient.GetRegistrationAsync<GcmRegistrationDescription>(registrationId);
-            //Console.WriteLine($"Retrieved GCM registration {registrationDescr.GcmRegistrationId}");
+            //registrationDescr = await nhClient.GetRegistrationAsync<FcmRegistrationDescription>(registrationId);
+            //Console.WriteLine($"Retrieved FCM registration {registrationDescr.FcmRegistrationId}");
 
             await nhClient.DeleteRegistrationAsync(registrationDescr);
-            Console.WriteLine($"Deleted GCM registration {registrationDescr.GcmRegistrationId}");
+            Console.WriteLine($"Deleted FCM registration {registrationDescr.FcmRegistrationId}");
         }
 
         private static async Task CreateAndDeleteInstallationAsync(NotificationHubClient nhClient)
         {
             // Register some fake devices
-            var gcmDeviceId = Guid.NewGuid().ToString();
-            var gcmInstallation = new Installation
+            var fcmDeviceId = Guid.NewGuid().ToString();
+            var fcmInstallation = new Installation
             {
-                InstallationId = gcmDeviceId,
-                Platform = NotificationPlatform.Gcm,
-                PushChannel = gcmDeviceId,
+                InstallationId = fcmDeviceId,
+                Platform = NotificationPlatform.Fcm,
+                PushChannel = fcmDeviceId,
                 PushChannelExpired = false,
-                Tags = new[] { "gcm" }
+                Tags = new[] { "fcm" }
             };
-            await nhClient.CreateOrUpdateInstallationAsync(gcmInstallation);
+            await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation);
 
             while (true)
             {
                 try
                 {
-                    var installationFromServer = await nhClient.GetInstallationAsync(gcmInstallation.InstallationId);
+                    var installationFromServer = await nhClient.GetInstallationAsync(fcmInstallation.InstallationId);
                     break;
                 }
                 catch (MessagingEntityNotFoundException)
@@ -73,18 +73,18 @@ namespace RegistrationSample
                     await Task.Delay(1000);
                 }
             }
-            Console.WriteLine($"Created GCM installation {gcmInstallation.InstallationId}");
-            await nhClient.DeleteInstallationAsync(gcmInstallation.InstallationId);
+            Console.WriteLine($"Created FCM installation {fcmInstallation.InstallationId}");
+            await nhClient.DeleteInstallationAsync(fcmInstallation.InstallationId);
             while (true)
             {
                 try
                 {
-                    var installationFromServer = await nhClient.GetInstallationAsync(gcmInstallation.InstallationId);
+                    var installationFromServer = await nhClient.GetInstallationAsync(fcmInstallation.InstallationId);
                     await Task.Delay(1000);
                 }
                 catch (MessagingEntityNotFoundException)
                 {
-                    Console.WriteLine($"Deleted GCM installation {gcmInstallation.InstallationId}");
+                    Console.WriteLine($"Deleted FCM installation {fcmInstallation.InstallationId}");
                     break;
                 }
             }
