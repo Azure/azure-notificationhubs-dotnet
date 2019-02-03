@@ -2139,7 +2139,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             using (var xmlReader = XmlReader.Create(source, new XmlReaderSettings { Async = true }))
             {
-                // Advancing to the first element skiping non-content nodes
+                // Advancing to the first element skipping non-content nodes
                 await xmlReader.MoveToContentAsync().ConfigureAwait(false);
 
                 if (!xmlReader.IsStartElement("feed"))
@@ -2150,11 +2150,25 @@ namespace Microsoft.Azure.NotificationHubs
                 // Advancing to the next Atom entry
                 while (xmlReader.ReadToFollowing("entry"))
                 {
-                    // Anvancing to content of the Atom entry
+                    // Advancing to content of the Atom entry
                     if (xmlReader.ReadToDescendant("content"))
                     {
                         xmlReader.ReadStartElement();
-                        result.Add((TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name));
+                        var entity = (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+
+                        if (entity is GcmTemplateRegistrationDescription)
+                        {
+                            var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(entity as GcmTemplateRegistrationDescription);
+                            entity = (fcmTemplateRegistrationDescription as TEntity);
+                        }
+                        
+                        if (entity is GcmRegistrationDescription)
+                        {
+                            var fcmRegistrationDescription = new FcmRegistrationDescription(entity as GcmRegistrationDescription);
+                            entity = (fcmRegistrationDescription as TEntity);
+                        }
+                        
+                        result.Add(entity);
                     }
                 }
             }
