@@ -16,7 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     using System.Text.RegularExpressions;
     using System.Collections.Generic;
     using System.Xml;
-    using Messaging;
+    using Microsoft.Azure.NotificationHubs.Messaging;
     using Newtonsoft.Json;
 
     /// <summary>
