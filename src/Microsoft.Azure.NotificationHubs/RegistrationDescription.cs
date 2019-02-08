@@ -8,17 +8,15 @@
 namespace Microsoft.Azure.NotificationHubs
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
-    using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Collections.Generic;
     using System.Xml;
-    using Microsoft.Azure.NotificationHubs.Messaging;
+    using Messaging;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -26,15 +24,15 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     [DataContract(Namespace = ManagementStrings.Namespace)]
     [KnownType(typeof(GcmRegistrationDescription))]
+    [KnownType(typeof(GcmTemplateRegistrationDescription))]
     [KnownType(typeof(FcmRegistrationDescription))]
+    [KnownType(typeof(FcmTemplateRegistrationDescription))]
     [KnownType(typeof(AppleRegistrationDescription))]
     [KnownType(typeof(AppleTemplateRegistrationDescription))]
     [KnownType(typeof(WindowsRegistrationDescription))]
     [KnownType(typeof(WindowsTemplateRegistrationDescription))]
     [KnownType(typeof(MpnsRegistrationDescription))]
     [KnownType(typeof(MpnsTemplateRegistrationDescription))]
-    [KnownType(typeof(GcmTemplateRegistrationDescription))]
-    [KnownType(typeof(FcmTemplateRegistrationDescription))]
     [KnownType(typeof(AdmRegistrationDescription))]
     [KnownType(typeof(AdmTemplateRegistrationDescription))]
     [KnownType(typeof(BaiduRegistrationDescription))]
@@ -53,7 +51,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// Initializes a new instance of the <see cref="RegistrationDescription"/> class.
         /// </summary>
         /// <param name="registration">The registration.</param>
-        public RegistrationDescription(RegistrationDescription registration)
+        protected RegistrationDescription(RegistrationDescription registration)
         {
             this.NotificationHubPath = registration.NotificationHubPath;
             this.RegistrationId = registration.RegistrationId;
@@ -160,7 +158,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        // Only used in client to help easier manupulate tagsString
+        // Only used in client to help easier manipulate tagsString
         /// <summary>
         /// Gets or sets a set of tags associated with the registration.
         /// </summary>
@@ -216,6 +214,15 @@ namespace Microsoft.Azure.NotificationHubs
         internal abstract void SetPnsHandle(string pnsHandle);
 
         internal abstract RegistrationDescription Clone();
+
+        /// <summary>
+        /// Returns platform-specific Psn handle.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// platform-specific Psn handle.
+        /// </returns>
+        public string PsnHandle => GetPnsHandle();
 
         /// <summary>
         /// Validates the given tags.
