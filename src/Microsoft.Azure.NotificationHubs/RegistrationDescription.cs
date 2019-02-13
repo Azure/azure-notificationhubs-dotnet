@@ -51,7 +51,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// Initializes a new instance of the <see cref="RegistrationDescription"/> class.
         /// </summary>
         /// <param name="registration">The registration.</param>
-        protected RegistrationDescription(RegistrationDescription registration)
+        public RegistrationDescription(RegistrationDescription registration)
         {
             this.NotificationHubPath = registration.NotificationHubPath;
             this.RegistrationId = registration.RegistrationId;
@@ -216,13 +216,13 @@ namespace Microsoft.Azure.NotificationHubs
         internal abstract RegistrationDescription Clone();
 
         /// <summary>
-        /// Returns platform-specific Psn handle.
+        /// Returns platform-specific Pns handle.
         /// </summary>
         /// 
         /// <returns>
-        /// platform-specific Psn handle.
+        /// Platform-specific Pns handle.
         /// </returns>
-        public string PsnHandle => GetPnsHandle();
+        public string PnsHandle => GetPnsHandle();
 
         /// <summary>
         /// Validates the given tags.
