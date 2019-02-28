@@ -1706,6 +1706,9 @@ namespace Microsoft.Azure.NotificationHubs
             requestUri.Path += "messages/$batch";
             AddToQuery(requestUri, "&direct");
 
+            // Convert FcmNotification into GcmNotification
+            notification = FcmToGcmNotificationTypeCast(notification);
+
             notification.ValidateAndPopulateHeaders();
 
             using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
@@ -1785,10 +1788,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             // Convert FcmNotification into GcmNotification
-            if (notification.GetType().Name == "FcmNotification")
-            {
-                notification = new GcmNotification((FcmNotification) notification);
-            }
+            notification = FcmToGcmNotificationTypeCast(notification);
 
             notification.ValidateAndPopulateHeaders();
 
@@ -1846,10 +1846,7 @@ namespace Microsoft.Azure.NotificationHubs
             requestUri.Path += "schedulednotifications";
 
             // Convert FcmNotification into GcmNotification
-            if (notification.GetType().Name == "FcmNotification")
-            {
-                notification = new GcmNotification((FcmNotification) notification);
-            }
+            notification = FcmToGcmNotificationTypeCast(notification);
 
             notification.ValidateAndPopulateHeaders();
 
@@ -2221,6 +2218,16 @@ namespace Microsoft.Azure.NotificationHubs
                 // Removing leading '?' from the result query
                 uriBuilder.Query = uriBuilder.Query.Substring(1) + query;
             }
+        }
+
+        private static Notification FcmToGcmNotificationTypeCast(Notification notification)
+        {
+            if (notification.GetType().Name == "FcmNotification")
+            {
+                notification = new GcmNotification((FcmNotification) notification);
+            }
+
+            return notification;
         }
     }
 }
