@@ -1706,6 +1706,11 @@ namespace Microsoft.Azure.NotificationHubs
             requestUri.Path += "messages/$batch";
             AddToQuery(requestUri, "&direct");
 
+            if (notification.GetType().Name == "FcmNotification")
+            {
+                notification = new GcmNotification((FcmNotification) notification);
+            }
+
             notification.ValidateAndPopulateHeaders();
 
             using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
