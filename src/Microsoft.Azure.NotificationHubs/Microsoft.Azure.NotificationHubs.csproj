@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <VersionPrefix>3.0.0.0</VersionPrefix>
     <PackageId>Microsoft.Azure.NotificationHubs</PackageId>
