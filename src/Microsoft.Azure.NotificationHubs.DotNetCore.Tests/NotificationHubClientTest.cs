@@ -822,6 +822,18 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        private async Task SendDirectNotificationAsync_SendDirectFcmBatchNotification_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
+
+            var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, new[] { _configuration["FcmDeviceToken"] });
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+        [Fact]
         private async Task SendNotificationAsync_SendMpnsNativeNotification_GetSuccessfulResultBack()
         {
             LoadMockData();
