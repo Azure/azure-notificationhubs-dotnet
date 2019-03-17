@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreateHubSample", "CreateHubSample.csproj", "{BA74B8A3-0864-431E-A120-D9712517751D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreateHubSample", "CreateHubSample\CreateHubSample.csproj", "{80D67BE7-7C23-4452-9EB2-E6E6428D4A4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA74B8A3-0864-431E-A120-D9712517751D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA74B8A3-0864-431E-A120-D9712517751D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA74B8A3-0864-431E-A120-D9712517751D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA74B8A3-0864-431E-A120-D9712517751D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80D67BE7-7C23-4452-9EB2-E6E6428D4A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80D67BE7-7C23-4452-9EB2-E6E6428D4A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80D67BE7-7C23-4452-9EB2-E6E6428D4A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80D67BE7-7C23-4452-9EB2-E6E6428D4A4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
