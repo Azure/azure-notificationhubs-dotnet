@@ -1,15 +1,15 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.NotificationHubs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Azure.NotificationHubs;
 
-namespace NHubSamples
+namespace AzureFunctionsSample
 {
     public static class RegisterDevice
     {
@@ -35,7 +35,7 @@ namespace NHubSamples
             string tags = req.Query["tags"];
             tags = tags ?? data?.tags;
             var hub = NotificationHubClient.CreateClientFromConnectionString(
-                nh_samples_function.Parameters.ConnectionString, 
+                Parameters.ConnectionString, 
                 hubName);
 
             Installation installation = new Installation();
