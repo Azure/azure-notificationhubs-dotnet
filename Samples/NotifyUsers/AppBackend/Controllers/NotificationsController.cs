@@ -53,7 +53,7 @@ namespace AppBackend.Controllers
                 case "gcm":
                     // Android
                     var notif = "{ \"data\" : {\"message\":\"" + "From " + user + ": " + message + "\"}}";
-                    outcome = await Notifications.Instance.Hub.SendGcmNativeNotificationAsync(notif, userTag);
+                    outcome = await Notifications.Instance.Hub.SendFcmNativeNotificationAsync(notif, userTag);
                     break;
             }
 

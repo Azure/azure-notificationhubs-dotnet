@@ -76,7 +76,7 @@ namespace AppBackend.Controllers
                     registration = new AppleRegistrationDescription(deviceUpdate.Handle);
                     break;
                 case "gcm":
-                    registration = new GcmRegistrationDescription(deviceUpdate.Handle);
+                    registration = new FcmRegistrationDescription(deviceUpdate.Handle);
                     break;
                 default:
                     throw new HttpResponseException(HttpStatusCode.BadRequest);
