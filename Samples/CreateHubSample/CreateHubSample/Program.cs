@@ -3,11 +3,7 @@
 // license information.
 
 using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure;
 using Microsoft.Azure.Management.NotificationHubs;
 using Microsoft.Azure.Management.NotificationHubs.Models;
 using Microsoft.Azure.Management.ResourceManager;
@@ -46,11 +42,11 @@ namespace CreateHubSample
             });
 
             // Create hub
-            Microsoft.Azure.Management.NotificationHubs.Models.GcmCredential gcmCreds = null;
-            Microsoft.Azure.Management.NotificationHubs.Models.ApnsCredential apnsCreds = null;
+            GcmCredential gcmCreds = null;
+            ApnsCredential apnsCreds = null;
             if (config.GcmCreds != null)
             {
-                gcmCreds = new Microsoft.Azure.Management.NotificationHubs.Models.GcmCredential
+                gcmCreds = new GcmCredential
                 {
                     GoogleApiKey = config.GcmCreds
                 };
@@ -58,7 +54,7 @@ namespace CreateHubSample
             if (config.ApnsCreds != null)
             {
                 var apnsCredsSplit = config.ApnsCreds.Replace("\\n", "\n").Split(";");
-                apnsCreds = new Microsoft.Azure.Management.NotificationHubs.Models.ApnsCredential
+                apnsCreds = new ApnsCredential
                 {
                     KeyId = apnsCredsSplit[0],
                     // Id
