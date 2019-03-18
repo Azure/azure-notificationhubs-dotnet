@@ -1,25 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="11850WesleyMcSwain.NotificationHubsGetStarted" Publisher="CN=35031193-3A03-4C43-9513-B475A5D7C6C6" Version="1.1.0.0" />
+
+<Package 
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  IgnorableNamespaces="uap mp">
+
+  <Identity
+    Name="28f089c5-8e10-4b47-82a5-d67f3029e532"
+    Publisher="CN=kirill.pyatunin"
+    Version="1.0.0.0" />
+
+  <mp:PhoneIdentity PhoneProductId="28f089c5-8e10-4b47-82a5-d67f3029e532" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  
   <Properties>
     <DisplayName>NotificationHubsGetStarted</DisplayName>
     <PublisherDisplayName>Wesley McSwain</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
-  <Prerequisites>
-    <OSMinVersion>6.3.0</OSMinVersion>
-    <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
-  </Prerequisites>
+  
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+  </Dependencies>
+  
   <Resources>
     <Resource Language="x-generate" />
   </Resources>
+  
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="NotifyUsers.Windows.App">
-      <m2:VisualElements DisplayName="NotificationHubsGetStarted" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="NotifyUsers.Windows" ForegroundText="light" BackgroundColor="#464646" ToastCapable="true">
-        <m2:SplashScreen Image="Assets\SplashScreen.png" />
-      </m2:VisualElements>
+      <uap:VisualElements 
+	  DisplayName="NotificationHubsGetStarted" 
+	  Square150x150Logo="Assets\Logo.png" 
+	  Square44x44Logo="Assets\SmallLogo.png" 
+	  Description="NotifyUsers.Windows" 
+	  BackgroundColor="#464646">
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
     </Application>
   </Applications>
+  
   <Capabilities>
     <Capability Name="internetClient" />
   </Capabilities>

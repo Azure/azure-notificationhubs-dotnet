@@ -75,7 +75,7 @@ namespace NotifyUsers
                 catch (Exception ex)
                 {
                     MessageDialog alert = new MessageDialog(ex.Message, "Failed to send " + pns + " message");
-                    alert.ShowAsync();
+                    await alert.ShowAsync();
                 }
             }
         }
@@ -102,7 +102,7 @@ namespace NotifyUsers
             catch (Exception ex)
             {
                 MessageDialog alert = new MessageDialog(ex.Message, "Failed to register with RegisterClient");
-                alert.ShowAsync();
+                await alert.ShowAsync();
             }
 
 

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using Microsoft.Azure;
 using System.Net;
 using System.IO;
 using System.Xml;
@@ -16,8 +15,8 @@ namespace SendRestExample
         static void Main(string[] args)
         {
             // Parse the hubname and connection string.
-            string hubName = CloudConfigurationManager.GetSetting("HubName");
-            string fullConnectionString = CloudConfigurationManager.GetSetting("DefaultFullSharedAccessSignature");
+            string hubName = ConfigurationManager.AppSettings["HubName"];
+            string fullConnectionString = ConfigurationManager.AppSettings["DefaultFullSharedAccessSignature"];
 
 
             // Example sending a native notification
