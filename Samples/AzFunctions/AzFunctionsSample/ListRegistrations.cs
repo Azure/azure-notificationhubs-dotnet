@@ -24,7 +24,8 @@ namespace AzureFunctionsSample
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             hubName = hubName ?? data?.hubName;
-            if(hubName == null){
+            if(hubName == null)
+            {
                 return new BadRequestObjectResult("Please pass a Hub name on the query string or in the request body");
             }
 
@@ -34,11 +35,15 @@ namespace AzureFunctionsSample
 
             CollectionQueryResult<RegistrationDescription> regs = await hub.GetAllRegistrationsAsync(0);
             string result = "";int quantity = 0;
-            foreach(RegistrationDescription reg in regs){
+            foreach(RegistrationDescription reg in regs)
+            {
                 result += $"{reg.RegistrationId}";
-                if(reg.Tags != null){
+                if(reg.Tags != null)
+                {
                     result += $"-> {reg.Tags.Count} tags: {reg.Tags.ToString()}";
-                } else{
+                }
+                else
+                {
                     result += "-> No tags";
                 }
                 result += "\n";
