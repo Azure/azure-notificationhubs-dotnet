@@ -15,26 +15,34 @@ namespace SendRestExample
             //Parse Connectionstring
             char[] separator = { ';' };
             string[] parts = connectionString.Split(separator);
-            for (int i = 0; i < parts.Length; i++)
+            foreach (var t in parts)
             {
-                if (parts[i].StartsWith("Endpoint"))
-                    Endpoint = "https" + parts[i].Substring(11);
-                if (parts[i].StartsWith("SharedAccessKeyName"))
-                    SasKeyName = parts[i].Substring(20);
-                if (parts[i].StartsWith("SharedAccessKey"))
-                    SasKeyValue = parts[i].Substring(16);
+                if (t.StartsWith("Endpoint"))
+                {
+                    Endpoint = "https" + t.Substring(11);
+                }
+
+                if (t.StartsWith("SharedAccessKeyName"))
+                {
+                    SasKeyName = t.Substring(20);
+                }
+
+                if (t.StartsWith("SharedAccessKey"))
+                {
+                    SasKeyValue = t.Substring(16);
+                }
             }
         }
 
-        public string getSaSToken(string uri, int minUntilExpire)
+        public string GetSaSToken(string uri, int minUntilExpire)
         {
             string targetUri = Uri.EscapeDataString(uri.ToLower()).ToLower();
 
             // Add an expiration in seconds to it.
             long expiresOnDate = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             expiresOnDate += minUntilExpire * 60 * 1000;
-            long expires_seconds = expiresOnDate / 1000;
-            String toSign = targetUri + "\n" + expires_seconds;
+            long expiresSeconds = expiresOnDate / 1000;
+            String toSign = targetUri + "\n" + expiresSeconds;
 
             // Generate a HMAC-SHA256 hash or the uri and expiration using your secret key.
             byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(SasKeyValue);
@@ -44,7 +52,7 @@ namespace SendRestExample
             // Create the token string using the base64
             string signature = Uri.EscapeDataString(Convert.ToBase64String(hash));
 
-            return "SharedAccessSignature sr=" + targetUri + "&sig=" + signature + "&se=" + expires_seconds + "&skn=" + SasKeyName;
+            return "SharedAccessSignature sr=" + targetUri + "&sig=" + signature + "&se=" + expiresSeconds + "&skn=" + SasKeyName;
         }
 
     }

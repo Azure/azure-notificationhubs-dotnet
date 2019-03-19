@@ -72,7 +72,7 @@ namespace SendRestExample
             string uri = connectionSaSUtil.Endpoint + hubname + "/" + hubResource + apiVersion;
 
             // 10 min expiration
-            string SasToken = connectionSaSUtil.getSaSToken(uri, 10);
+            string SasToken = connectionSaSUtil.GetSaSToken(uri, 10);
 
             WebHeaderCollection headers = new WebHeaderCollection();
             string body;
@@ -113,7 +113,7 @@ namespace SendRestExample
             char[] seps1 = { '?' };
             char[] seps2 = { '/' };
 
-            if ((int)response.StatusCode != 201)
+            if (response != null && (int)response.StatusCode != 201)
             {
                 return string.Format("Failed to get notification message id - Http Status {0} : {1}", (int)response.StatusCode, response.StatusCode.ToString());
             }
@@ -140,7 +140,7 @@ namespace SendRestExample
             //=== Generate SaS Security Token for Authentication header ===
             // Determine the targetUri that we will sign
             string uri = connectionSasUtil.Endpoint + hubname + "/" + hubResource + apiVersion;
-            string SasToken = connectionSasUtil.getSaSToken(uri, 60);
+            string SasToken = connectionSasUtil.GetSaSToken(uri, 60);
 
             return await ExecuteREST("GET", uri, SasToken);
         }
@@ -159,7 +159,7 @@ namespace SendRestExample
             string uri = connectionSasUtil.Endpoint + hubName + "/" + hubResource + apiVersion;
 
             // 10 min expiration
-            string SasToken = connectionSasUtil.getSaSToken(uri, 10);
+            string SasToken = connectionSasUtil.GetSaSToken(uri, 10);
             response = await ExecuteREST("GET", uri, SasToken);
 
             if ((int)response.StatusCode != 200)
@@ -394,7 +394,7 @@ namespace SendRestExample
             receiveStream.Close();
         }
 
-        class JsonHelper
+        private static class JsonHelper
         {
             private const string INDENT_STRING = "  ";
             public static string FormatJson(string str)
