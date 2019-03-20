@@ -42,7 +42,7 @@ namespace SendRestExample
                 Console.WriteLine("\nWaiting 0.5 minutes before retrieving telemetry on the notification...\n");
                 System.Threading.Thread.Sleep(1000 * 30);
                 Console.WriteLine("Telemetry for " + messageId + "\n");
-                HttpWebResponse telemetryResponse = GetNotificationTelemtry(messageId, hubName, fullConnectionString).Result;
+                HttpWebResponse telemetryResponse = GetNotificationTelemetry(messageId, hubName, fullConnectionString).Result;
                 DisplayResponseBody(telemetryResponse);
             }
 
@@ -58,21 +58,21 @@ namespace SendRestExample
             }
         }
 
-        private static async Task<string> SendNativeNotificationREST(string hubname, string connectionString, string message, string nativeType)
+        private static async Task<string> SendNativeNotificationREST(string hubName, string connectionString, string message, string nativeType)
         {
-            ConnectionStringUtility connectionSaSUtil = new ConnectionStringUtility(connectionString);
+            var connectionSaSUtil = new ConnectionStringUtility(connectionString);
             string location = null;
 
-            string hubResource = "messages/?";
-            string apiVersion = "api-version=2015-04";
-            string notificationId = "Failed to get Notification Id";
+            var hubResource = "messages/?";
+            var apiVersion = "api-version=2015-04";
+            var notificationId = "Failed to get Notification Id";
 
             //=== Generate SaS Security Token for Authentication header ===
             // Determine the targetUri that we will sign
-            string uri = connectionSaSUtil.Endpoint + hubname + "/" + hubResource + apiVersion;
+            var uri = connectionSaSUtil.Endpoint + hubName + "/" + hubResource + apiVersion;
 
             // 10 min expiration
-            string SasToken = connectionSaSUtil.GetSaSToken(uri, 10);
+            var sasToken = connectionSaSUtil.GetSaSToken(uri, 10);
 
             WebHeaderCollection headers = new WebHeaderCollection();
             string body;
@@ -84,13 +84,13 @@ namespace SendRestExample
                 case "apns":
                     headers.Add("ServiceBusNotification-Format", "apple");
                     body = "{\"aps\":{\"alert\":\"" + message + "\"}}";
-                    response = await ExecuteREST("POST", uri, SasToken, headers, body);
+                    response = await ExecuteREST("POST", uri, sasToken, headers, body);
                     break;
 
                 case "gcm":
                     headers.Add("ServiceBusNotification-Format", "gcm");
                     body = "{\"data\":{\"message\":\"" + message + "\"}}";
-                    response = await ExecuteREST("POST", uri, SasToken, headers, body);
+                    response = await ExecuteREST("POST", uri, sasToken, headers, body);
                     break;
 
                 case "wns":
@@ -106,84 +106,84 @@ namespace SendRestExample
                                     "</binding>" +
                                 "</visual>" +
                             "</toast>";
-                    response = await ExecuteREST("POST", uri, SasToken, headers, body, "application/xml");
+                    response = await ExecuteREST("POST", uri, sasToken, headers, body, "application/xml");
                     break;
             }
 
             char[] seps1 = { '?' };
             char[] seps2 = { '/' };
 
-            if (response != null && (int)response.StatusCode != 201)
+            if (response != null && response.StatusCode != HttpStatusCode.Created)
             {
                 return string.Format("Failed to get notification message id - Http Status {0} : {1}", (int)response.StatusCode, response.StatusCode.ToString());
             }
 
             if ((location = response.Headers.Get("Location")) != null)
             {
-                string[] locationUrl = location.Split(seps1);
-                string[] locationParts = locationUrl[0].Split(seps2);
+                var locationUrl = location.Split(seps1);
+                var locationParts = locationUrl[0].Split(seps2);
 
                 notificationId = locationParts[locationParts.Length - 1];
 
                 return notificationId;
             }
-            else
-                return null;
+
+            return null;
         }
 
-        private static async Task<HttpWebResponse> GetNotificationTelemtry(string id, string hubname, string connectionString)
+        private static async Task<HttpWebResponse> GetNotificationTelemetry(string id, string hubName, string connectionString)
         {
-            string hubResource = "messages/" + id + "?";
-            string apiVersion = "api-version=2015-04";
-            ConnectionStringUtility connectionSasUtil = new ConnectionStringUtility(connectionString);
+            var hubResource = "messages/" + id + "?";
+            var apiVersion = "api-version=2015-04";
+            var connectionSasUtil = new ConnectionStringUtility(connectionString);
 
             //=== Generate SaS Security Token for Authentication header ===
             // Determine the targetUri that we will sign
-            string uri = connectionSasUtil.Endpoint + hubname + "/" + hubResource + apiVersion;
-            string SasToken = connectionSasUtil.GetSaSToken(uri, 60);
+            var uri = connectionSasUtil.Endpoint + hubName + "/" + hubResource + apiVersion;
+            var sasToken = connectionSasUtil.GetSaSToken(uri, 60);
 
-            return await ExecuteREST("GET", uri, SasToken);
+            return await ExecuteREST("GET", uri, sasToken);
         }
 
 
         private static async Task<string> GetPlatformNotificationServiceFeedbackContainer(string hubName, string connectionString)
         {
             HttpWebResponse response = null;
-            ConnectionStringUtility connectionSasUtil = new ConnectionStringUtility(connectionString);
+            var connectionSasUtil = new ConnectionStringUtility(connectionString);
 
-            string hubResource = "feedbackcontainer?";
-            string apiVersion = "api-version=2015-04";
+            var hubResource = "feedbackcontainer?";
+            var apiVersion = "api-version=2015-04";
 
             //=== Generate SaS Security Token for Authentication header ===
             // Determine the targetUri that we will sign
-            string uri = connectionSasUtil.Endpoint + hubName + "/" + hubResource + apiVersion;
+            var uri = connectionSasUtil.Endpoint + hubName + "/" + hubResource + apiVersion;
 
             // 10 min expiration
-            string SasToken = connectionSasUtil.GetSaSToken(uri, 10);
-            response = await ExecuteREST("GET", uri, SasToken);
+            var sasToken = connectionSasUtil.GetSaSToken(uri, 10);
+            response = await ExecuteREST("GET", uri, sasToken);
 
-            if ((int)response.StatusCode != 200)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                Console.WriteLine(string.Format("Failed to get PNS feedback contaioner URI - Http Status {0} : {1}", 
+                Console.WriteLine(string.Format("Failed to get PNS feedback container URI - Http Status {0} : {1}", 
                     (int)response.StatusCode, response.StatusCode));
 
                 // Get the stream associated with the response.
-                Stream errorStream = response.GetResponseStream();
+                var errorStream = response.GetResponseStream();
 
                 // Pipes the stream to a higher level stream reader with the required encoding format. 
-                StreamReader errorReader = new StreamReader(errorStream, Encoding.UTF8);
+                var errorReader = new StreamReader(errorStream, Encoding.UTF8);
                 Console.WriteLine("\n" + errorReader.ReadToEnd());
 
                 return null;
             }
 
             // Get the stream associated with the response.
-            Stream receiveStream = response.GetResponseStream();
+            var receiveStream = response.GetResponseStream();
 
             // Pipes the stream to a higher level stream reader with the required encoding format. 
-            StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+            var readStream = new StreamReader(receiveStream, Encoding.UTF8);
             Console.WriteLine("");
-            string containerUri = readStream.ReadToEnd();
+            var containerUri = readStream.ReadToEnd();
 
             readStream.Close();
             receiveStream.Close();
@@ -192,15 +192,15 @@ namespace SendRestExample
 
         private static async Task WalkBlobContainer(string containerUri)
         {
-            string listcontainerUri = containerUri + "&restype=container&comp=list";
+            var listContainerUri = containerUri + "&restype=container&comp=list";
 
-            HttpWebResponse response = await ExecuteREST("GET", listcontainerUri, null);
+            HttpWebResponse response = await ExecuteREST("GET", listContainerUri, null);
 
             // Get Blob name
             Stream receiveStreamContainer = null;
             StreamReader readStreamContainer = null;
 
-            if (((int)response.StatusCode == 200) && response.ContentType.Contains("application/xml"))
+            if (response.StatusCode == HttpStatusCode.OK && response.ContentType.Contains("application/xml"))
             {
                 // Get the stream associated with the response.
                 receiveStreamContainer = response.GetResponseStream();
@@ -210,13 +210,13 @@ namespace SendRestExample
 
                 if (readStreamContainer != null)
                 {
-                    XmlDocument xml = new XmlDocument();
+                    var xml = new XmlDocument();
                     xml.LoadXml(readStreamContainer.ReadToEnd());
                     readStreamContainer.Close();
                     receiveStreamContainer.Close();
 
-                    StringBuilder sb = new StringBuilder();
-                    XmlWriterSettings settings = new XmlWriterSettings
+                    var sb = new StringBuilder();
+                    var settings = new XmlWriterSettings
                     {
                         Indent = true,
                         IndentChars = "  ",
@@ -229,7 +229,7 @@ namespace SendRestExample
                         xml.Save(writer);
                     }
 
-                    Console.WriteLine(sb.ToString() + "\n\n");
+                    Console.WriteLine(sb + "\n\n");
 
 
                     XmlNodeList list = xml.GetElementsByTagName("Blob");

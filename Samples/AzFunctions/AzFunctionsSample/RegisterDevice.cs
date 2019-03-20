@@ -19,9 +19,9 @@ namespace AzureFunctionsSample
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
 
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            dynamic data = JsonConvert.DeserializeObject(requestBody);
             string hubName = req.Query["hubName"];
             hubName = hubName ?? data?.hubName;
             if(hubName == null)
@@ -38,23 +38,23 @@ namespace AzureFunctionsSample
             tags = tags ?? data?.tags;
             var hub = NotificationHubClient.CreateClientFromConnectionString(Parameters.ConnectionString, hubName);
 
-            Installation installation = new Installation
+            var installation = new Installation
             {
                 InstallationId = Guid.NewGuid().ToString(),
                 Platform = NotificationPlatform.Apns,
                 PushChannel = token
             };
             if(tags != null){
-                string[] tagArray = tags.Split(',');
-                ArraySegment<string> tagsList = new ArraySegment<string>(tagArray);
+                var tagArray = tags.Split(',');
+                var tagsList = new ArraySegment<string>(tagArray);
                 installation.Tags = tagsList;
             }
             try
             {
                 hub.CreateOrUpdateInstallation(installation);
-                string response = $"{{ \"installationId\" = \"{installation.InstallationId}\" }}";
+                var response = $"{{ \"installationId\" = \"{installation.InstallationId}\" }}";
 
-                return  (ActionResult)new OkObjectResult(response);
+                return new OkObjectResult(response);
             }
             catch (Exception e)
             {

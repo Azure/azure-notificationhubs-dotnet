@@ -28,15 +28,19 @@ namespace CreateHubSample
             });
 
             // Create resource group                           
-            var resourceClient = new ResourceManagementClient(creds);
-            resourceClient.SubscriptionId = config.SubscriptionId;
+            var resourceClient = new ResourceManagementClient(creds)
+            {
+                SubscriptionId = config.SubscriptionId
+            };
             await resourceClient.ResourceGroups.CreateOrUpdateAsync(config.ResourceGroupName, new ResourceGroup(config.Location));
 
-            var nhManagemntClient = new NotificationHubsManagementClient(creds);
-            nhManagemntClient.SubscriptionId = config.SubscriptionId;
+            var nhManagementClient = new NotificationHubsManagementClient(creds)
+            {
+                SubscriptionId = config.SubscriptionId
+            };
 
             // Create namespace
-            await nhManagemntClient.Namespaces.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, new NamespaceCreateOrUpdateParameters(config.Location)
+            await nhManagementClient.Namespaces.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, new NamespaceCreateOrUpdateParameters(config.Location)
             {
                 Sku = new Microsoft.Azure.Management.NotificationHubs.Models.Sku("standard")
             });
@@ -65,7 +69,7 @@ namespace CreateHubSample
                     Endpoint = "https://api.development.push.apple.com:443/3/device"
                 };
             }
-            await nhManagemntClient.NotificationHubs.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, config.HubName, new NotificationHubCreateOrUpdateParameters(config.Location)
+            await nhManagementClient.NotificationHubs.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, config.HubName, new NotificationHubCreateOrUpdateParameters(config.Location)
             {
                 GcmCredential = gcmCreds,
                 ApnsCredential = apnsCreds

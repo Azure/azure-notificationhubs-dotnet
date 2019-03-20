@@ -13,20 +13,19 @@ namespace AppBackend
 {
     public class AuthenticationTestHandler : DelegatingHandler
     {
-        protected override Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var authorizationHeader = request.Headers.GetValues("Authorization").First();
 
             if (authorizationHeader != null && authorizationHeader
                 .StartsWith("Basic ", StringComparison.InvariantCultureIgnoreCase))
             {
-                string authorizationUserAndPwdBase64 =
+                var authorizationUserAndPwdBase64 =
                     authorizationHeader.Substring("Basic ".Length);
-                string authorizationUserAndPwd = Encoding.Default
+                var authorizationUserAndPwd = Encoding.Default
                     .GetString(Convert.FromBase64String(authorizationUserAndPwdBase64));
-                string user = authorizationUserAndPwd.Split(':')[0];
-                string password = authorizationUserAndPwd.Split(':')[1];
+                var user = authorizationUserAndPwd.Split(':')[0];
+                var password = authorizationUserAndPwd.Split(':')[1];
 
                 if (VerifyUserAndPwd(user, password))
                 {
@@ -49,10 +48,7 @@ namespace AppBackend
 
         private static Task<HttpResponseMessage> Unauthorized()
         {
-            var response = new HttpResponseMessage(HttpStatusCode.Forbidden);
-            var tsc = new TaskCompletionSource<HttpResponseMessage>();
-            tsc.SetResult(response);
-            return tsc.Task;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Forbidden));
         }
     }
 }

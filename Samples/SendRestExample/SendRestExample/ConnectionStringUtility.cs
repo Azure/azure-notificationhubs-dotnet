@@ -15,21 +15,21 @@ namespace SendRestExample
             //Parse Connectionstring
             char[] separator = { ';' };
             string[] parts = connectionString.Split(separator);
-            foreach (var t in parts)
+            foreach (var part in parts)
             {
-                if (t.StartsWith("Endpoint"))
+                if (part.StartsWith("Endpoint"))
                 {
-                    Endpoint = "https" + t.Substring(11);
+                    Endpoint = "https" + part.Substring(11);
                 }
 
-                if (t.StartsWith("SharedAccessKeyName"))
+                if (part.StartsWith("SharedAccessKeyName"))
                 {
-                    SasKeyName = t.Substring(20);
+                    SasKeyName = part.Substring(20);
                 }
 
-                if (t.StartsWith("SharedAccessKey"))
+                if (part.StartsWith("SharedAccessKey"))
                 {
-                    SasKeyValue = t.Substring(16);
+                    SasKeyValue = part.Substring(16);
                 }
             }
         }
@@ -39,18 +39,18 @@ namespace SendRestExample
             string targetUri = Uri.EscapeDataString(uri.ToLower()).ToLower();
 
             // Add an expiration in seconds to it.
-            long expiresOnDate = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            var expiresOnDate = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             expiresOnDate += minUntilExpire * 60 * 1000;
-            long expiresSeconds = expiresOnDate / 1000;
-            String toSign = targetUri + "\n" + expiresSeconds;
+            var expiresSeconds = expiresOnDate / 1000;
+            var toSign = targetUri + "\n" + expiresSeconds;
 
             // Generate a HMAC-SHA256 hash or the uri and expiration using your secret key.
-            byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(SasKeyValue);
-            HMACSHA256 hmacsha256 = new HMACSHA256(keyBytes);
-            byte[] hash = hmacsha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(toSign));
+            var keyBytes = System.Text.Encoding.UTF8.GetBytes(SasKeyValue);
+            var hmacsha256 = new HMACSHA256(keyBytes);
+            var hash = hmacsha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(toSign));
 
             // Create the token string using the base64
-            string signature = Uri.EscapeDataString(Convert.ToBase64String(hash));
+            var signature = Uri.EscapeDataString(Convert.ToBase64String(hash));
 
             return "SharedAccessSignature sr=" + targetUri + "&sig=" + signature + "&se=" + expiresSeconds + "&skn=" + SasKeyName;
         }

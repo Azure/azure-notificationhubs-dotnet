@@ -21,7 +21,7 @@ namespace AzureFunctionsSample
 
             string hubName = req.Query["hubName"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             hubName = hubName ?? data?.hubName;
             if(hubName == null)
@@ -34,13 +34,14 @@ namespace AzureFunctionsSample
                 hubName);
 
             CollectionQueryResult<RegistrationDescription> regs = await hub.GetAllRegistrationsAsync(0);
-            string result = "";int quantity = 0;
+            var result = "";
+            var quantity = 0;
             foreach(RegistrationDescription reg in regs)
             {
                 result += $"{reg.RegistrationId}";
                 if(reg.Tags != null)
                 {
-                    result += $"-> {reg.Tags.Count} tags: {reg.Tags.ToString()}";
+                    result += $"-> {reg.Tags.Count} tags: {reg.Tags}";
                 }
                 else
                 {
@@ -49,7 +50,7 @@ namespace AzureFunctionsSample
                 result += "\n";
                 quantity++;
             }
-            return (ActionResult) new OkObjectResult($"There are {quantity} registrations:\n{result}");
+            return new OkObjectResult($"There are {quantity} registrations:\n{result}");
         }
     }
 }

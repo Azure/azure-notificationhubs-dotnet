@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-
 using AppBackend.Models;
 using System.Threading.Tasks;
 using System.Web;
@@ -56,16 +55,16 @@ namespace AppBackend.Controllers
 
             if (outcome == null)
             {
-                return Request.CreateResponse(ret);
+                return new HttpResponseMessage(ret);
             }
 
-            if (!(outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Abandoned ||
-                  outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Unknown))
+            if (!(outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Abandoned 
+                || outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Unknown))
             {
                 ret = HttpStatusCode.OK;
             }
 
-            return Request.CreateResponse(ret);
+            return new HttpResponseMessage(ret);
         }
     }
 }
