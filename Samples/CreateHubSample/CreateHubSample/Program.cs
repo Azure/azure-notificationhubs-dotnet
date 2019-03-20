@@ -3,11 +3,7 @@
 // license information.
 
 using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure;
 using Microsoft.Azure.Management.NotificationHubs;
 using Microsoft.Azure.Management.NotificationHubs.Models;
 using Microsoft.Azure.Management.ResourceManager;
@@ -32,25 +28,29 @@ namespace CreateHubSample
             });
 
             // Create resource group                           
-            var resourceClient = new ResourceManagementClient(creds);
-            resourceClient.SubscriptionId = config.SubscriptionId;
+            var resourceClient = new ResourceManagementClient(creds)
+            {
+                SubscriptionId = config.SubscriptionId
+            };
             await resourceClient.ResourceGroups.CreateOrUpdateAsync(config.ResourceGroupName, new ResourceGroup(config.Location));
 
-            var nhManagemntClient = new NotificationHubsManagementClient(creds);
-            nhManagemntClient.SubscriptionId = config.SubscriptionId;
+            var nhManagementClient = new NotificationHubsManagementClient(creds)
+            {
+                SubscriptionId = config.SubscriptionId
+            };
 
             // Create namespace
-            await nhManagemntClient.Namespaces.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, new NamespaceCreateOrUpdateParameters(config.Location)
+            await nhManagementClient.Namespaces.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, new NamespaceCreateOrUpdateParameters(config.Location)
             {
                 Sku = new Microsoft.Azure.Management.NotificationHubs.Models.Sku("standard")
             });
 
             // Create hub
-            Microsoft.Azure.Management.NotificationHubs.Models.GcmCredential gcmCreds = null;
-            Microsoft.Azure.Management.NotificationHubs.Models.ApnsCredential apnsCreds = null;
+            GcmCredential gcmCreds = null;
+            ApnsCredential apnsCreds = null;
             if (config.GcmCreds != null)
             {
-                gcmCreds = new Microsoft.Azure.Management.NotificationHubs.Models.GcmCredential
+                gcmCreds = new GcmCredential
                 {
                     GoogleApiKey = config.GcmCreds
                 };
@@ -58,7 +58,7 @@ namespace CreateHubSample
             if (config.ApnsCreds != null)
             {
                 var apnsCredsSplit = config.ApnsCreds.Replace("\\n", "\n").Split(";");
-                apnsCreds = new Microsoft.Azure.Management.NotificationHubs.Models.ApnsCredential
+                apnsCreds = new ApnsCredential
                 {
                     KeyId = apnsCredsSplit[0],
                     // Id
@@ -69,7 +69,7 @@ namespace CreateHubSample
                     Endpoint = "https://api.development.push.apple.com:443/3/device"
                 };
             }
-            await nhManagemntClient.NotificationHubs.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, config.HubName, new NotificationHubCreateOrUpdateParameters(config.Location)
+            await nhManagementClient.NotificationHubs.CreateOrUpdateAsync(config.ResourceGroupName, config.NamespaceName, config.HubName, new NotificationHubCreateOrUpdateParameters(config.Location)
             {
                 GcmCredential = gcmCreds,
                 ApnsCredential = apnsCreds

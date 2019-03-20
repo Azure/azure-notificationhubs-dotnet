@@ -3,8 +3,6 @@
 // license information.
 
 using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.NotificationHubs;
 using Microsoft.Azure.NotificationHubs.Messaging;

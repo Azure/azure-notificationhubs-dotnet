@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -86,8 +84,10 @@ namespace AppBackend.Controllers
             var username = HttpContext.Current.User.Identity.Name;
 
             // add check if user is allowed to add these tags
-            registration.Tags = new HashSet<string>(deviceUpdate.Tags);
-            registration.Tags.Add("username:" + username);
+            registration.Tags = new HashSet<string>(deviceUpdate.Tags)
+            {
+                "username:" + username
+            };
 
             try
             {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-
 using AppBackend.Models;
 using System.Threading.Tasks;
 using System.Web;
@@ -57,16 +53,18 @@ namespace AppBackend.Controllers
                     break;
             }
 
-            if (outcome != null)
+            if (outcome == null)
             {
-                if (!((outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Abandoned) ||
-                    (outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Unknown)))
-                {
-                    ret = HttpStatusCode.OK;
-                }
+                return new HttpResponseMessage(ret);
             }
 
-            return Request.CreateResponse(ret);
+            if (!(outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Abandoned 
+                || outcome.State == Microsoft.Azure.NotificationHubs.NotificationOutcomeState.Unknown))
+            {
+                ret = HttpStatusCode.OK;
+            }
+
+            return new HttpResponseMessage(ret);
         }
     }
 }
