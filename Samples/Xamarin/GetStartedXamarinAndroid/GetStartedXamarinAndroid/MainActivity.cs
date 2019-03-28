@@ -1,55 +1,80 @@
-﻿using System;
-
-using Android.App;
-using Android.Content;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+﻿using Android.App;
 using Android.OS;
+using Android.Support.V7.App;
+using Android.Runtime;
+using Android.Widget;
 
 using Android.Util;
-using Gcm.Client;
-
+using Android.Gms.Common;
 
 namespace GetStartedXamarinAndroid
 {
-	[Activity (Label = "GetStartedXamarinAndroid", MainLauncher = true, Icon = "@drawable/icon")]
-	public class MainActivity : Activity
-	{
-		int count = 1;
-		public static MainActivity instance;
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    public class MainActivity : AppCompatActivity
+    {
+        public const string TAG = "MainActivity";
+        internal static readonly string CHANNEL_ID = "my_notification_channel";
 
-		protected override void OnCreate (Bundle bundle)
-		{
-			instance = this;
+        public bool IsPlayServicesAvailable()
+        {
+            int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(this);
+            if (resultCode != ConnectionResult.Success)
+            {
+                if (GoogleApiAvailability.Instance.IsUserResolvableError(resultCode))
+                    Log.Debug(TAG, GoogleApiAvailability.Instance.GetErrorString(resultCode));
+                else
+                {
+                    Log.Debug(TAG, "This device is not supported");
+                    Finish();
+                }
+                return false;
+            }
 
-			base.OnCreate (bundle);
+            Log.Debug(TAG, "Google Play Services is available.");
+            return true;
+        }
 
-			// Set our view from the "main" layout resource
-			SetContentView (Resource.Layout.Main);
+        private void CreateNotificationChannel()
+        {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+            {
+                // Notification channels are new in API 26 (and not a part of the
+                // support library). There is no need to create a notification
+                // channel on older versions of Android.
+                return;
+            }
 
-			// Get our button from the layout resource,
-			// and attach an event to it
-			Button button = FindViewById<Button> (Resource.Id.myButton);
-			
-			button.Click += delegate {
-				button.Text = string.Format ("{0} clicks!", count++);
-			};
+            var channelName = CHANNEL_ID;
+            var channelDescription = string.Empty;
+            var channel = new NotificationChannel(CHANNEL_ID, channelName, NotificationImportance.Default)
+            {
+                Description = channelDescription
+            };
 
-			RegisterWithGCM();
-		}
+            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            notificationManager.CreateNotificationChannel(channel);
+        }
 
-		private void RegisterWithGCM()
-		{
-			// Check to ensure everything's set up right
-			GcmClient.CheckDevice(this);
-			GcmClient.CheckManifest(this);
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            if (Intent.Extras != null)
+            {
+                foreach (var key in Intent.Extras.KeySet())
+                {
+                    if (key != null)
+                    {
+                        var value = Intent.Extras.GetString(key);
+                        Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+                    }
+                }
+            }
 
-			// Register for push notifications
-			Log.Info("MainActivity", "Registering...");
-			GcmClient.Register(this, Constants.SenderID);
-		}
-	}
+            IsPlayServicesAvailable();
+            CreateNotificationChannel();
+
+            // Set our view from the "main" layout resource
+            SetContentView(Resource.Layout.activity_main);
+        }
+    }
 }
-
-

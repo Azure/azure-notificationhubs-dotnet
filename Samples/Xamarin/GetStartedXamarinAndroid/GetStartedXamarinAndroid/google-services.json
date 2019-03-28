@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "163587255067",
+    "firebase_url": "https://tutorial1xamarinapp.firebaseio.com",
+    "project_id": "tutorial1xamarinapp",
+    "storage_bucket": "tutorial1xamarinapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163587255067:android:ee5801bc1bcd8317",
+        "android_client_info": {
+          "package_name": "com.tutorials.tutorial1xamarinapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "0000000000000-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
