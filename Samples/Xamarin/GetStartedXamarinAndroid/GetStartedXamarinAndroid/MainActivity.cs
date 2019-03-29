@@ -1,11 +1,9 @@
 ﻿using Android.App;
+using Android.Gms.Common;
 using Android.OS;
 using Android.Support.V7.App;
-using Android.Runtime;
-using Android.Widget;
-
 using Android.Util;
-using Android.Gms.Common;
+
 
 namespace GetStartedXamarinAndroid
 {
@@ -13,7 +11,6 @@ namespace GetStartedXamarinAndroid
     public class MainActivity : AppCompatActivity
     {
         public const string TAG = "MainActivity";
-        internal static readonly string CHANNEL_ID = "my_notification_channel";
 
         public bool IsPlayServicesAvailable()
         {
@@ -44,9 +41,9 @@ namespace GetStartedXamarinAndroid
                 return;
             }
 
-            var channelName = CHANNEL_ID;
+            var channelName = Constants.ChannelId;
             var channelDescription = string.Empty;
-            var channel = new NotificationChannel(CHANNEL_ID, channelName, NotificationImportance.Default)
+            var channel = new NotificationChannel(Constants.ChannelId, channelName, NotificationImportance.Default)
             {
                 Description = channelDescription
             };
