@@ -14,14 +14,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     using System.Collections.Generic;
     using Microsoft.Azure.NotificationHubs;
 
-    internal class EntityDescriptionSerializer
+    internal class EntityDescriptionSerializer<TMessagingDescription>
     {
+
         const int MaxItemsInObjectGraph = 256;
 
         readonly Dictionary<string, DataContractSerializer> entirySerializers;
+        private readonly DataContractSerializer serializer;
 
         public EntityDescriptionSerializer()
         {
+            this.serializer = this.CreateSerializer<TMessagingDescription>();
             this.entirySerializers = new Dictionary<string, DataContractSerializer>();
             this.entirySerializers.Add(
                 typeof(WindowsRegistrationDescription).Name,
@@ -57,11 +60,11 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             this.entirySerializers.Add(
                 typeof(MpnsRegistrationDescription).Name,
-                this.CreateSerializer<MpnsRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(MpnsTemplateRegistrationDescription).Name,
-                this.CreateSerializer<MpnsTemplateRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(AdmRegistrationDescription).Name,
@@ -140,33 +143,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             return (EntityDescription)serializer.ReadObject(reader);
         }
 
-        public string Serialize(EntityDescription description)
+        public string Serialize(TMessagingDescription description)
         {
-            var stringBuilder = new StringBuilder();
-
-            var settings = new XmlWriterSettings
+            StringBuilder output = new StringBuilder(512, 24576);
+            XmlWriterSettings settings = new XmlWriterSettings()
             {
-                OmitXmlDeclaration = true
+                ConformanceLevel = ConformanceLevel.Fragment,
+                NamespaceHandling = NamespaceHandling.OmitDuplicates
             };
-
-            // Convert FCM descriptions into their GCM counterparts
-            if (description.GetType().Name == "FcmRegistrationDescription")
-            {
-                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
-            }
-
-            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
-            {
-                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
-            }
-
-            var serializer = GetSerializer(description.GetType().Name);
-            using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
-            {
-                serializer.WriteObject(xmlWriter, description);
-            }
-
-            return stringBuilder.ToString();
+            using (XmlWriter writer = XmlWriter.Create(output, settings))
+                this.serializer.WriteObject(writer, (object)description);
+            return output.ToString();
         }
 
         public void Serialize(EntityDescription description, XmlWriter writer)

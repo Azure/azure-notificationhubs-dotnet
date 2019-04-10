@@ -39,7 +39,7 @@ namespace Microsoft.Azure.NotificationHubs
         private readonly Uri _baseUri;
         private readonly DataContractSerializer _debugResponseSerializer = new DataContractSerializer(typeof(NotificationOutcome));
         private readonly DataContractSerializer _notificationDetailsSerializer = new DataContractSerializer(typeof(NotificationDetails));
-        private readonly EntityDescriptionSerializer _entitySerializer = new EntityDescriptionSerializer();
+        private readonly EntityDescriptionSerializer<RegistrationDescription> _entitySerializer = new EntityDescriptionSerializer<RegistrationDescription>();
         private readonly string _notificationHubPath;
         private readonly TokenProvider _tokenProvider;
 
