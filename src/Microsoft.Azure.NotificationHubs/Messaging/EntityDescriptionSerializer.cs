@@ -25,7 +25,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             this.entirySerializers = new Dictionary<string, DataContractSerializer>();
             this.entirySerializers.Add(
                 typeof(WindowsRegistrationDescription).Name,
-                this.CreateSerializer<WindowsRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(WindowsTemplateRegistrationDescription).Name,
@@ -33,7 +33,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             this.entirySerializers.Add(
                 typeof(AppleRegistrationDescription).Name,
-                this.CreateSerializer<AppleRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(AppleTemplateRegistrationDescription).Name,
@@ -41,11 +41,11 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             this.entirySerializers.Add(
                 typeof(GcmRegistrationDescription).Name,
-                this.CreateSerializer<GcmRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(FcmRegistrationDescription).Name,
-                this.CreateSerializer<FcmRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(GcmTemplateRegistrationDescription).Name,
@@ -57,7 +57,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             this.entirySerializers.Add(
                 typeof(MpnsRegistrationDescription).Name,
-                this.CreateSerializer<MpnsRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(MpnsTemplateRegistrationDescription).Name,
@@ -65,7 +65,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             this.entirySerializers.Add(
                 typeof(AdmRegistrationDescription).Name,
-                this.CreateSerializer<AdmRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(AdmTemplateRegistrationDescription).Name,
@@ -73,7 +73,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             this.entirySerializers.Add(
                 typeof(BaiduRegistrationDescription).Name,
-                this.CreateSerializer<BaiduRegistrationDescription>());
+                this.CreateSerializer<RegistrationDescription>());
 
             this.entirySerializers.Add(
                 typeof(BaiduTemplateRegistrationDescription).Name,
