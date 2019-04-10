@@ -24,6 +24,9 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             this.entirySerializers = new Dictionary<string, DataContractSerializer>();
             this.entirySerializers.Add(
+                typeof(RegistrationDescription).Name,
+                this.CreateSerializer<RegistrationDescription>());
+            this.entirySerializers.Add(
                 typeof(WindowsRegistrationDescription).Name,
                 this.CreateSerializer<WindowsRegistrationDescription>());
 
@@ -160,7 +163,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
             }
 
-            var serializer = GetSerializer(description.GetType().Name);
+            var serializer = GetSerializer(typeof(RegistrationDescription).Name);
             using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
                 serializer.WriteObject(xmlWriter, description);
