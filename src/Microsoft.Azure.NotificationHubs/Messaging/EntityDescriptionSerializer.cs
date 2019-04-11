@@ -26,6 +26,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             this.entirySerializers.Add(
                 typeof(RegistrationDescription).Name,
                 this.CreateSerializer<RegistrationDescription>());
+
             this.entirySerializers.Add(
                 typeof(WindowsRegistrationDescription).Name,
                 this.CreateSerializer<WindowsRegistrationDescription>());
@@ -163,7 +164,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
             }
 
-            var serializer = GetSerializer(typeof(RegistrationDescription).Name);
+            var serializatorType = description.GetType().Name == typeof(NotificationHubJob).Name ? 
+                                    typeof(NotificationHubJob).Name : typeof(RegistrationDescription).Name;
+            var serializer = GetSerializer(serializatorType);
+
             using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
                 serializer.WriteObject(xmlWriter, description);
@@ -185,7 +189,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
             }
 
-            var serializer = GetSerializer(typeof(RegistrationDescription).Name);
+            var serializatorType = description.GetType().Name == typeof(NotificationHubJob).Name ? 
+                                    typeof(NotificationHubJob).Name : typeof(RegistrationDescription).Name;
+            var serializer = GetSerializer(serializatorType);
+            
             serializer.WriteObject(writer, description);
         }
 
