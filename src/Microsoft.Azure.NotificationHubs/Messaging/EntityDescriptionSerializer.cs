@@ -185,7 +185,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
             }
 
-            var serializer = GetSerializer(description.GetType().Name);
+            var serializer = GetSerializer(typeof(RegistrationDescription).Name);
             serializer.WriteObject(writer, description);
         }
 
