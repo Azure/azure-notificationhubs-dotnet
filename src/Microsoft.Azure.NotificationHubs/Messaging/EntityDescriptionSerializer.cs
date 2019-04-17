@@ -147,30 +147,14 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public string Serialize(EntityDescription description)
         {
             var stringBuilder = new StringBuilder();
-
             var settings = new XmlWriterSettings
             {
                 OmitXmlDeclaration = true
             };
 
-            // Convert FCM descriptions into their GCM counterparts
-            if (description.GetType().Name == "FcmRegistrationDescription")
-            {
-                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
-            }
-
-            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
-            {
-                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
-            }
-
-            var serializatorType = description.GetType().Name == typeof(NotificationHubJob).Name ? 
-                                    typeof(NotificationHubJob).Name : typeof(RegistrationDescription).Name;
-            var serializer = GetSerializer(serializatorType);
-
             using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
-                serializer.WriteObject(xmlWriter, description);
+                Serialize(description, xmlWriter);
             }
 
             return stringBuilder.ToString();
@@ -189,9 +173,15 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
             }
 
-            var serializatorType = description.GetType().Name == typeof(NotificationHubJob).Name ? 
-                                    typeof(NotificationHubJob).Name : typeof(RegistrationDescription).Name;
-            var serializer = GetSerializer(serializatorType);
+            DataContractSerializer serializer;
+            if (description is RegistrationDescription)
+            {
+                serializer = GetSerializer(typeof(RegistrationDescription).Name);
+            }
+            else
+            {
+                serializer = GetSerializer(description.GetType().Name);
+            }
             
             serializer.WriteObject(writer, description);
         }
