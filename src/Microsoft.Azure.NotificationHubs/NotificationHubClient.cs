@@ -1996,22 +1996,6 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     {
-                        // Convert GcmTemplateRegistrationDescription returned by service into FcmTemplateRegistrationDescription to match method's return type.
-                        if (registration is FcmTemplateRegistrationDescription)
-                        {
-                            var gcmTemplateRegistrationResponse = await ReadEntityAsync<GcmTemplateRegistrationDescription>(responseStream).ConfigureAwait(false);
-                            var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationResponse);
-                            return (fcmTemplateRegistrationDescription as TRegistration);
-                        }
-
-                        // Convert GcmRegistrationDescription returned by service into FcmRegistrationDescription to match method's return type.
-                        if (registration is FcmRegistrationDescription)
-                        {
-                            var gcmRegistrationResponse = await ReadEntityAsync<GcmRegistrationDescription>(responseStream).ConfigureAwait(false);
-                            var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationResponse);
-                            return (fcmRegistrationDescription as TRegistration);
-                        }
-                        
                         return await ReadEntityAsync<TRegistration>(responseStream).ConfigureAwait(false);
                     }
                 }
@@ -2028,20 +2012,6 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
-                    if (typeof(FcmTemplateRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
-                    {
-                        var gcmTemplateRegistrationResponse = await ReadEntityAsync<GcmTemplateRegistrationDescription>(responseStream).ConfigureAwait(false);
-                        var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationResponse);
-                        return (fcmTemplateRegistrationDescription as TEntity);
-                    }
-
-                    if (typeof(FcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
-                    {
-                        var gcmRegistrationResponse = await ReadEntityAsync<GcmRegistrationDescription>(responseStream).ConfigureAwait(false);
-                        var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationResponse);
-                        return (fcmRegistrationDescription as TEntity);
-                    }
-
                     return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
                 }
 
@@ -2186,7 +2156,21 @@ namespace Microsoft.Azure.NotificationHubs
                 xmlReader.ReadToDescendant("content");
                 xmlReader.ReadStartElement();
 
-                return (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+                var entity = _entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+
+                if (entity is GcmTemplateRegistrationDescription)
+                {
+                    var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(entity as GcmTemplateRegistrationDescription);
+                    return (fcmTemplateRegistrationDescription as TEntity);
+                }
+
+                if (entity is GcmRegistrationDescription)
+                {
+                    var fcmRegistrationDescription = new FcmRegistrationDescription(entity as GcmRegistrationDescription);
+                    return (fcmRegistrationDescription as TEntity);
+                }
+
+                return (TEntity)entity;
             }
         }
 
