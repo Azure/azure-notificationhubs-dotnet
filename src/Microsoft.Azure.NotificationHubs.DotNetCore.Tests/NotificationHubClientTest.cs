@@ -910,7 +910,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
-        private async Task GetRegistrationAsync_CreateFcmNativeRegistration_GetFcmRegistrationType()
+        private async Task GetRegistrationAsync_CreateFcmNativeRegistrationThenGetRegistrationDescription_GetFcmRegistrationType()
         {
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
@@ -924,7 +924,21 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
-        private async Task GetRegistrationAsync_CreateFcmTemplateRegistration_GetFcmTemplateRegistrationType()
+        private async Task GetRegistrationAsync_CreateFcmNativeRegistrationThenGetFcmRegistrationDescription_GetFcmRegistrationType()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+            var recievedRegistration = await _hubClient.GetRegistrationAsync<FcmRegistrationDescription>(createdRegistration.RegistrationId);
+
+            Assert.IsType<FcmRegistrationDescription>(recievedRegistration);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task GetRegistrationAsync_CreateFcmTemplateRegistrationThenGetRegistrationDescription_GetFcmTemplateRegistrationType()
         {
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
@@ -939,6 +953,27 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
             var recievedRegistration = await _hubClient.GetRegistrationAsync<RegistrationDescription>(createdRegistration.RegistrationId);
+
+            Assert.IsType<FcmTemplateRegistrationDescription>(recievedRegistration);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task GetRegistrationAsync_CreateFcmTemplateRegistrationThenGetFcmTemplateRegistrationDescription_GetFcmTemplateRegistrationType()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new FcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+            var recievedRegistration = await _hubClient.GetRegistrationAsync<FcmTemplateRegistrationDescription>(createdRegistration.RegistrationId);
 
             Assert.IsType<FcmTemplateRegistrationDescription>(recievedRegistration);
             RecordTestResults();
