@@ -917,9 +917,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             var registration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"]);
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
-            var recievedRegistration = await _hubClient.GetRegistrationAsync<RegistrationDescription>(createdRegistration.RegistrationId);
+            var receivedRegistration = await _hubClient.GetRegistrationAsync<RegistrationDescription>(createdRegistration.RegistrationId);
 
-            Assert.IsType<FcmRegistrationDescription>(recievedRegistration);
+            Assert.IsType<FcmRegistrationDescription>(receivedRegistration);
             RecordTestResults();
         }
 
@@ -931,9 +931,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             var registration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"]);
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
-            var recievedRegistration = await _hubClient.GetRegistrationAsync<FcmRegistrationDescription>(createdRegistration.RegistrationId);
+            var receivedRegistration = await _hubClient.GetRegistrationAsync<FcmRegistrationDescription>(createdRegistration.RegistrationId);
 
-            Assert.IsType<FcmRegistrationDescription>(recievedRegistration);
+            Assert.IsType<FcmRegistrationDescription>(receivedRegistration);
             RecordTestResults();
         }
 
@@ -952,9 +952,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             registration.TemplateName = "Template Name";
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
-            var recievedRegistration = await _hubClient.GetRegistrationAsync<RegistrationDescription>(createdRegistration.RegistrationId);
-
-            Assert.IsType<FcmTemplateRegistrationDescription>(recievedRegistration);
+            var receivedRegistration = await _hubClient.GetRegistrationAsync<RegistrationDescription>(createdRegistration.RegistrationId);
+            
+            Assert.IsType<FcmTemplateRegistrationDescription>(receivedRegistration);
             RecordTestResults();
         }
 
@@ -973,9 +973,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             registration.TemplateName = "Template Name";
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
-            var recievedRegistration = await _hubClient.GetRegistrationAsync<FcmTemplateRegistrationDescription>(createdRegistration.RegistrationId);
+            var receivedRegistration = await _hubClient.GetRegistrationAsync<FcmTemplateRegistrationDescription>(createdRegistration.RegistrationId);
 
-            Assert.IsType<FcmTemplateRegistrationDescription>(recievedRegistration);
+            Assert.IsType<FcmTemplateRegistrationDescription>(receivedRegistration);
             RecordTestResults();
         }
         
