@@ -2171,7 +2171,6 @@ namespace Microsoft.Azure.NotificationHubs
 
                 if (entity is GcmRegistrationDescription gcmRegistrationDescription)
                 {
-                    var type = typeof(TEntity);
                     var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationDescription);
                     return (fcmRegistrationDescription as TEntity);
                 }
