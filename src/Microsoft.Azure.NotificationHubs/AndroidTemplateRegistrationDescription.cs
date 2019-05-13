@@ -20,7 +20,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     [DataContract(Name = ManagementStrings.GcmTemplateRegistrationDescription, Namespace = ManagementStrings.Namespace)]
     [Obsolete("GcmTemplateRegistrationDescription is deprecated, please use FcmTemplateRegistrationDescription instead.")]
-    internal class GcmTemplateRegistrationDescription : GcmRegistrationDescription
+    public class GcmTemplateRegistrationDescription : GcmRegistrationDescription
     {
         internal override string AppPlatForm
         {
