@@ -4,20 +4,20 @@
             "RequestUriPath": "/sdk-sample-nh/registrations?api-version=2017-04&$top=100",
             "StatusCode": 200,
             "Headers": {
-                "Date": "Mon, 13 May 2019 13:21:52 GMT",
+                "Date": "Mon, 13 May 2019 17:11:27 GMT",
                 "Transfer-Encoding": "chunked",
                 "Server": "Microsoft-HTTPAPI/2.0"
             },
             "ContentHeaders": {
                 "Content-Type": "application/atom+xml; type=feed; charset=utf-8"
             },
-            "Content": "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100</id><updated>2019-05-13T13:21:52Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/4241629933942171033-6785833110532596122-9?api-version=2017-04&amp;$top=100</id><title type=\"text\">4241629933942171033-6785833110532596122-9</title><published>2019-05-13T13:21:52Z</published><updated>2019-05-13T13:21:52Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/4241629933942171033-6785833110532596122-9?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><AdmTemplateRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>4241629933942171033-6785833110532596122-9</RegistrationId><Tags>tag1</Tags><PushVariables>{\"var1\":\"value1\"}</PushVariables><AdmRegistrationId>amzn1.adm-registration.v2.123</AdmRegistrationId><BodyTemplate><![CDATA[{\"data\":{\"key1\":\"value1\"}}]]></BodyTemplate><TemplateName>Template Name</TemplateName></AdmTemplateRegistrationDescription></content></entry></feed>"
+            "Content": "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100</id><updated>2019-05-13T17:11:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations?api-version=2017-04&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2233926864734677373-6969077326875932111-3?api-version=2017-04&amp;$top=100</id><title type=\"text\">2233926864734677373-6969077326875932111-3</title><published>2019-05-13T17:11:27Z</published><updated>2019-05-13T17:11:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2233926864734677373-6969077326875932111-3?api-version=2017-04&amp;$top=100\"/><content type=\"application/xml\"><AdmTemplateRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>2233926864734677373-6969077326875932111-3</RegistrationId><Tags>tag1</Tags><PushVariables>{\"var1\":\"value1\"}</PushVariables><AdmRegistrationId>amzn1.adm-registration.v2.123</AdmRegistrationId><BodyTemplate><![CDATA[{\"data\":{\"key1\":\"value1\"}}]]></BodyTemplate><TemplateName>Template Name</TemplateName></AdmTemplateRegistrationDescription></content></entry></feed>"
         },
         {
-            "RequestUriPath": "/sdk-sample-nh/registrations/4241629933942171033-6785833110532596122-9?api-version=2017-04",
+            "RequestUriPath": "/sdk-sample-nh/registrations/2233926864734677373-6969077326875932111-3?api-version=2017-04",
             "StatusCode": 200,
             "Headers": {
-                "Date": "Mon, 13 May 2019 13:21:52 GMT",
+                "Date": "Mon, 13 May 2019 17:11:27 GMT",
                 "Server": "Microsoft-HTTPAPI/2.0"
             },
             "ContentHeaders": {
@@ -29,22 +29,22 @@
             "RequestUriPath": "/sdk-sample-nh/registrations?api-version=2017-04",
             "StatusCode": 200,
             "Headers": {
-                "Date": "Mon, 13 May 2019 13:21:52 GMT",
+                "Date": "Mon, 13 May 2019 17:11:27 GMT",
                 "Transfer-Encoding": "chunked",
                 "ETag": "W/\"1\"",
                 "Server": "Microsoft-HTTPAPI/2.0"
             },
             "ContentHeaders": {
                 "Content-Type": "application/atom+xml; type=entry; charset=utf-8",
-                "Content-Location": "https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2480291165412682648-4720769485772237125-9?api-version=2017-04"
+                "Content-Location": "https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/6447164383240160672-5131285238990176950-1?api-version=2017-04"
             },
-            "Content": "<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2480291165412682648-4720769485772237125-9?api-version=2017-04</id><title type=\"text\">2480291165412682648-4720769485772237125-9</title><published>2019-05-13T13:21:52Z</published><updated>2019-05-13T13:21:52Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2480291165412682648-4720769485772237125-9?api-version=2017-04\"/><content type=\"application/xml\"><GcmRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>2480291165412682648-4720769485772237125-9</RegistrationId><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId></GcmRegistrationDescription></content></entry>"
+            "Content": "<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/6447164383240160672-5131285238990176950-1?api-version=2017-04</id><title type=\"text\">6447164383240160672-5131285238990176950-1</title><published>2019-05-13T17:11:28Z</published><updated>2019-05-13T17:11:28Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/6447164383240160672-5131285238990176950-1?api-version=2017-04\"/><content type=\"application/xml\"><GcmRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>6447164383240160672-5131285238990176950-1</RegistrationId><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId></GcmRegistrationDescription></content></entry>"
         },
         {
-            "RequestUriPath": "/sdk-sample-nh/registrations/2480291165412682648-4720769485772237125-9?api-version=2017-04",
+            "RequestUriPath": "/sdk-sample-nh/registrations/6447164383240160672-5131285238990176950-1?api-version=2017-04",
             "StatusCode": 200,
             "Headers": {
-                "Date": "Mon, 13 May 2019 13:21:52 GMT",
+                "Date": "Mon, 13 May 2019 17:11:27 GMT",
                 "Transfer-Encoding": "chunked",
                 "ETag": "W/\"1\"",
                 "Server": "Microsoft-HTTPAPI/2.0"
@@ -52,7 +52,7 @@
             "ContentHeaders": {
                 "Content-Type": "application/atom+xml; type=entry; charset=utf-8"
             },
-            "Content": "<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2480291165412682648-4720769485772237125-9?api-version=2017-04</id><title type=\"text\">2480291165412682648-4720769485772237125-9</title><published>2019-05-13T13:21:52Z</published><updated>2019-05-13T13:21:52Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/2480291165412682648-4720769485772237125-9?api-version=2017-04\"/><content type=\"application/xml\"><GcmRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>2480291165412682648-4720769485772237125-9</RegistrationId><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId></GcmRegistrationDescription></content></entry>"
+            "Content": "<entry a:etag=\"W/&quot;1&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/6447164383240160672-5131285238990176950-1?api-version=2017-04</id><title type=\"text\">6447164383240160672-5131285238990176950-1</title><published>2019-05-13T17:11:28Z</published><updated>2019-05-13T17:11:28Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/6447164383240160672-5131285238990176950-1?api-version=2017-04\"/><content type=\"application/xml\"><GcmRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>6447164383240160672-5131285238990176950-1</RegistrationId><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId></GcmRegistrationDescription></content></entry>"
         }
     ],
     "Guids": []
