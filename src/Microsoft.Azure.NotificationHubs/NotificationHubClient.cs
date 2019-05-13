@@ -2158,15 +2158,21 @@ namespace Microsoft.Azure.NotificationHubs
 
                 var entity = _entitySerializer.Deserialize(xmlReader, xmlReader.Name);
 
-                if (entity is GcmTemplateRegistrationDescription)
+                if (typeof(GcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
                 {
-                    var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(entity as GcmTemplateRegistrationDescription);
+                    return (TEntity)entity;
+                }
+
+                if (entity is GcmTemplateRegistrationDescription gcmTemplateRegistrationDescription)
+                {
+                    var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationDescription);
                     return (fcmTemplateRegistrationDescription as TEntity);
                 }
 
-                if (entity is GcmRegistrationDescription)
+                if (entity is GcmRegistrationDescription gcmRegistrationDescription)
                 {
-                    var fcmRegistrationDescription = new FcmRegistrationDescription(entity as GcmRegistrationDescription);
+                    var type = typeof(TEntity);
+                    var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationDescription);
                     return (fcmRegistrationDescription as TEntity);
                 }
 
