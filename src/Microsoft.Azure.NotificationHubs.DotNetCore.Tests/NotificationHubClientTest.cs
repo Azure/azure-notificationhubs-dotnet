@@ -1014,6 +1014,72 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             RecordTestResults();
         }
 
+        [Fact]
+        public async Task CreateRegistrationAsync_CreateGcmNativeRegistration_GetGcmRegistrationType()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.IsType<GcmRegistrationDescription>(createdRegistration);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_CreateFcmNativeRegistration_GetFcmRegistrationType()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.IsType<FcmRegistrationDescription>(createdRegistration);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_CreateGcmTemplateRegistrationn_GetGcmTemplateRegistrationType()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.IsType<GcmTemplateRegistrationDescription>(createdRegistration);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_CreateFcmTemplateRegistrationn_GetFcmTemplateRegistrationType()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new FcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.IsType<FcmTemplateRegistrationDescription>(createdRegistration);
+            RecordTestResults();
+        }
+
         private string GetMockDataFilePath(string methodName)
         {
             string[] dataFilePaths = new string[]
