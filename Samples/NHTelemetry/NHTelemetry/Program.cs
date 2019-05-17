@@ -81,7 +81,7 @@
             {
                 Console.WriteLine($"Metric: {metricDefinition.Name.Value}");
 
-                Console.WriteLine($"\tTime Grains");
+                Console.WriteLine("\tTime Grains");
                 foreach (var metricAvailability in metricDefinition.MetricAvailabilities)
                 {
                     Console.WriteLine($"\t{metricAvailability.TimeGrain}");
