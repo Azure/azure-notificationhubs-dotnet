@@ -34,10 +34,10 @@ namespace SendPushSample
                 Platform = NotificationPlatform.Fcm,
                 PushChannel = fcmDeviceId,
                 PushChannelExpired = false,
-                Tags = new [] { "fcm" }
+                Tags = new[] { "fcm" }
             };
             await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation);
-            
+
             var appleDeviceId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
             var apnsInstallation = new Installation
             {
@@ -45,51 +45,61 @@ namespace SendPushSample
                 Platform = NotificationPlatform.Apns,
                 PushChannel = appleDeviceId,
                 PushChannelExpired = false,
-                Tags = new [] { "apns" }
+                Tags = new[] { "apns" }
             };
             await nhClient.CreateOrUpdateInstallationAsync(apnsInstallation);
 
             switch ((SampleConfiguration.Operation)Enum.Parse(typeof(SampleConfiguration.Operation), config.SendType))
             {
                 case SampleConfiguration.Operation.Broadcast:
-                    // Send notifications to all users
+                    // Notification groups should be created on client side
                     var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent);
                     var outcomeSilentFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleSilentNotificationContent);
-                    var outcomeApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent);
-                    var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
-                    var outcomeWns = await nhClient.SendWindowsNativeNotificationAsync(WnsSampleNotification);
-
-                    // Gather send outcome
                     var fcmOutcomeDetails = await WaitForThePushStatusAsync("FCM", nhClient, outcomeFcm);
                     var fcmSilentOutcomeDetails = await WaitForThePushStatusAsync("FCM", nhClient, outcomeSilentFcm);
-                    var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
-                    var apnsSilentOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeSilentApns);
-                    var wnsOutcomeDetails = await WaitForThePushStatusAsync("WNS", nhClient, outcomeWns);
                     PrintPushOutcome("FCM", fcmOutcomeDetails, fcmOutcomeDetails.FcmOutcomeCounts);
                     PrintPushOutcome("FCM Silent ", fcmSilentOutcomeDetails, fcmSilentOutcomeDetails.FcmOutcomeCounts);
+
+                    // Send groupable notifications to iOS
+                    var notification = new AppleNotification(AppleSampleNotificationContent);
+                    if (!string.IsNullOrEmpty(config.AppleGroupId))
+                    {
+                        notification.Headers.Add("apns-collapse-id", config.AppleGroupId);
+                    }
+
+                    var outcomeApns = await nhClient.SendNotificationAsync(notification);
+                    var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
+                    var apnsOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeApns);
+                    var apnsSilentOutcomeDetails = await WaitForThePushStatusAsync("APNS", nhClient, outcomeSilentApns);
                     PrintPushOutcome("APNS", apnsOutcomeDetails, apnsOutcomeDetails.ApnsOutcomeCounts);
                     PrintPushOutcome("APNS Silent", apnsSilentOutcomeDetails, apnsSilentOutcomeDetails.ApnsOutcomeCounts);
+
+                    var outcomeWns = await nhClient.SendWindowsNativeNotificationAsync(WnsSampleNotification);
+                    var wnsOutcomeDetails = await WaitForThePushStatusAsync("WNS", nhClient, outcomeWns);
                     PrintPushOutcome("WNS", wnsOutcomeDetails, wnsOutcomeDetails.WnsOutcomeCounts);
+
                     break;
                 case SampleConfiguration.Operation.SendByTag:
                     // Send notifications by tag
                     var outcomeFcmByTag = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, config.Tag ?? "fcm");
-                    var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, config.Tag ?? "apns");
-                    // Gather send outcome
                     var fcmTagOutcomeDetails = await WaitForThePushStatusAsync("FCM Tags", nhClient, outcomeFcmByTag);
-                    var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
                     PrintPushOutcome("FCM Tags", fcmTagOutcomeDetails, fcmTagOutcomeDetails.FcmOutcomeCounts);
+
+                    var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, config.Tag ?? "apns");
+                    var apnsTagOutcomeDetails = await WaitForThePushStatusAsync("APNS Tags", nhClient, outcomeApnsByTag);
                     PrintPushOutcome("APNS Tags", apnsTagOutcomeDetails, apnsTagOutcomeDetails.ApnsOutcomeCounts);
+
                     break;
                 case SampleConfiguration.Operation.SendByDevice:
                     // Send notifications by deviceId
                     var outcomeFcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateFcmNotification(), config.FcmDeviceId ?? fcmDeviceId);
-                    var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), config.AppleDeviceId ?? appleDeviceId);
-                    // Gather send outcome
                     var fcmDirectSendOutcomeDetails = await WaitForThePushStatusAsync("FCM direct", nhClient, outcomeFcmByDeviceId);
-                    var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
                     PrintPushOutcome("FCM Direct", fcmDirectSendOutcomeDetails, fcmDirectSendOutcomeDetails.ApnsOutcomeCounts);
+
+                    var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), config.AppleDeviceId ?? appleDeviceId);
+                    var apnsDirectSendOutcomeDetails = await WaitForThePushStatusAsync("APNS direct", nhClient, outcomeApnsByDeviceId);
                     PrintPushOutcome("APNS Direct", apnsDirectSendOutcomeDetails, apnsDirectSendOutcomeDetails.ApnsOutcomeCounts);
+
                     break;
                 default:
                     Console.WriteLine("Invalid Sendtype");
@@ -107,7 +117,7 @@ namespace SendPushSample
             return new AppleNotification(AppleSampleNotificationContent);
         }
 
-        private static async Task<NotificationDetails> WaitForThePushStatusAsync(string pnsType, NotificationHubClient nhClient, NotificationOutcome notificationOutcome) 
+        private static async Task<NotificationDetails> WaitForThePushStatusAsync(string pnsType, NotificationHubClient nhClient, NotificationOutcome notificationOutcome)
         {
             var notificationId = notificationOutcome.NotificationId;
             var state = NotificationOutcomeState.Enqueued;
@@ -126,25 +136,25 @@ namespace SendPushSample
                     // It's possible for the notification to not yet be enqueued, so we may have to swallow an exception
                     // until it's ready to give us a new state.
                 }
-                Thread.Sleep(1000);                                                
+                Thread.Sleep(1000);
             }
             return outcomeDetails;
         }
 
         private static void PrintPushOutcome(string pnsType, NotificationDetails details, NotificationOutcomeCollection collection)
         {
-            if (collection != null) 
+            if (collection != null)
             {
-                Console.WriteLine($"{pnsType} outcome: " + string.Join(",", collection.Select(kv => $"{kv.Key}:{kv.Value}")));    
+                Console.WriteLine($"{pnsType} outcome: " + string.Join(",", collection.Select(kv => $"{kv.Key}:{kv.Value}")));
             }
-            else 
+            else
             {
                 Console.WriteLine($"{pnsType} no outcomes.");
             }
             Console.WriteLine($"{pnsType} error details URL: {details.PnsErrorDetailsUri}");
         }
 
-        private static SampleConfiguration LoadConfiguration(string[] args) 
+        private static SampleConfiguration LoadConfiguration(string[] args)
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("config.json", true);
