@@ -16,7 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     [DataContract(Name = ManagementStrings.GcmRegistrationDescription, Namespace = ManagementStrings.Namespace)]
     [Obsolete("GcmRegistrationDescription is deprecated, please use FcmRegistrationDescription instead.")]
-    internal class GcmRegistrationDescription : RegistrationDescription
+    public class GcmRegistrationDescription : RegistrationDescription
     {
         /// <summary>
         /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.GcmRegistrationDescription"/> class by copying fields from the given instance
