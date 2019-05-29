@@ -25,7 +25,7 @@
     </PackageReleaseNotes>
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
     <PackageTags>Microsoft Azure windowsazureofficial NotificationHub Notifications Notification Hub Push Windows Phone iOS Android Baidu Kindle Amazon</PackageTags>
-    <Version>3.0.3.0</Version>
+    <Version>3.1.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
