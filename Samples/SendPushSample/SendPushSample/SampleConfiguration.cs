@@ -12,6 +12,7 @@ namespace SendPushSample
         public string FcmDeviceId {get; set; }
         public string AppleDeviceId {get; set; }
         public string SendType {get; set; }
+        public string AppleGroupId { get; set; }
 
         public enum Operation {
             Broadcast, 
