@@ -39,7 +39,6 @@ namespace Microsoft.Azure.NotificationHubs
         private readonly Uri _baseUri;
         private readonly DataContractSerializer _debugResponseSerializer = new DataContractSerializer(typeof(NotificationOutcome));
         private readonly DataContractSerializer _notificationDetailsSerializer = new DataContractSerializer(typeof(NotificationDetails));
-        private readonly EntityDescriptionSerializer _entitySerializer = new EntityDescriptionSerializer();
         private readonly string _notificationHubPath;
         private readonly TokenProvider _tokenProvider;
 
@@ -2121,7 +2120,7 @@ namespace Microsoft.Azure.NotificationHubs
                     if (xmlReader.ReadToDescendant("content"))
                     {
                         xmlReader.ReadStartElement();
-                        var entity = (TEntity) _entitySerializer.Deserialize<TEntity>(xmlReader, xmlReader.Name);
+                        var entity = (TEntity) EntityDescriptionSerializer.Deserialize<TEntity>(xmlReader, xmlReader.Name);
 
                         if (entity is GcmTemplateRegistrationDescription)
                         {
@@ -2156,7 +2155,7 @@ namespace Microsoft.Azure.NotificationHubs
                 xmlReader.ReadToDescendant("content");
                 xmlReader.ReadStartElement();
 
-                var entity = _entitySerializer.Deserialize<TEntity>(xmlReader, xmlReader.Name);
+                var entity = EntityDescriptionSerializer.Deserialize<TEntity>(xmlReader, xmlReader.Name);
 
                 if (typeof(GcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
                 {
@@ -2187,7 +2186,7 @@ namespace Microsoft.Azure.NotificationHubs
                 writer.WriteStartElement("entry", "http://www.w3.org/2005/Atom");
                 writer.WriteStartElement("content");
                 writer.WriteAttributeString("type", "application/xml");
-                _entitySerializer.Serialize(entity, writer);
+                EntityDescriptionSerializer.Serialize(entity, writer);
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
