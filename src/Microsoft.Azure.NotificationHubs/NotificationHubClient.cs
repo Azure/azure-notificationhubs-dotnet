@@ -2121,7 +2121,7 @@ namespace Microsoft.Azure.NotificationHubs
                     if (xmlReader.ReadToDescendant("content"))
                     {
                         xmlReader.ReadStartElement();
-                        var entity = (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+                        var entity = (TEntity) _entitySerializer.Deserialize<TEntity>(xmlReader, xmlReader.Name);
 
                         if (entity is GcmTemplateRegistrationDescription)
                         {
@@ -2156,7 +2156,7 @@ namespace Microsoft.Azure.NotificationHubs
                 xmlReader.ReadToDescendant("content");
                 xmlReader.ReadStartElement();
 
-                var entity = _entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+                var entity = _entitySerializer.Deserialize<TEntity>(xmlReader, xmlReader.Name);
 
                 if (typeof(GcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
                 {

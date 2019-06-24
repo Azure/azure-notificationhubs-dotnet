@@ -96,6 +96,62 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             });
         }
 
+        private DataContractSerializer CreateSerializer(string typeName)
+        {
+            switch(typeName){
+                case "RegistrationDescription":
+                    return this.CreateSerializer<RegistrationDescription>();
+
+                case "WindowsRegistrationDescription":
+                    return this.CreateSerializer<WindowsRegistrationDescription>();
+
+                case "WindowsTemplateRegistrationDescription":
+                    return this.CreateSerializer<WindowsTemplateRegistrationDescription>();
+
+                case "AppleRegistrationDescription":
+                    return this.CreateSerializer<AppleRegistrationDescription>();
+
+                case "AppleTemplateRegistrationDescription":
+                    return this.CreateSerializer<AppleTemplateRegistrationDescription>();
+
+                case "GcmRegistrationDescription":
+                    return this.CreateSerializer<GcmRegistrationDescription>();
+
+                case "FcmRegistrationDescription":
+                    return this.CreateSerializer<FcmRegistrationDescription>();
+
+                case "GcmTemplateRegistrationDescription":
+                    return this.CreateSerializer<GcmTemplateRegistrationDescription>();
+
+                case "FcmTemplateRegistrationDescription":
+                    return this.CreateSerializer<FcmTemplateRegistrationDescription>();
+
+                case "MpnsRegistrationDescription":
+                    return this.CreateSerializer<MpnsRegistrationDescription>();
+
+                case "MpnsTemplateRegistrationDescription":
+                    return this.CreateSerializer<MpnsTemplateRegistrationDescription>();
+
+                case "AdmRegistrationDescription":
+                    return this.CreateSerializer<AdmRegistrationDescription>();
+
+                case "AdmTemplateRegistrationDescription":
+                    return this.CreateSerializer<AdmTemplateRegistrationDescription>();
+
+                case "BaiduRegistrationDescription":
+                    return this.CreateSerializer<BaiduRegistrationDescription>();
+
+                case "BaiduTemplateRegistrationDescription":
+                    return this.CreateSerializer<BaiduTemplateRegistrationDescription>();
+
+                case "NotificationHubJob":
+                    return this.CreateSerializer<NotificationHubJob>();
+
+                default:
+                    throw new InvalidOperationException($"Unknown entity type {typeName}");
+            }
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times",
             Justification = "Safe here. Any future behavior change is easy to detect")]
         public TMessagingDescription DeserializeFromAtomFeed<TMessagingDescription>(Stream stream)
@@ -140,6 +196,18 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             }
 
             var serializer = GetSerializer(typeName);
+
+            return (EntityDescription)serializer.ReadObject(reader);
+        }
+
+        public EntityDescription Deserialize<T>(XmlReader reader, string typeName) where T : EntityDescription
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            var serializer = CreateSerializer(typeName);
 
             return (EntityDescription)serializer.ReadObject(reader);
         }
