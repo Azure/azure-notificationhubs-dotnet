@@ -96,38 +96,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             });
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times",
-            Justification = "Safe here. Any future behavior change is easy to detect")]
-        public TMessagingDescription DeserializeFromAtomFeed<TMessagingDescription>(Stream stream)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException("stream");
-            }
-
-            XmlReaderSettings settings = new XmlReaderSettings
-            {
-                ValidationType = ValidationType.None
-            };
-
-            MemoryStream streamCopy = new MemoryStream();
-            stream.CopyTo(streamCopy);
-
-            foreach (KeyValuePair<string, DataContractSerializer> item in this.entirySerializers)
-            {
-                streamCopy.Seek(0, SeekOrigin.Begin);
-                using (XmlReader xmlReader = XmlReader.Create(streamCopy, settings))
-                {
-                    if (xmlReader.ReadToDescendant(item.Key))
-                    {
-                        return (TMessagingDescription)item.Value.ReadObject(xmlReader);
-                    }
-                }
-            }
-
-            throw new SerializationException();
-        }
-
         public EntityDescription Deserialize(XmlReader reader, string typeName)
         {
             if (reader == null)
