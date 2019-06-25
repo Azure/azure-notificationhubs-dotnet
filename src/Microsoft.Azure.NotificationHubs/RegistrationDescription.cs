@@ -261,7 +261,8 @@ namespace Microsoft.Azure.NotificationHubs
         {
             this.Validate(ApiVersion.Four, false);
 
-            return EntityDescriptionSerializer.Serialize(this);
+            var serializer = new EntityDescriptionSerializer();
+            return serializer.Serialize(this);
         }
 
         /// <summary>
