@@ -4,6 +4,10 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Globalization;
+using System.Linq;
+
 namespace Microsoft.Azure.NotificationHubs
 {
     using System.Runtime.Serialization;
@@ -23,6 +27,13 @@ namespace Microsoft.Azure.NotificationHubs
         private const string ClientSecretName = "ClientSecret";
         private const string AuthTokenUrlName = "AuthTokenUrl";
         private const string SendUrlTemplateName = "SendUrlTemplate";
+        
+        private const string MockAuthTokenUrl = @"http://localhost:8450/adm/token";
+        private const string MockSendUrlTemplate = @"http://localhost:8450/adm/send/{0}/messages";
+        private const string MockIntSendUrlTemplate = @"http://pushtestservice4.cloudapp.net/adm/send/{0}/messages";
+        private const string MockIntAuthTokenUrl = @"http://pushtestservice4.cloudapp.net/adm/token";
+
+        private const string RequiredPropertiesList = "ClientId, ClientSecret";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdmCredential"/> class.
@@ -132,6 +143,64 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             return unchecked(ClientId.GetHashCode() ^ ClientSecret.GetHashCode());
+        }
+
+        /// <summary>
+        /// Validates the Amazon Device Messaging credentials.
+        /// </summary>
+        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
+        /// <exception cref="System.Runtime.Serialization.InvalidDataContractException">
+        /// </exception>
+        protected override void OnValidate(bool allowLocalMockPns)
+        {
+            if (Properties == null ||
+                (string.IsNullOrEmpty(Properties[ClientIdName]) && string.IsNullOrEmpty(Properties[ClientSecretName])))
+            {
+                throw new InvalidDataContractException(SRClient.RequiredPropertiesNotSpecified(RequiredPropertiesList));
+            }
+
+            if (string.IsNullOrEmpty(Properties[ClientIdName]))
+            {
+                throw new InvalidDataContractException(SRClient.RequiredPropertyNotSpecified(ClientIdName));
+            }
+
+            if (string.IsNullOrEmpty(Properties[ClientSecretName]))
+            {
+                throw new InvalidDataContractException(SRClient.RequiredPropertyNotSpecified(ClientSecretName));
+            }
+
+            if (Properties.Count > 2 &&
+                Properties.Count > Properties.Keys.Intersect(
+                    new[] { ClientIdName, ClientSecretName, SendUrlTemplateName, AuthTokenUrlName }).Count())
+            {
+                throw new InvalidDataContractException(SRClient.OnlyNPropertiesRequired(2, RequiredPropertiesList));
+            }
+
+            Uri uri;
+
+            if (!Uri.TryCreate(AuthTokenUrl, UriKind.Absolute, out uri) || (
+                !string.Equals(AuthTokenUrl, ProdAuthTokenUrl, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(AuthTokenUrl, MockIntAuthTokenUrl, StringComparison.OrdinalIgnoreCase) &&
+                !(allowLocalMockPns && string.Equals(AuthTokenUrl, MockAuthTokenUrl, StringComparison.OrdinalIgnoreCase))))
+            {
+                throw new InvalidDataContractException(SRClient.InvalidAdmAuthTokenUrl);
+            }
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(SendUrlTemplate) ||
+                    !Uri.TryCreate(string.Format(CultureInfo.InvariantCulture, SendUrlTemplate, "AdmRegistrationId"), UriKind.Absolute, out uri) ||
+                    (!string.Equals(SendUrlTemplate, ProdSendUrlTemplate, StringComparison.OrdinalIgnoreCase) &&
+                     !string.Equals(SendUrlTemplate, MockIntSendUrlTemplate, StringComparison.OrdinalIgnoreCase) &&
+                     !(allowLocalMockPns && string.Equals(SendUrlTemplate, MockSendUrlTemplate, StringComparison.OrdinalIgnoreCase))))
+                {
+                    throw new InvalidDataContractException(SRClient.InvalidAdmSendUrlTemplate);
+                }
+            }
+            catch (FormatException)
+            {
+                throw new InvalidDataContractException(SRClient.InvalidAdmSendUrlTemplate);
+            }
         }
     }
 }

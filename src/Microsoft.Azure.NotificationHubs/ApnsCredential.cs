@@ -4,6 +4,8 @@
 // license information.
 //------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Microsoft.Azure.NotificationHubs
 {
     using Microsoft.Azure.NotificationHubs.Messaging;
@@ -251,6 +253,69 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             return unchecked(this.CertificateKey.GetHashCode() ^ this.ApnsCertificate.GetHashCode());
+        }
+
+        /// <summary>Validates the APNS credential.</summary>
+        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
+        protected override void OnValidate(bool allowLocalMockPns)
+        {
+            if (this.Properties == null)
+            {
+                throw new InvalidDataContractException(SRClient.ApnsRequiredPropertiesError);
+            }
+
+            if (string.IsNullOrWhiteSpace(this.Endpoint))
+            {
+                throw new InvalidDataContractException(SRClient.ApnsEndpointNotSpecified);
+            }
+
+            if (string.IsNullOrWhiteSpace(this.Token) && string.IsNullOrWhiteSpace(this.ApnsCertificate))
+            {
+                throw new InvalidDataContractException(SRClient.ApnsPropertiesNotSpecified);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.Token) && !string.IsNullOrWhiteSpace(this.ApnsCertificate))
+            {
+                throw new InvalidDataContractException(SRClient.ApnsProvideOnlyOneCredentialType);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.Token) && (string.IsNullOrWhiteSpace(this.KeyId) ||
+                                                           string.IsNullOrWhiteSpace(this.AppId) ||
+                                                           string.IsNullOrWhiteSpace(this.AppName)))
+            {
+                throw new InvalidDataContractException(SRClient.ApnsTokenPropertiesMissing);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.Token))
+            {
+                return;
+            }
+            try
+            {
+                this.NativeCertificate = this.CertificateKey == null ? new X509Certificate2(Convert.FromBase64String(this.ApnsCertificate)) : new X509Certificate2(Convert.FromBase64String(this.ApnsCertificate), this.CertificateKey);
+                if (!this.NativeCertificate.HasPrivateKey)
+                {
+                    throw new InvalidDataContractException(SRClient.ApnsCertificatePrivatekeyMissing);
+                }
+
+                if (DateTime.UtcNow > this.NativeCertificate.NotAfter)
+                {
+                    throw new InvalidDataContractException(SRClient.ApnsCertificateExpired);
+                }
+
+                if (DateTime.UtcNow < this.NativeCertificate.NotBefore)
+                {
+                    throw new InvalidDataContractException(SRClient.ApnsCertificateNotValid);
+                }
+            }
+            catch (CryptographicException ex)
+            {
+                throw new InvalidDataContractException(SRClient.ApnsCertificateNotUsable((object)ex.Message));
+            }
+            catch (FormatException ex)
+            {
+                throw new InvalidDataContractException(SRClient.ApnsCertificateNotUsable((object)ex.Message));
+            }
         }
     }
 }

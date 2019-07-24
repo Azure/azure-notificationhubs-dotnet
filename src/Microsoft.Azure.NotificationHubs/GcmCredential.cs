@@ -103,5 +103,44 @@ namespace Microsoft.Azure.NotificationHubs
 
             return this.GoogleApiKey.GetHashCode();
         }
+
+        /// <summary>Called to validate the given credential.</summary>
+        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
+        protected override void OnValidate(bool allowLocalMockPns)
+        {
+            if (this.Properties == null || this.Properties.Count > 2)
+            {
+                throw new InvalidDataContractException(SRClient.GcmRequiredProperties);
+            }
+
+            if (this.Properties.Count < 1 || string.IsNullOrWhiteSpace(this.GoogleApiKey))
+            {
+                throw new InvalidDataContractException(SRClient.GoogleApiKeyNotSpecified);
+            }
+
+            if (this.Properties.Count == 2 && string.IsNullOrEmpty(this["GcmEndpoint"]))
+            {
+                throw new InvalidDataContractException(SRClient.GcmEndpointNotSpecified);
+            }
+
+            if (!Uri.TryCreate(this.GcmEndpoint, UriKind.Absolute, out Uri result) ||
+                !string.Equals(this.GcmEndpoint, "https://android.googleapis.com/gcm/send",
+                    StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(this.GcmEndpoint, "http://pushtestservice.cloudapp.net/gcm/send",
+                    StringComparison.OrdinalIgnoreCase) &&
+                (!string.Equals(this.GcmEndpoint, "http://pushtestservice4.cloudapp.net/gcm/send",
+                     StringComparison.OrdinalIgnoreCase) &&
+                 !string.Equals(this.GcmEndpoint, "http://pushperfnotificationserver.cloudapp.net/gcm/send",
+                     StringComparison.OrdinalIgnoreCase)) &&
+                (!string.Equals(this.GcmEndpoint, "http://pushstressnotificationserver.cloudapp.net/gcm/send",
+                     StringComparison.OrdinalIgnoreCase) &&
+                 !string.Equals(this.GcmEndpoint, "http://pushnotificationserver.cloudapp.net/gcm/send",
+                     StringComparison.OrdinalIgnoreCase) && (!allowLocalMockPns || !string.Equals(this.GcmEndpoint,
+                                                                 "http://localhost:8450/gcm/send",
+                                                                 StringComparison.OrdinalIgnoreCase))))
+            {
+                throw new InvalidDataContractException(SRClient.InvalidGcmEndpoint);
+            }
+        }
     }
 }

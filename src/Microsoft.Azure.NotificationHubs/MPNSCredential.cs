@@ -178,5 +178,56 @@ namespace Microsoft.Azure.NotificationHubs
 
             return mpnsCertificate.Export(X509ContentType.Pkcs12, certificateKey);
         }
+
+        /// <summary>Validates the MPNS credential.</summary>
+        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
+        protected override void OnValidate(bool allowLocalMockPns)
+        {
+            if (this.Properties == null || this.Properties.Count <= 0)
+            {
+                return;
+            }
+
+            if (this.Properties.Count > 2)
+            {
+                throw new InvalidDataContractException(SRClient.MpnsRequiredPropertiesError);
+            }
+            if (this.Properties.Count >= 2)
+            {
+                if (!string.IsNullOrWhiteSpace(this.MpnsCertificate))
+                {
+                    try
+                    {
+                        X509Certificate2 x509Certificate2 = this.CertificateKey == null 
+                            ? new X509Certificate2(Convert.FromBase64String(this.MpnsCertificate)) 
+                            : new X509Certificate2(Convert.FromBase64String(this.MpnsCertificate), this.CertificateKey);
+                        if (!x509Certificate2.HasPrivateKey)
+                        {
+                            throw new InvalidDataContractException(SRClient.MpnsCertificatePrivatekeyMissing);
+                        }
+
+                        if (DateTime.Now > x509Certificate2.NotAfter)
+                        {
+                            throw new InvalidDataContractException(SRClient.MpnsCertificateExpired);
+                        }
+
+                        if (!(DateTime.Now < x509Certificate2.NotBefore))
+                        {
+                            return;
+                        }
+                        throw new InvalidDataContractException(SRClient.InvalidMpnsCertificate);
+                    }
+                    catch (CryptographicException ex)
+                    {
+                        throw new InvalidDataContractException(SRClient.MpnsCertificateError((object)ex.Message));
+                    }
+                    catch (FormatException ex)
+                    {
+                        throw new InvalidDataContractException(SRClient.MpnsCertificateError((object)ex.Message));
+                    }
+                }
+            }
+            throw new InvalidDataContractException(SRClient.MpnsInvalidPropeties);
+        }
     }
 }
