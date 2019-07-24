@@ -4,12 +4,12 @@
 // license information.
 //------------------------------------------------------------
 
-using System.Security.Cryptography;
-using Microsoft.Azure.NotificationHubs.Messaging;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
