@@ -7,12 +7,11 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
+using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents an ADM credential
     /// </summary>

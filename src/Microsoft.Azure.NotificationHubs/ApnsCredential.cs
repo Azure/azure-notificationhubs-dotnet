@@ -5,15 +5,14 @@
 //------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Microsoft.Azure.NotificationHubs.Messaging;
+using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using Microsoft.Azure.NotificationHubs.Messaging;
-    using System;
-    using System.IO;
-    using System.Runtime.Serialization;
-    using System.Security.Cryptography.X509Certificates;
-
     /// <summary>
     /// Represents an Apple Push Notification Service (APNS) credential.
     /// </summary>

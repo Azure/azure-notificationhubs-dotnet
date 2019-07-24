@@ -3,17 +3,15 @@
 // Licensed under the MIT License. See License.txt in the project root for 
 // license information.
 //------------------------------------------------------------
+using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.IO;
-    using System.Runtime.Serialization;
-    using System.Security.Cryptography;
-    using System.Security.Cryptography.X509Certificates;
-    using Microsoft.Azure.NotificationHubs.Common;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Provides credential of Microsoft Push Notification Service (MPNS).
     /// </summary>

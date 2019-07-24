@@ -3,13 +3,12 @@
 // Licensed under the MIT License. See License.txt in the project root for 
 // license information.
 //------------------------------------------------------------
+using Microsoft.Azure.NotificationHubs.Messaging;
+using System;
+using System.Runtime.Serialization;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using Microsoft.Azure.NotificationHubs.Messaging;
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// Represents the Google Cloud Messaging credential.
     /// </summary>
