@@ -83,9 +83,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// <param name="item">The <see cref="T:Microsoft.Azure.NotificationHubs.Messaging.AuthorizationRule"/> to be added.</param>
         public void Add(AuthorizationRule item)
         {
-            if (item is SharedAccessAuthorizationRule)
+            if (item is SharedAccessAuthorizationRule newRule)
             {
-                SharedAccessAuthorizationRule newRule = item as SharedAccessAuthorizationRule;
                 SharedAccessAuthorizationRule existingRule;
                 
                 if (this.nameToSharedAccessAuthorizationRuleMap.TryGetValue(newRule.KeyName, out existingRule))
@@ -289,10 +288,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (version < ApiVersion.Three)
             {
-                if (this.nameToSharedAccessAuthorizationRuleMap.Any())
-                {
-                    return false;
-                }
+                return !this.nameToSharedAccessAuthorizationRuleMap.Any();
             }
 
             return true;
