@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.Azure.NotificationHubs.Auth;
+using Polly.Retry;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -9,6 +11,7 @@ namespace Microsoft.Azure.NotificationHubs
 
         private int getEntitiesPageSize;
         private TimeSpan operationTimeout;
+        private AsyncRetryPolicy<HttpResponseMessage> retryPolicy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NamespaceManagerSettings"/> class.
@@ -18,6 +21,7 @@ namespace Microsoft.Azure.NotificationHubs
             operationTimeout = TimeSpan.FromMinutes(1.0);
             getEntitiesPageSize = int.MaxValue;
             TokenProvider = null;
+            retryPolicy = RetryPolicy.Default;
         }
 
         /// <summary>
