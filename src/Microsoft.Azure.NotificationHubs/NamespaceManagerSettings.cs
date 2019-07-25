@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Net.Http;
 using Microsoft.Azure.NotificationHubs.Auth;
-using Polly.Retry;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -11,7 +9,6 @@ namespace Microsoft.Azure.NotificationHubs
 
         private int getEntitiesPageSize;
         private TimeSpan operationTimeout;
-        private AsyncRetryPolicy<HttpResponseMessage> retryPolicy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NamespaceManagerSettings"/> class.
@@ -21,7 +18,6 @@ namespace Microsoft.Azure.NotificationHubs
             operationTimeout = TimeSpan.FromMinutes(1.0);
             getEntitiesPageSize = int.MaxValue;
             TokenProvider = null;
-            retryPolicy = NotificationHubs.RetryPolicy.Default;
         }
 
         /// <summary>
@@ -52,25 +48,6 @@ namespace Microsoft.Azure.NotificationHubs
                 }
 
                 operationTimeout = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the base implementation of the retry mechanism for unreliable actions and transient conditions associated with the namespace manager.
-        /// </summary>
-        /// 
-        /// <returns>
-        /// The base implementation of the retry mechanism for unreliable actions and transient conditions associated with the namespace manager.
-        /// </returns>
-        public AsyncRetryPolicy<HttpResponseMessage> RetryPolicy
-        {
-            get
-            {
-                return retryPolicy;
-            }
-            set
-            {
-                retryPolicy = value ?? throw new ArgumentNullException("RetryPolicy");
             }
         }
 
