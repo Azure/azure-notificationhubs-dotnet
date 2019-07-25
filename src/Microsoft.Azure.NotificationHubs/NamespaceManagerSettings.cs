@@ -5,16 +5,21 @@ namespace Microsoft.Azure.NotificationHubs
 {
     internal sealed class NamespaceManagerSettings
     {
+        private readonly TimeSpan MaxOperationTimeout = TimeSpan.FromDays(1);
+
         private int getEntitiesPageSize;
         private TimeSpan operationTimeout;
-        private readonly TimeSpan MaxOperationTimeout = TimeSpan.FromDays(1);
         private RetryPolicy retryPolicy;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NamespaceManagerSettings"/> class.
+        /// </summary>
         public NamespaceManagerSettings()
         {
             operationTimeout = TimeSpan.FromMinutes(1.0);
             getEntitiesPageSize = int.MaxValue;
             TokenProvider = null;
+            retryPolicy = RetryPolicy.Default;
         }
 
         /// <summary>
@@ -47,6 +52,26 @@ namespace Microsoft.Azure.NotificationHubs
                 operationTimeout = value;
             }
         }
+
+        /// <summary>
+        /// Gets or sets the base implementation of the retry mechanism for unreliable actions and transient conditions associated with the namespace manager.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// The base implementation of the retry mechanism for unreliable actions and transient conditions associated with the namespace manager.
+        /// </returns>
+        public RetryPolicy RetryPolicy
+        {
+            get
+            {
+                return retryPolicy;
+            }
+            set
+            {
+                retryPolicy = value ?? throw new ArgumentNullException("RetryPolicy");
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the security token provider.
