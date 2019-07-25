@@ -21,7 +21,7 @@ namespace Microsoft.Azure.NotificationHubs
             operationTimeout = TimeSpan.FromMinutes(1.0);
             getEntitiesPageSize = int.MaxValue;
             TokenProvider = null;
-            retryPolicy = RetryPolicy.Default;
+            retryPolicy = NotificationHubs.RetryPolicy.Default;
         }
 
         /// <summary>
@@ -52,6 +52,24 @@ namespace Microsoft.Azure.NotificationHubs
                 }
 
                 operationTimeout = value;
+            }
+        }
+
+        public AsyncRetryPolicy<HttpResponseMessage> RetryPolicy
+        {
+            get
+            {
+                return retryPolicy;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("RetryPolicy");
+                }
+
+                retryPolicy = value;
             }
         }
 
