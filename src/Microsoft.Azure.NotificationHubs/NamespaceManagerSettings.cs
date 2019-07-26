@@ -7,8 +7,6 @@ namespace Microsoft.Azure.NotificationHubs
 {
     internal sealed class NamespaceManagerSettings
     {
-        private readonly TimeSpan MaxOperationTimeout = TimeSpan.FromDays(1);
-
         private AsyncRetryPolicy<HttpResponseMessage> retryPolicy;
 
         /// <summary>
