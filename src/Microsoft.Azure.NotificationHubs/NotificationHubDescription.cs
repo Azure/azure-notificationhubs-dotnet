@@ -18,7 +18,7 @@ namespace Microsoft.Azure.NotificationHubs
     [DataContract(Name = ManagementStrings.NotificationHubDescription, Namespace = ManagementStrings.Namespace)]
     public sealed class NotificationHubDescription : EntityDescription
     {
-        string path;
+        string _path;
 
         /// <summary>
         /// Default Constructor
@@ -26,7 +26,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="path">path of the NotificationHub.</param>
         public NotificationHubDescription(string path)
         {
-            this.Path = path;
+            Path = path;
         }
 
         /// <summary>
@@ -39,17 +39,18 @@ namespace Microsoft.Azure.NotificationHubs
         {
             get
             {
-                return this.path;
+                return _path;
             }
             set
             {
-                this.ThrowIfReadOnly();
+                ThrowIfReadOnly();
+
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException(SRCore.ArgumentNullOrEmpty("Path"));
                 }
 
-                this.path = value;
+                _path = value;
             }
         }
 
@@ -73,26 +74,26 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(fullAccessRuleName))
             {
-                throw new ArgumentNullException("fullAccessRuleName");
+                throw new ArgumentNullException(nameof(fullAccessRuleName));
             }
 
             if (string.IsNullOrWhiteSpace(fullAccessPassword))
             {
-                throw new ArgumentNullException("fullAccessPassword");
+                throw new ArgumentNullException(nameof(fullAccessPassword));
             }
 
             if (string.IsNullOrWhiteSpace(listenAccessRuleName))
             {
-                throw new ArgumentNullException("listenAccessRuleName");
+                throw new ArgumentNullException(nameof(listenAccessRuleName));
             }
 
             if (string.IsNullOrWhiteSpace(listenAccessPassword))
             {
-                throw new ArgumentNullException("listenAccessPassword");
+                throw new ArgumentNullException(nameof(listenAccessPassword));
             }
 
-            this.SetAccessPassword(fullAccessRuleName, fullAccessPassword, new AccessRights[] { AccessRights.Listen, AccessRights.Send, AccessRights.Manage });
-            this.SetAccessPassword(listenAccessRuleName, listenAccessPassword, new AccessRights[] { AccessRights.Listen });
+            SetAccessPassword(fullAccessRuleName, fullAccessPassword, new AccessRights[] { AccessRights.Listen, AccessRights.Send, AccessRights.Manage });
+            SetAccessPassword(listenAccessRuleName, listenAccessPassword, new AccessRights[] { AccessRights.Listen });
         }
 
         /// <summary>
@@ -100,10 +101,10 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         public void SetAccessPassword(string accessKeyName, string password, IEnumerable<AccessRights> rights)
         {
-            lock (this.Authorization)
+            lock (Authorization)
             {
                 SharedAccessAuthorizationRule rule;
-                if (this.Authorization.TryGetSharedAccessAuthorizationRule(accessKeyName, out rule))
+                if (Authorization.TryGetSharedAccessAuthorizationRule(accessKeyName, out rule))
                 {
                     rule.PrimaryKey = password;
                     rule.Rights = rights;
@@ -114,7 +115,7 @@ namespace Microsoft.Azure.NotificationHubs
                                 accessKeyName,
                                 password,
                                 rights);
-                    this.Authorization.Add(rule);
+                    Authorization.Add(rule);
                 }
             }
         }
@@ -129,12 +130,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             get
             {
-                if (this.InternalAuthorization == null)
+                if (InternalAuthorization == null)
                 {
-                    this.InternalAuthorization = new AuthorizationRules();
+                    InternalAuthorization = new AuthorizationRules();
                 }
 
-                return this.InternalAuthorization;
+                return InternalAuthorization;
             }
         }
 
@@ -149,16 +150,16 @@ namespace Microsoft.Azure.NotificationHubs
         {
             get
             {
-                if (this.InternalRegistrationTtl == null)
+                if (InternalRegistrationTtl == null)
                 {
-                    this.InternalRegistrationTtl = Constants.DefaultRegistrationTtl;
+                    InternalRegistrationTtl = Constants.DefaultRegistrationTtl;
                 }
 
-                return this.InternalRegistrationTtl;
+                return InternalRegistrationTtl;
             }
             set
             {
-                this.ThrowIfReadOnly();
+                ThrowIfReadOnly();
 
                 if (value.Value < Constants.MinimumRegistrationTtl)
                 {
@@ -166,7 +167,7 @@ namespace Microsoft.Azure.NotificationHubs
                 }
 
 
-                this.InternalRegistrationTtl = value;
+                InternalRegistrationTtl = value;
             }
         }
 
@@ -360,18 +361,18 @@ namespace Microsoft.Azure.NotificationHubs
 
             if (version < ApiVersion.Four)
             {
-                if (this.GcmCredential != null)
+                if (GcmCredential != null)
                 {
                     return false;
                 }
             }
 
-            if (version < MinimalApiVersionFor.AdmSupport && this.AdmCredential != null)
+            if (version < MinimalApiVersionFor.AdmSupport && AdmCredential != null)
             {
                 return false;
             }
 
-            if (version < MinimalApiVersionFor.BaiduSupport && this.BaiduCredential != null)
+            if (version < MinimalApiVersionFor.BaiduSupport && BaiduCredential != null)
             {
                 return false;
             }
@@ -395,37 +396,37 @@ namespace Microsoft.Azure.NotificationHubs
             // not lose those data.
             if (version < ApiVersion.Four)
             {
-                this.GcmCredential = existingHubDescription == null ? null : existingHubDescription.GcmCredential;
-                this.MpnsCredential = existingHubDescription == null ? null : existingHubDescription.MpnsCredential;
+                GcmCredential = existingHubDescription == null ? null : existingHubDescription.GcmCredential;
+                MpnsCredential = existingHubDescription == null ? null : existingHubDescription.MpnsCredential;
             }
 
             if (version < MinimalApiVersionFor.AdmSupport)
             {
-                this.AdmCredential = existingHubDescription == null ? null : existingHubDescription.AdmCredential;
+                AdmCredential = existingHubDescription == null ? null : existingHubDescription.AdmCredential;
             }
 
             if (version < MinimalApiVersionFor.BaiduSupport)
             {
-                this.BaiduCredential = existingHubDescription == null ? null : existingHubDescription.BaiduCredential;
+                BaiduCredential = existingHubDescription == null ? null : existingHubDescription.BaiduCredential;
             }
 
             if (version < MinimalApiVersionFor.DisableNotificationHub)
             {
-                this.InternalStatus = existingHubDescription == null ? null : existingHubDescription.InternalStatus;
+                InternalStatus = existingHubDescription == null ? null : existingHubDescription.InternalStatus;
             }
 
             if (version < MinimalApiVersionFor.ApnsTokenCredential)
             {
                 // Get call
-                if (existingHubDescription == null && !string.IsNullOrWhiteSpace(this.ApnsCredential?.Token))
+                if (existingHubDescription == null && !string.IsNullOrWhiteSpace(ApnsCredential?.Token))
                 {
-                    this.ApnsCredential = null;
+                    ApnsCredential = null;
                 }
 
                 // Update call
-                else if (this.ApnsCredential == null && !string.IsNullOrWhiteSpace(existingHubDescription?.ApnsCredential?.Token))
+                else if (ApnsCredential == null && !string.IsNullOrWhiteSpace(existingHubDescription?.ApnsCredential?.Token))
                 {
-                    this.ApnsCredential = existingHubDescription.ApnsCredential;
+                    ApnsCredential = existingHubDescription.ApnsCredential;
                 }
             }
         }
