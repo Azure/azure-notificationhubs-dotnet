@@ -34,11 +34,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="ArgumentOutOfRangeException">throws when a zero or negative TimeSpan is set.</exception>
         public TimeSpan OperationTimeout
         {
-            get
-            {
-                return operationTimeout;
-            }
-
+            get => operationTimeout;
+            
             set
             {
                 if (value == null)
@@ -57,19 +54,11 @@ namespace Microsoft.Azure.NotificationHubs
 
         public AsyncRetryPolicy<HttpResponseMessage> RetryPolicy
         {
-            get
-            {
-                return retryPolicy;
-            }
+            get => retryPolicy;
 
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("RetryPolicy");
-                }
-
-                retryPolicy = value;
+                retryPolicy = value ?? throw new ArgumentNullException("RetryPolicy");
             }
         }
 
@@ -90,10 +79,7 @@ namespace Microsoft.Azure.NotificationHubs
 
         internal int GetEntitiesPageSize
         {
-            get
-            {
-                return getEntitiesPageSize;
-            }
+            get => getEntitiesPageSize;
 
             set
             {
