@@ -4,12 +4,11 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Runtime.Serialization;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-    using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs;
-
     /// <summary>
     /// This represent the base abstract class for all the entity Description classes. 
     /// Mainly contain the read-only mechanics. This class is not meant to be used 
@@ -44,6 +43,23 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         internal virtual bool RequiresEncryption
         {
             get { return false; }
+        }
+
+        internal virtual void OverrideEntityStatus(EntityStatus status)
+        {
+        }
+
+        internal virtual void OverrideEntityAvailabilityStatus(EntityAvailabilityStatus status)
+        {
+        }
+
+        internal virtual void UpdateForVersion(ApiVersion version, EntityDescription existingDescription = null)
+        {
+        }
+
+        internal virtual bool IsValidForVersion(ApiVersion version)
+        {
+            return true;
         }
 
         /// <summary>
