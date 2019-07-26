@@ -6,16 +6,16 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     public static class MessagingUtilities
     {
-        public static void ThrowIfNullAddressOrPathExists(Uri address, string paramName)
+        public static void ThrowIfNullAddressOrPathExists(Uri address)
         {
             if (address == null)
             {
-                throw new ArgumentNullException(paramName);
+                throw new ArgumentNullException(nameof(address));
             }
 
             if (!string.IsNullOrEmpty(address.AbsolutePath) && address.Segments.Length > 3)
             {
-                throw new ArgumentException(SRClient.InvalidAddressPath(address.AbsoluteUri), paramName);
+                throw new ArgumentException(SRClient.InvalidAddressPath(address.AbsoluteUri), nameof(address));
             }
         }
 
@@ -28,7 +28,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (addresses == null)
             {
-                throw new ArgumentNullException("addresses");
+                throw new ArgumentNullException(nameof(addresses));
             }
 
             List<Uri> uriAddresses = new List<Uri>();
@@ -44,23 +44,23 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 {
                     throw new UriFormatException(SRClient.BadUriFormat(address), ex);
                 }
-                ThrowIfNullAddressOrPathExists(uriAddress, "uriAddress");
+                ThrowIfNullAddressOrPathExists(uriAddress);
                 uriAddresses.Add(uriAddress);
             }
 
             if (uriAddresses.Count == 0)
             {
-                ThrowIfNullAddressOrPathExists(uriAddress, "uriAddress");
+                ThrowIfNullAddressOrPathExists(uriAddress);
             }
 
             return uriAddresses;
         }
 
-        public static void ThrowIfNullAddressesOrPathExists(IEnumerable<Uri> addresses, string paramName)
+        public static void ThrowIfNullAddressesOrPathExists(IEnumerable<Uri> addresses)
         {
             if (addresses == null)
             {
-                throw new ArgumentNullException(paramName);
+                throw new ArgumentNullException(nameof(addresses));
             }
 
             if (addresses.Count() == 0)
@@ -70,7 +70,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             foreach (var address in addresses)
             {
-                ThrowIfNullAddressOrPathExists(address, "address");
+                ThrowIfNullAddressOrPathExists(address);
             }
         }
     }
