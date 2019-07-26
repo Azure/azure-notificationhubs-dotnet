@@ -28,7 +28,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-
         /// <summary>
         /// Gets or sets the security token provider.
         /// </summary>

@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Azure.NotificationHubs.Auth;
+using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
     public sealed class NamespaceManager
     {
         private readonly NamespaceManagerSettings settings;
+        private readonly IEnumerable<Uri> addresses;
 
-        public const string ProtocolVersion = "2017-04";
+        /// <summary> Gets the first namespace base address. </summary>
+        /// <value> The namespace base address. </value>
+        public Uri Address => addresses.First();
 
-        internal readonly IEnumerable<Uri> addresses;
-
-        
+        /// <summary> Gets the namespace manager settings. </summary>
+        /// <value> The namespace manager settings. </value>
+        public NamespaceManagerSettings Settings => settings;
 
         /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
         /// <param name="address">The full address of the namespace.</param>
@@ -69,10 +74,10 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
         /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
 
-        ////public NamespaceManager(IEnumerable<string> addresses, TokenProvider tokenProvider)
-        ////    : this(MessagingUtilities.GetUriList(addresses), tokenProvider)
-        ////{
-        ////}
+        public NamespaceManager(IEnumerable<string> addresses, TokenProvider tokenProvider)
+            : this(MessagingUtilities.GetUriList(addresses), tokenProvider)
+        {
+        }
 
         /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="address">The full address of the namespace. </param>
@@ -102,16 +107,16 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the type is not a supported Credential type. 
         ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        ////public NamespaceManager(IEnumerable<Uri> addresses, TokenProvider tokenProvider)
-        ////{
-        ////    MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses, "addresses");
+        public NamespaceManager(IEnumerable<Uri> addresses, TokenProvider tokenProvider)
+        {
+            MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses, "addresses");
 
-        ////    this.addresses = addresses.ToList();
-        ////    this.settings = new NamespaceManagerSettings()
-        ////    {
-        ////        TokenProvider = tokenProvider,
-        ////    };
-        ////}
+            this.addresses = addresses.ToList();
+            this.settings = new NamespaceManagerSettings()
+            {
+                TokenProvider = tokenProvider,
+            };
+        }
 
         /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="address"> The full address of the namespace.  </param>
@@ -155,17 +160,12 @@ namespace Microsoft.Azure.NotificationHubs
         ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
         /// <exception cref="ArgumentNullException"> Thrown when addresses or settings is null. </exception>
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        ////public NamespaceManager(IEnumerable<Uri> addresses, NamespaceManagerSettings settings)
-        ////{
-        ////    MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses, "addresses");
-        ////    if (settings == null)
-        ////    {
-        ////        throw FxTrace.Exception.ArgumentNull("settings");
-        ////    }
-        ////
-        ////    TimeoutHelper.ThrowIfNonPositiveArgument(settings.OperationTimeout);
-        ////    this.addresses = addresses.ToList();
-        ////    this.settings = settings;
-        ////}
+        public NamespaceManager(IEnumerable<Uri> addresses, NamespaceManagerSettings settings)
+        {
+            MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses, "addresses");
+
+            this.addresses = addresses.ToList();
+            this.settings = this.settings ?? throw new ArgumentNullException("settings");
+        }
     }
 }

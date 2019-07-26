@@ -3,15 +3,12 @@
 // Licensed under the MIT License. See License.txt in the project root for 
 // license information.
 //------------------------------------------------------------
+using System;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Internal;
 
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
-    using Microsoft.Extensions.Caching.Memory;
-    using Microsoft.Extensions.Internal;
-    using Microsoft.IdentityModel.Tokens;
-    using System;
-    using System.Threading.Tasks;
-
     public abstract class TokenProvider : IDisposable
     {
         private readonly IMemoryCache _tokenCache;
