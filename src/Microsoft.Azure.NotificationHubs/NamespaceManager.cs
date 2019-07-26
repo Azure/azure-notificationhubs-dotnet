@@ -173,5 +173,15 @@ namespace Microsoft.Azure.NotificationHubs
             _addresses = addresses.ToList();
             _settings = _settings ?? throw new ArgumentNullException("settings");
         }
+
+        public Task<NotificationHubDescription> CreateNotificationHub(string hubName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotificationHubDescription> CreateNotificationHub(NotificationHubDescription description)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
