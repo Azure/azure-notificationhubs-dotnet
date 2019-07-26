@@ -12,7 +12,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     using System;
     using System.Threading.Tasks;
 
-    internal abstract class TokenProvider : IDisposable
+    public abstract class TokenProvider : IDisposable
     {
         private readonly IMemoryCache _tokenCache;
         private readonly bool _cacheTokens;

@@ -5,7 +5,7 @@ using Polly.Retry;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    internal sealed class NamespaceManagerSettings
+    public sealed class NamespaceManagerSettings
     {
         private readonly TimeSpan MaxOperationTimeout = TimeSpan.FromDays(1);
 
