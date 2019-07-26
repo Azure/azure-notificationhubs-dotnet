@@ -1,4 +1,10 @@
-﻿using System;
+﻿//------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved. 
+// Licensed under the MIT License. See License.txt in the project root for 
+// license information.
+//------------------------------------------------------------
+
+using System;
 using System.Net.Http;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Polly.Retry;
@@ -20,7 +26,10 @@ namespace Microsoft.Azure.NotificationHubs
 
         public AsyncRetryPolicy<HttpResponseMessage> RetryPolicy
         {
-            get => retryPolicy;
+            get
+            {
+                return retryPolicy;
+            } 
 
             set
             {
