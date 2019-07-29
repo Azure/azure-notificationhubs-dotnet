@@ -49,14 +49,12 @@ namespace Microsoft.Azure.NotificationHubs
             get
             {
                 return _retryPolicy;
-            } 
-
+            }
             set
             {
                 _retryPolicy = value ?? throw new ArgumentNullException("RetryPolicy");
             }
         }
-
 
         /// <summary>
         /// Gets or sets the security token provider.
