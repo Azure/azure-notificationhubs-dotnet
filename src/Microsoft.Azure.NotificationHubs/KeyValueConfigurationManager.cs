@@ -7,17 +7,33 @@
 namespace Microsoft.Azure.NotificationHubs
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Configuration;
+    using System.Globalization;
+    using System.Security;
     using System.Text.RegularExpressions;
+    using Microsoft.Azure.NotificationHubs.Auth;
 
     internal class KeyValueConfigurationManager
     {
         public const string ServiceBusConnectionKeyName = @"Microsoft.Azure.NotificationHubs.ConnectionString";
-        public const string EndpointConfigName = @"Endpoint";
+        public const string OperationTimeoutConfigName = @"OperationTimeout";
         public const string EntityPathConfigName = @"EntityPath";
+        public const string EndpointConfigName = @"Endpoint";
+        public const string SharedSecretIssuerConfigName = @"SharedSecretIssuer";
+        public const string SharedSecretValueConfigName = @"SharedSecretValue";
         public const string SharedAccessKeyName = @"SharedAccessKeyName";
         public const string SharedAccessValueName = @"SharedAccessKey";
+        public const string RuntimePortConfigName = @"RuntimePort";
+        public const string ManagementPortConfigName = @"ManagementPort";
+        public const string StsEndpointConfigName = @"StsEndpoint";
+        public const string WindowsDomainConfigName = @"WindowsDomain";
+        public const string WindowsUsernameConfigName = @"WindowsUsername";
+        public const string WindowsPasswordConfigName = @"WindowsPassword";
+        public const string OAuthDomainConfigName = @"OAuthDomain";
+        public const string OAuthUsernameConfigName = @"OAuthUsername";
+        public const string OAuthPasswordConfigName = @"OAuthPassword";
 
         internal const string ValueSeparator = @",";
         internal const string KeyValueSeparator = @"=";
@@ -110,6 +126,121 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 throw new ConfigurationException(SRClient.AppSettingsConfigMissingSetting(EndpointConfigName, ServiceBusConnectionKeyName));
             }
+        }
+
+        public NamespaceManager CreateNamespaceManager()
+        {
+            this.Validate();
+
+            string operationTimeout = this.connectionProperties[OperationTimeoutConfigName];
+            IEnumerable<Uri> endpoints = GetEndpointAddresses(this.connectionProperties[EndpointConfigName], this.connectionProperties[ManagementPortConfigName]);
+            IEnumerable<Uri> stsEndpoints = GetEndpointAddresses(this.connectionProperties[StsEndpointConfigName], null);
+            string issuerName = this.connectionProperties[SharedSecretIssuerConfigName];
+            string issuerKey = this.connectionProperties[SharedSecretValueConfigName];
+            string sasKeyName = this.connectionProperties[SharedAccessKeyName];
+            string sasKey = this.connectionProperties[SharedAccessValueName];
+            string windowsDomain = this.connectionProperties[WindowsDomainConfigName];
+            string windowsUsername = this.connectionProperties[WindowsUsernameConfigName];
+            SecureString windowsPassword = this.GetWindowsPassword();
+            string oauthDomain = this.connectionProperties[OAuthDomainConfigName];
+            string oauthUsername = this.connectionProperties[OAuthUsernameConfigName];
+            SecureString oauthPassword = this.GetOAuthPassword();
+
+            try
+            {
+                TokenProvider provider = CreateTokenProvider(stsEndpoints, issuerName, issuerKey, sasKeyName, sasKey, windowsDomain, windowsUsername, windowsPassword, oauthDomain, oauthUsername, oauthPassword);
+                if (string.IsNullOrEmpty(operationTimeout))
+                {
+                    return new NamespaceManager(endpoints, provider);
+                }
+
+                return new NamespaceManager(
+                    endpoints,
+                    new NamespaceManagerSettings()
+                    {
+                        TokenProvider = provider
+                    });
+            }
+            catch (ArgumentException e)
+            {
+                throw new ConfigurationErrorsException(
+                    SRClient.AppSettingsCreateManagerWithInvalidConnectionString(e.Message),
+                    e);
+            }
+            catch (UriFormatException e)
+            {
+                throw new ConfigurationErrorsException(
+                    SRClient.AppSettingsCreateManagerWithInvalidConnectionString(e.Message),
+                    e);
+            }
+        }
+
+        public SecureString GetWindowsPassword()
+        {
+            return GetSecurePassword(WindowsPasswordConfigName);
+        }
+
+        public SecureString GetOAuthPassword()
+        {
+            return GetSecurePassword(OAuthPasswordConfigName);
+        }
+
+        private IList<Uri> GetEndpointAddresses()
+        {
+            return GetEndpointAddresses(this.connectionProperties[EndpointConfigName], this.connectionProperties[RuntimePortConfigName]);
+        }
+
+        public static IList<Uri> GetEndpointAddresses(string uriEndpoints, string portString)
+        {
+            List<Uri> addresses = new List<Uri>();
+            if (string.IsNullOrWhiteSpace(uriEndpoints))
+            {
+                return addresses;
+            }
+
+            string[] endpoints = uriEndpoints.Split(new string[] { ValueSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            if (endpoints == null || endpoints.Length == 0)
+            {
+                return addresses;
+            }
+
+            int port;
+            if (!int.TryParse(portString, out port))
+            {
+                port = -1;
+            }
+
+            foreach (string endpoint in endpoints)
+            {
+                var address = new UriBuilder(endpoint);
+                if (port > 0)
+                {
+                    address.Port = port;
+                }
+
+                addresses.Add(address.Uri);
+            }
+
+            return addresses;
+        }
+
+        SecureString GetSecurePassword(string configName)
+        {
+            SecureString password = null;
+            string passwordString = this.connectionProperties[configName];
+            if (!string.IsNullOrWhiteSpace(passwordString))
+            {
+                unsafe
+                {
+                    char[] array = passwordString.ToCharArray();
+                    fixed (char* pChars = array)
+                    {
+                        password = new SecureString(pChars, array.Length);
+                    }
+                }
+            }
+
+            return password;
         }
     }
 }
