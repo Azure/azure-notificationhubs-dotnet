@@ -9,18 +9,28 @@ using Microsoft.Extensions.Internal;
 
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
+    /// <summary>
+    /// Represents a token provider.
+    /// </summary>
     public abstract class TokenProvider : IDisposable
     {
         private readonly IMemoryCache _tokenCache;
         private readonly bool _cacheTokens;
         private readonly TimeSpan _cacheExpirationTime;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenProvider"/> class.
+        /// </summary>
+        /// /// <param name="cacheExpirationTime">Cache expiration time.</param>
         protected TokenProvider(TimeSpan cacheExpirationTime)
             : this(true, cacheExpirationTime)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenProvider"/> class.
+        /// </summary>
+        /// <param name="cacheTokens">Cache tokens.</param><param name="cacheExpirationTime">Cache expiration time.</param>
         protected TokenProvider(bool cacheTokens, TimeSpan cacheExpirationTime)
         {
             this._tokenCache = new MemoryCache(new MemoryCacheOptions() { Clock = new SystemClock() });
@@ -29,7 +39,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         }
 
         protected abstract string GenerateToken(string appliesTo);
-
 
         /// <summary>
         /// Gets whether the token provider strips query parameters.
