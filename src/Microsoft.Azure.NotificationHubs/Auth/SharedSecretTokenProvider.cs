@@ -4,10 +4,10 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 {
     public class SharedSecretTokenProvider : TokenProvider
     {
-        private readonly Uri stsUri;
+        private readonly Uri _stsUri;
 
         internal SharedSecretTokenProvider(string issuerName, string issuerSecret)
-            : this(issuerName, SharedSecretTokenProvider.DecodeSecret(issuerSecret), TokenScope.Entity)
+            : this(issuerName, DecodeSecret(issuerSecret), TokenScope.Entity)
         {
         }
 
@@ -15,7 +15,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string issuerName,
             string issuerSecret,
             TokenScope tokenScope)
-            : this(issuerName, SharedSecretTokenProvider.DecodeSecret(issuerSecret), tokenScope)
+            : this(issuerName, DecodeSecret(issuerSecret), tokenScope)
         {
         }
 
@@ -34,9 +34,9 @@ namespace Microsoft.Azure.NotificationHubs.Auth
                 throw new ArgumentException(SRClient.NullIssuerName, nameof(issuerName));
             if (issuerSecret == null || issuerSecret.Length == 0)
                 throw new ArgumentException(SRClient.NullIssuerSecret, nameof(issuerSecret));
-            this.IssuerName = issuerName;
-            this.IssuerSecret = issuerSecret;
-            this.stsUri = (Uri)null;
+            IssuerName = issuerName;
+            IssuerSecret = issuerSecret;
+            _stsUri = (Uri)null;
         }
 
         internal SharedSecretTokenProvider(string issuerName, string issuerSecret, Uri stsUri)
@@ -49,7 +49,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string issuerSecret,
             Uri stsUri,
             TokenScope tokenScope)
-            : this(issuerName, SharedSecretTokenProvider.DecodeSecret(issuerSecret), stsUri, tokenScope)
+            : this(issuerName, DecodeSecret(issuerSecret), stsUri, tokenScope)
         {
         }
 
@@ -73,9 +73,9 @@ namespace Microsoft.Azure.NotificationHubs.Auth
                 throw new ArgumentNullException(nameof(stsUri));
             if (!stsUri.AbsolutePath.EndsWith("/", StringComparison.Ordinal))
                 throw new ArgumentException(SRClient.STSURIFormat, nameof(stsUri));
-            this.IssuerName = issuerName;
-            this.IssuerSecret = issuerSecret;
-            this.stsUri = stsUri;
+            IssuerName = issuerName;
+            IssuerSecret = issuerSecret;
+            _stsUri = stsUri;
         }
 
         internal string IssuerName { get; }

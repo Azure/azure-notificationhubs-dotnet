@@ -41,9 +41,9 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// <param name="cacheTokens">Cache tokens.</param><param name="cacheExpirationTime">Cache expiration time.</param>
         protected TokenProvider(bool cacheTokens, TimeSpan cacheExpirationTime)
         {
-            this._tokenCache = new MemoryCache(new MemoryCacheOptions() { Clock = new SystemClock() });
-            this._cacheTokens = cacheTokens && cacheExpirationTime > TimeSpan.Zero;
-            this._cacheExpirationTime = cacheExpirationTime;
+            _tokenCache = new MemoryCache(new MemoryCacheOptions() { Clock = new SystemClock() });
+            _cacheTokens = cacheTokens && cacheExpirationTime > TimeSpan.Zero;
+            _cacheExpirationTime = cacheExpirationTime;
         }
 
         /// <summary>
@@ -93,11 +93,11 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         {
             if (cacheSize < 1)
                 throw new ArgumentOutOfRangeException(nameof(cacheSize), SRClient.ArgumentOutOfRangeLessThanOne);
-            this.TokenScope = tokenScope;
-            this._cacheSize = cacheSize;
-            this._cacheTokens = cacheTokens;
-            this._isWebTokenSupported = supportHttpAuthToken;
-            this._retrySleepTime = TokenProvider.InitialRetrySleepTime;
+            TokenScope = tokenScope;
+            _cacheSize = cacheSize;
+            _cacheTokens = cacheTokens;
+            _isWebTokenSupported = supportHttpAuthToken;
+            _retrySleepTime = InitialRetrySleepTime;
         }
 
         /// <summary>Creates a windows token provider.</summary>
@@ -148,7 +148,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string keyName,
             string sharedAccessKey)
         {
-            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, TokenProvider.DefaultTokenTimeout);
+            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, DefaultTokenTimeout);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
                 throw new ArgumentNullException("action");
             }
 
-            var normalizedAppliesTo = this.NormalizeAppliesTo(appliesTo);
+            var normalizedAppliesTo = NormalizeAppliesTo(appliesTo);
 
             string token = null;
             if(TryFetchFromCache(normalizedAppliesTo, action, bypassCache, out token))
@@ -214,7 +214,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             }
 
             //If token is not found in cache, build signature and return
-            token = this.GenerateToken(normalizedAppliesTo);
+            token = GenerateToken(normalizedAppliesTo);
 
             //Add generated token to cache
             TrySetIntoCache(normalizedAppliesTo, action, bypassCache, token);
@@ -253,7 +253,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 
         private string NormalizeAppliesTo(string appliesTo)
         {
-            return NormalizeUri(appliesTo, "http", this.StripQueryParameters, stripPath: false, ensureTrailingSlash: true);
+            return NormalizeUri(appliesTo, "http", StripQueryParameters, stripPath: false, ensureTrailingSlash: true);
         }
 
         private string BuildKey(string appliesTo, string action)

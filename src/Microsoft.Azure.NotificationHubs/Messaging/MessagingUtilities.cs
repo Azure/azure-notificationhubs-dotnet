@@ -71,7 +71,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             if (addresses.Count() == 0)
             {
-                throw new ArgumentException(SRClient.NoAddressesFound(addresses), "addresses");
+                throw new ArgumentException(SRClient.NoAddressesFound(addresses), nameof(addresses));
             }
 
             foreach (var address in addresses)

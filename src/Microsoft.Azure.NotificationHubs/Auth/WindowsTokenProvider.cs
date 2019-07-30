@@ -7,8 +7,8 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 {
     public class WindowsTokenProvider : TokenProvider
     {
-        internal readonly List<Uri> stsUris;
-        internal readonly NetworkCredential credential;
+        internal readonly List<Uri> _stsUris;
+        internal readonly NetworkCredential _credential;
 
         internal WindowsTokenProvider(IEnumerable<Uri> stsUris)
             : this(stsUris, (NetworkCredential)null)
@@ -20,10 +20,10 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         {
             if (stsUris == null)
                 throw new ArgumentNullException(nameof(stsUris));
-            this.stsUris = stsUris.ToList<Uri>();
-            if (this.stsUris.Count == 0)
+            _stsUris = stsUris.ToList<Uri>();
+            if (_stsUris.Count == 0)
                 throw new ArgumentNullException(nameof(stsUris));
-            this.credential = credential;
+            _credential = credential;
         }
 
         protected override string GenerateToken(string appliesTo)
