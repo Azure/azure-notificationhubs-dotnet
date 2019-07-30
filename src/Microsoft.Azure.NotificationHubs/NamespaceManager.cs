@@ -195,6 +195,16 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Creates a notification hub.
         /// </summary>
+        /// <param name="hubName">The notification hub description name.</param>
+        /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
+        public NotificationHubDescription CreateNotificationHub(string hubName)
+        {
+            return CreateNotificationHubAsync(hubName).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Creates a notification hub.
+        /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
         public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description)
@@ -205,18 +215,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Creates a notification hub.
         /// </summary>
-        /// <param name="description">The notification hub description.</param>
-        /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public async Task<NotificationHubDescription> CreateNotificationHub(string hubName)
-        {
-            return CreateNotificationHubAsync(hubName)
-                .GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Creates a notification hub.
-        /// </summary>
-        /// <param name="description">The notification hub description.</param>
+        /// <param name="hubName">The notification hub description name.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
         public async Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName)
         {
@@ -245,14 +244,13 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Host = Address.ToString(),
-                Path = description.Path
+                Path = description.Path,
+                Query = "?api-version=2017-04"
             };
-
-            uriBuilder.Query = "api-version=2017-04";
 
             content.Headers.TryAddWithoutValidation("Authorization", _settings.TokenProvider.GetToken(uriBuilder.ToString()));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/xml;type=entry;charset=utf-8");
-            content.Headers.TryAddWithoutValidation("x-ms-version", "2015-01");
+            content.Headers.TryAddWithoutValidation("x-ms-version", "2017-04");
             
 
             var response = await _settings.RetryPolicy
