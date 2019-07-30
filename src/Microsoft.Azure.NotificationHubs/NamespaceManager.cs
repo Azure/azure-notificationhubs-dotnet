@@ -6,8 +6,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
 
@@ -193,12 +199,28 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
         public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description)
         {
-            throw new NotImplementedException();
+            return CreateNotificationHubAsync(description).GetAwaiter().GetResult();
         }
 
-        public Task<NotificationHubDescription> CreateNotificationHub(string hubName)
+        /// <summary>
+        /// Creates a notification hub.
+        /// </summary>
+        /// <param name="description">The notification hub description.</param>
+        /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
+        public async Task<NotificationHubDescription> CreateNotificationHub(string hubName)
         {
-            throw new NotImplementedException();
+            return CreateNotificationHubAsync(hubName)
+                .GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Creates a notification hub.
+        /// </summary>
+        /// <param name="description">The notification hub description.</param>
+        /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
+        public async Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName)
+        {
+            return await CreateNotificationHubAsync(new NotificationHubDescription(hubName));
         }
 
         /// <summary>
@@ -206,9 +228,39 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>A task that represents the asynchronous create hub operation</returns>
-        public Task<NotificationHubDescription> CreateNotificationHubAsync(NotificationHubDescription description)
+        public async Task<NotificationHubDescription> CreateNotificationHubAsync(NotificationHubDescription description)
         {
-            throw new NotImplementedException();
+            if (description == null)
+            {
+                throw new ArgumentNullException(nameof(description));
+            }
+
+            var client = new HttpClient();
+
+            var xmlRequest = SerializeObject(description);
+            var xmlBody = AddHeaderAndFooterToXml(xmlRequest);
+            HttpContent content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+
+            var uriBuilder = new UriBuilder()
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Host = Address.ToString(),
+                Path = description.Path
+            };
+
+            uriBuilder.Query = "api-version=2017-04";
+
+            content.Headers.TryAddWithoutValidation("Authorization", _settings.TokenProvider.GetToken(uriBuilder.ToString()));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/xml;type=entry;charset=utf-8");
+            content.Headers.TryAddWithoutValidation("x-ms-version", "2015-01");
+            
+
+            var response = await _settings.RetryPolicy
+                .ExecuteAsync(() => client.PutAsync(Address, content));
+
+            var xmlResponse = await GetXmlContent(response);
+
+            return GetModelFromResponse<NotificationHubDescription>(xmlResponse);
         }
 
         /// <summary>
@@ -272,6 +324,48 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationHubDescription> UpdateNotificationHubAsync(NotificationHubDescription description)
         {
             throw new NotImplementedException();
+        }
+
+        private string AddHeaderAndFooterToXml(string content)
+        {
+            var header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
+            var footer = "</content></entry>";
+
+            return $"{header}{content}{footer}";
+        }
+
+        private string SerializeObject<T>(T model)
+        {
+            var serializer = new DataContractSerializer(typeof(T));
+
+            var stringBuilder = new StringBuilder();
+
+            using (var xmlWriter = XmlWriter.Create(stringBuilder, new XmlWriterSettings { OmitXmlDeclaration = true }))
+            {
+                serializer.WriteObject(xmlWriter, model);
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        private async Task<XmlReader> GetXmlContent(HttpResponseMessage response)
+        {
+            var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
+            if (xmlReader.ReadToFollowing("entry"))
+            {
+                if (xmlReader.ReadToDescendant("content"))
+                {
+                    xmlReader.ReadStartElement();
+                }
+            }
+
+            return xmlReader;
+        }
+
+        private T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
+        {
+            var serializer = new DataContractSerializer(typeof(T));
+            return (T)serializer.ReadObject(xmlReader);
         }
     }
 }
