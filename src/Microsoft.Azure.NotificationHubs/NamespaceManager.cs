@@ -8,12 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Serialization;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
 
@@ -249,19 +251,32 @@ namespace Microsoft.Azure.NotificationHubs
             };
 
             var token = _settings.TokenProvider.GetToken(uriBuilder.Uri.ToString());
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, uriBuilder.Uri);
-
-            httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-            httpRequestMessage.Headers.Add("Authorization", token);
-            httpRequestMessage.Headers.Add("Content-Type", "application/xml;type=entry;charset=utf-8");
-            httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
 
             var response = await _settings.RetryPolicy
-                .ExecuteAsync(() => client.SendAsync(httpRequestMessage));
+                .ExecuteAsync(async () => 
+                {
+                    var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, uriBuilder.Uri);
 
-            var xmlResponse = await GetXmlContent(response);
+                    httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+                    httpRequestMessage.Headers.Add("Authorization", token);
+                    httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
 
-            return GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    return await client.SendAsync(httpRequestMessage);
+                });
+
+            if (response.IsSuccessStatusCode)
+            {
+                var xmlResponse = await GetXmlContent(response);
+                return GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+            }
+            else
+            {
+                var xmlError = await GetXmlError(response);
+                var error = GetModelFromResponse<ErrorResponse>(xmlError);
+
+                var innerException = new WebException($"The remote server returned an error: {error.Code}");
+                throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
+            }
         }
 
         /// <summary>
@@ -361,6 +376,12 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             return xmlReader;
+        }
+
+        private async Task<XmlReader> GetXmlError(HttpResponseMessage response)
+        {
+            var reader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
+            return reader;
         }
 
         private T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
