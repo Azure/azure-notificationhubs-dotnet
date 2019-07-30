@@ -191,7 +191,7 @@ namespace Microsoft.Azure.NotificationHubs
             MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses);
 
             _addresses = addresses.ToList();
-            _settings = _settings ?? throw new ArgumentNullException("settings");
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         /// <summary>
@@ -240,23 +240,24 @@ namespace Microsoft.Azure.NotificationHubs
 
             var xmlRequest = SerializeObject(description);
             var xmlBody = AddHeaderAndFooterToXml(xmlRequest);
-            HttpContent content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
 
-            var uriBuilder = new UriBuilder()
+            var uriBuilder = new UriBuilder(Address)
             {
                 Scheme = Uri.UriSchemeHttps,
-                Host = Address.ToString(),
                 Path = description.Path,
                 Query = $"?api-version={ApiVersion}"
             };
 
-            content.Headers.TryAddWithoutValidation("Authorization", _settings.TokenProvider.GetToken(uriBuilder.ToString()));
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/xml;type=entry;charset=utf-8");
-            content.Headers.TryAddWithoutValidation("x-ms-version", ApiVersion);
-            
+            var token = _settings.TokenProvider.GetToken(uriBuilder.Uri.ToString());
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, uriBuilder.Uri);
+
+            httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+            httpRequestMessage.Headers.Add("Authorization", token);
+            httpRequestMessage.Headers.Add("Content-Type", "application/xml;type=entry;charset=utf-8");
+            httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
 
             var response = await _settings.RetryPolicy
-                .ExecuteAsync(() => client.PutAsync(Address, content));
+                .ExecuteAsync(() => client.SendAsync(httpRequestMessage));
 
             var xmlResponse = await GetXmlContent(response);
 
