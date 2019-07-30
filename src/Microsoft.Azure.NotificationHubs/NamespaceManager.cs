@@ -23,6 +23,7 @@ namespace Microsoft.Azure.NotificationHubs
     {
         readonly NamespaceManagerSettings _settings;
         readonly IEnumerable<Uri> _addresses;
+        const string _apiVersion = "2017-04";
 
         /// <summary> Gets the first namespace base address. </summary>
         /// <value> The namespace base address. </value>
@@ -245,12 +246,12 @@ namespace Microsoft.Azure.NotificationHubs
                 Scheme = Uri.UriSchemeHttps,
                 Host = Address.ToString(),
                 Path = description.Path,
-                Query = "?api-version=2017-04"
+                Query = $"?api-version={_apiVersion}"
             };
 
             content.Headers.TryAddWithoutValidation("Authorization", _settings.TokenProvider.GetToken(uriBuilder.ToString()));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/xml;type=entry;charset=utf-8");
-            content.Headers.TryAddWithoutValidation("x-ms-version", "2017-04");
+            content.Headers.TryAddWithoutValidation("x-ms-version", _apiVersion);
             
 
             var response = await _settings.RetryPolicy
