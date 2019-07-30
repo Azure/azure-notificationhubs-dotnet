@@ -3,18 +3,18 @@
 // Licensed under the MIT License. See License.txt in the project root for 
 // license information.
 //------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.Linq;
+using System.Net;
+using System.Security;
+using System.Text.RegularExpressions;
+using Microsoft.Azure.NotificationHubs.Auth;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.Configuration;
-    using System.Globalization;
-    using System.Security;
-    using System.Text.RegularExpressions;
-    using Microsoft.Azure.NotificationHubs.Auth;
-
     internal class KeyValueConfigurationManager
     {
         public const string ServiceBusConnectionKeyName = @"Microsoft.Azure.NotificationHubs.ConnectionString";
@@ -183,6 +183,90 @@ namespace Microsoft.Azure.NotificationHubs
         public SecureString GetOAuthPassword()
         {
             return GetSecurePassword(OAuthPasswordConfigName);
+        }
+
+        internal TokenProvider CreateTokenProvider()
+        {
+            IList<Uri> endpointAddresses = KeyValueConfigurationManager.GetEndpointAddresses(this.connectionProperties["StsEndpoint"], (string)null);
+            string connectionProperty1 = this.connectionProperties["SharedSecretIssuer"];
+            string connectionProperty2 = this.connectionProperties["SharedSecretValue"];
+            string connectionProperty3 = this.connectionProperties["SharedAccessKeyName"];
+            string connectionProperty4 = this.connectionProperties["SharedAccessKey"];
+            string connectionProperty5 = this.connectionProperties["WindowsDomain"];
+            string connectionProperty6 = this.connectionProperties["WindowsUsername"];
+            SecureString windowsPassword1 = this.GetWindowsPassword();
+            string connectionProperty7 = this.connectionProperties["OAuthDomain"];
+            string connectionProperty8 = this.connectionProperties["OAuthUsername"];
+            SecureString oauthPassword1 = this.GetOAuthPassword();
+            string issuerName = connectionProperty1;
+            string issuerKey = connectionProperty2;
+            string sharedAccessKeyName = connectionProperty3;
+            string sharedAccessKey = connectionProperty4;
+            string windowsDomain = connectionProperty5;
+            string windowsUser = connectionProperty6;
+            SecureString windowsPassword2 = windowsPassword1;
+            string oauthDomain = connectionProperty7;
+            string oauthUser = connectionProperty8;
+            SecureString oauthPassword2 = oauthPassword1;
+            return KeyValueConfigurationManager.CreateTokenProvider((IEnumerable<Uri>)endpointAddresses,
+                issuerName,
+                issuerKey,
+                sharedAccessKeyName,
+                sharedAccessKey,
+                windowsDomain,
+                windowsUser,
+                windowsPassword2,
+                oauthDomain,
+                oauthUser,
+                oauthPassword2);
+        }
+
+        private static TokenProvider CreateTokenProvider(
+            IEnumerable<Uri> stsEndpoints,
+            string issuerName,
+            string issuerKey,
+            string sharedAccessKeyName,
+            string sharedAccessKey,
+            string windowsDomain,
+            string windowsUser,
+            SecureString windowsPassword,
+            string oauthDomain,
+            string oauthUser,
+            SecureString oauthPassword)
+        {
+            if (!string.IsNullOrWhiteSpace(sharedAccessKey))
+            {
+                return TokenProvider.CreateSharedAccessSignatureTokenProvider(sharedAccessKeyName, sharedAccessKey);
+            }
+            if (string.IsNullOrWhiteSpace(issuerName))
+            {
+                int num = stsEndpoints == null ? 0 : (stsEndpoints.Any<Uri>() ? 1 : 0);
+                bool flag1 = !string.IsNullOrWhiteSpace(windowsUser) && windowsPassword != null && windowsPassword.Length > 0;
+                bool flag2 = !string.IsNullOrWhiteSpace(oauthUser) && oauthPassword != null && oauthPassword.Length > 0;
+                if (num == 0)
+                    return (TokenProvider)null;
+                if (flag2)
+                {
+                    NetworkCredential credential = string.IsNullOrWhiteSpace(oauthDomain)
+                        ? new NetworkCredential(oauthUser, oauthPassword)
+                        : new NetworkCredential(oauthUser, oauthPassword, oauthDomain);
+                    return TokenProvider.CreateOAuthTokenProvider(stsEndpoints, credential);
+                }
+                if (!flag1)
+                {
+                    return TokenProvider.CreateWindowsTokenProvider(stsEndpoints);
+                }
+                NetworkCredential credential1 = string.IsNullOrWhiteSpace(windowsDomain)
+                    ? new NetworkCredential(windowsUser, windowsPassword)
+                    : new NetworkCredential(windowsUser, windowsPassword, windowsDomain);
+                return TokenProvider.CreateWindowsTokenProvider(stsEndpoints, credential1);
+            }
+
+            if (stsEndpoints != null && stsEndpoints.Any<Uri>())
+            {
+                return TokenProvider.CreateSharedSecretTokenProvider(issuerName, issuerKey, stsEndpoints.First<Uri>());
+            }
+            return TokenProvider.CreateSharedSecretTokenProvider(issuerName, issuerKey);
         }
 
         private IList<Uri> GetEndpointAddresses()

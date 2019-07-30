@@ -4,6 +4,8 @@
 // license information.
 //------------------------------------------------------------
 using System;
+using System.Collections.Generic;
+using System.Net;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Internal;
 
@@ -14,9 +16,15 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     /// </summary>
     public abstract class TokenProvider : IDisposable
     {
+        private static readonly TimeSpan DefaultTokenTimeout = TimeSpan.FromMinutes(20.0);
+        private static readonly TimeSpan InitialRetrySleepTime = TimeSpan.FromMilliseconds(50.0);
         private readonly IMemoryCache _tokenCache;
         private readonly bool _cacheTokens;
         private readonly TimeSpan _cacheExpirationTime;
+        private readonly bool _isWebTokenSupported;
+        private readonly TimeSpan _retrySleepTime;
+        private readonly int _cacheSize;
+        private const TokenScope DefaultTokenScope = TokenScope.Entity;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenProvider"/> class.
@@ -37,6 +45,132 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             this._cacheTokens = cacheTokens && cacheExpirationTime > TimeSpan.Zero;
             this._cacheExpirationTime = cacheExpirationTime;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
+        /// </summary>
+        /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
+        /// <param name="supportHttpAuthToken">if set to <c>true</c> [support HTTP authentication token].</param>
+        /// <param name="tokenScope">The token scope.</param>
+        protected TokenProvider(bool cacheTokens, bool supportHttpAuthToken, TokenScope tokenScope)
+            : this(cacheTokens, supportHttpAuthToken, 1000, tokenScope)
+        {
+        }
+
+        protected TokenProvider(bool cacheTokens, bool supportHttpAuthToken)
+            : this(cacheTokens, supportHttpAuthToken, 1000, TokenScope.Entity)
+        {
+        }
+
+        /// <summary>
+        /// Construct a TokenProvider based on the provided issuer name and issuer secret.
+        /// </summary>
+        /// <param name="issuerName">The issuer name to initialize the TokenProvider with.</param>
+        /// <param name="issuerSecret">The issuer name to initialize the TokenProvider with.</param>
+        /// <param name="stsUri">The URI of the STS to use.</param>
+        /// <returns>A TokenProvider initialized with the provided issuer name and secret.</returns>
+        public static TokenProvider CreateSharedSecretTokenProvider(
+            string issuerName,
+            string issuerSecret,
+            Uri stsUri)
+        {
+            return (TokenProvider)new SharedSecretTokenProvider(issuerName, issuerSecret, stsUri);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
+        /// </summary>
+        /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
+        /// <param name="supportHttpAuthToken">if set to <c>true</c> [support HTTP authentication token].</param>
+        /// <param name="cacheSize">Size of the cache.</param>
+        /// <param name="tokenScope">The token scope.</param>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">cacheSize</exception>
+        protected TokenProvider(
+            bool cacheTokens,
+            bool supportHttpAuthToken,
+            int cacheSize,
+            TokenScope tokenScope)
+        {
+            if (cacheSize < 1)
+                throw new ArgumentOutOfRangeException(nameof(cacheSize), SRClient.ArgumentOutOfRangeLessThanOne);
+            this.TokenScope = tokenScope;
+            this._cacheSize = cacheSize;
+            this._cacheTokens = cacheTokens;
+            this._isWebTokenSupported = supportHttpAuthToken;
+            this._retrySleepTime = TokenProvider.InitialRetrySleepTime;
+        }
+
+        /// <summary>Creates a windows token provider.</summary>
+        /// <returns>
+        /// The <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> for returning the windows token.
+        /// </returns>
+        /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
+        public static TokenProvider CreateWindowsTokenProvider(IEnumerable<Uri> stsUris)
+        {
+            return (TokenProvider)new WindowsTokenProvider(stsUris, (NetworkCredential)null);
+        }
+
+        /// <summary>Creates a windows token provider.</summary>
+        /// <returns>
+        /// The <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> for returning the windows token.
+        /// </returns>
+        /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
+        /// <param name="credential">The user credential.</param>
+        public static TokenProvider CreateWindowsTokenProvider(
+            IEnumerable<Uri> stsUris,
+            NetworkCredential credential)
+        {
+            return (TokenProvider)new WindowsTokenProvider(stsUris, credential);
+        }
+
+        /// <summary>
+        /// Creates an OAuth (open standard for authorization) token provider.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> for returning OAuth token.
+        /// </returns>
+        /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
+        /// <param name="credential">The user credential.</param>
+        public static TokenProvider CreateOAuthTokenProvider(
+            IEnumerable<Uri> stsUris,
+            NetworkCredential credential)
+        {
+            return (TokenProvider)new OAuthTokenProvider(stsUris, credential);
+        }
+
+        /// <summary>
+        /// Construct a TokenProvider based on the provided Key Name and Shared Access Key.
+        /// </summary>
+        /// <param name="keyName">The key name of the corresponding SharedAccessKeyAuthorizationRule.</param>
+        /// <param name="sharedAccessKey">The key associated with the SharedAccessKeyAuthorizationRule</param>
+        /// <returns>A TokenProvider initialized with the provided RuleId and Password</returns>
+        public static TokenProvider CreateSharedAccessSignatureTokenProvider(
+            string keyName,
+            string sharedAccessKey)
+        {
+            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, TokenProvider.DefaultTokenTimeout);
+        }
+
+        /// <summary>
+        /// Construct a TokenProvider based on the provided Key Name and Shared Access Key.
+        /// </summary>
+        /// <param name="keyName">The key name of the corresponding SharedAccessKeyAuthorizationRule.</param>
+        /// <param name="sharedAccessKey">The key associated with the SharedAccessKeyAuthorizationRule</param>
+        /// <param name="tokenTimeToLive">The token time to live</param>
+        /// <returns>A TokenProvider initialized with the provided RuleId and Password</returns>
+        public static TokenProvider CreateSharedAccessSignatureTokenProvider(
+            string keyName,
+            string sharedAccessKey,
+            TimeSpan tokenTimeToLive)
+        {
+            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, tokenTimeToLive);
+        }
+
+        /// <summary>
+        /// Gets or sets the token scope associated with the provider.
+        /// </summary>
+        /// <value>The token scope.</value>
+        public TokenScope TokenScope { get; private set; }
 
         protected abstract string GenerateToken(string appliesTo);
 
@@ -86,6 +220,19 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             TrySetIntoCache(normalizedAppliesTo, action, bypassCache, token);
 
             return token;
+        }
+
+        /// <summary>
+        /// Construct a TokenProvider based on the provided issuer name, issuer secret, and the default AccessControl namespace.
+        /// </summary>
+        /// <param name="issuerName">The issuer name to initialize the TokenProvider with.</param>
+        /// <param name="issuerSecret">The issuer name to initialize the TokenProvider with.</param>
+        /// <returns>A TokenProvider initialized with the provided issuer name and secret.</returns>
+        public static TokenProvider CreateSharedSecretTokenProvider(
+            string issuerName,
+            string issuerSecret)
+        {
+            return (TokenProvider)new SharedSecretTokenProvider(issuerName, issuerSecret);
         }
 
         private bool TryFetchFromCache(string appliesTo, string action, bool bypassCache, out string token)
