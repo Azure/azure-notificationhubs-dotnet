@@ -377,6 +377,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Delete the notification hub.
         /// </summary>
+        /// <param name="path">The notification hub path.</param>
         public void DeleteNotificationHub(string path)
         {
             throw new NotImplementedException();
