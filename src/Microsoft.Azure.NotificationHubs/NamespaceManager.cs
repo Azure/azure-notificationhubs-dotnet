@@ -10,17 +10,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Serialization;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
+    /// <summary>
+    /// Represents a namespace manager
+    /// </summary>
     public sealed class NamespaceManager
     {
         const string ApiVersion = "2017-04";
