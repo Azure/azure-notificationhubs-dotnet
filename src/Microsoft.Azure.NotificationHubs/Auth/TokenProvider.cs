@@ -3,6 +3,7 @@
 // Licensed under the MIT License. See License.txt in the project root for 
 // license information.
 //------------------------------------------------------------
+
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -24,7 +25,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         private readonly bool _isWebTokenSupported;
         private readonly TimeSpan _retrySleepTime;
         private readonly int _cacheSize;
-        private const TokenScope DefaultTokenScope = TokenScope.Entity;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenProvider"/> class.
@@ -74,7 +74,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string issuerSecret,
             Uri stsUri)
         {
-            return (TokenProvider)new SharedSecretTokenProvider(issuerName, issuerSecret, stsUri);
+            return new SharedSecretTokenProvider(issuerName, issuerSecret, stsUri);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
         public static TokenProvider CreateWindowsTokenProvider(IEnumerable<Uri> stsUris)
         {
-            return (TokenProvider)new WindowsTokenProvider(stsUris, (NetworkCredential)null);
+            return new WindowsTokenProvider(stsUris, (NetworkCredential)null);
         }
 
         /// <summary>Creates a windows token provider.</summary>
@@ -120,7 +120,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             IEnumerable<Uri> stsUris,
             NetworkCredential credential)
         {
-            return (TokenProvider)new WindowsTokenProvider(stsUris, credential);
+            return new WindowsTokenProvider(stsUris, credential);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             IEnumerable<Uri> stsUris,
             NetworkCredential credential)
         {
-            return (TokenProvider)new OAuthTokenProvider(stsUris, credential);
+            return new OAuthTokenProvider(stsUris, credential);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string keyName,
             string sharedAccessKey)
         {
-            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, DefaultTokenTimeout);
+            return new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, DefaultTokenTimeout);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string sharedAccessKey,
             TimeSpan tokenTimeToLive)
         {
-            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, tokenTimeToLive);
+            return new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, tokenTimeToLive);
         }
 
         /// <summary>
@@ -207,8 +207,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 
             var normalizedAppliesTo = NormalizeAppliesTo(appliesTo);
 
-            string token = null;
-            if(TryFetchFromCache(normalizedAppliesTo, action, bypassCache, out token))
+            if(TryFetchFromCache(normalizedAppliesTo, action, bypassCache, out string token))
             {
                 return token;
             }

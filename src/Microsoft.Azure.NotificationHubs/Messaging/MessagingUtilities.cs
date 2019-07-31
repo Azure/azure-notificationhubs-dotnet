@@ -7,10 +7,11 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    public static class MessagingUtilities
+    internal static class MessagingUtilities
     {
         public static void ThrowIfNullAddressOrPathExists(Uri address)
         {
@@ -30,7 +31,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </summary>
         /// <param name="addresses"></param>
         /// <returns></returns>
-        public static IEnumerable<Uri> GetUriList(IEnumerable<string> addresses)
+        public static IList<Uri> GetUriList(IList<string> addresses)
         {
             if (addresses == null)
             {
@@ -69,7 +70,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 throw new ArgumentNullException(nameof(addresses));
             }
 
-            if (addresses.Count() == 0)
+            if (!addresses.Any())
             {
                 throw new ArgumentException(SRClient.NoAddressesFound(addresses), nameof(addresses));
             }
