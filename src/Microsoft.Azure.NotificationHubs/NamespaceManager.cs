@@ -25,6 +25,8 @@ namespace Microsoft.Azure.NotificationHubs
     public sealed class NamespaceManager
     {
         private const string ApiVersion = "2017-04";
+        private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
+        private const string Footer = "</content></entry>";
         private readonly NamespaceManagerSettings _settings;
         private readonly IEnumerable<Uri> _addresses;
         
@@ -217,8 +219,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="hubName">The notification hub description name.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public async Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName) => 
-            await CreateNotificationHubAsync(new NotificationHubDescription(hubName));
+        public Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName) => 
+            CreateNotificationHubAsync(new NotificationHubDescription(hubName));
 
         /// <summary>
         /// Creates the notification hub asynchronously.
@@ -350,18 +352,12 @@ namespace Microsoft.Azure.NotificationHubs
             throw new NotImplementedException();
         }
 
-        private string AddHeaderAndFooterToXml(string content)
-        {
-            var header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
-            var footer = "</content></entry>";
+        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
-            return $"{header}{content}{footer}";
-        }
 
-        private string SerializeObject<T>(T model)
+        private static string SerializeObject<T>(T model)
         {
             var serializer = new DataContractSerializer(typeof(T));
-
             var stringBuilder = new StringBuilder();
 
             using (var xmlWriter = XmlWriter.Create(stringBuilder, new XmlWriterSettings { OmitXmlDeclaration = true }))
@@ -372,7 +368,7 @@ namespace Microsoft.Azure.NotificationHubs
             return stringBuilder.ToString();
         }
 
-        private async Task<XmlReader> GetXmlContent(HttpResponseMessage response)
+        private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response)
         {
             var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
             if (xmlReader.ReadToFollowing("entry"))
@@ -386,13 +382,10 @@ namespace Microsoft.Azure.NotificationHubs
             return xmlReader;
         }
 
-        private async Task<XmlReader> GetXmlError(HttpResponseMessage response)
-        {
-            var reader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
-            return reader;
-        }
+        private static async Task<XmlReader> GetXmlError(HttpResponseMessage response) => 
+            XmlReader.Create(await response.Content.ReadAsStreamAsync());
 
-        private T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
+        private static T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
         {
             var serializer = new DataContractSerializer(typeof(T));
 
