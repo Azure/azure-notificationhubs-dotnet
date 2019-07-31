@@ -50,7 +50,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="ArgumentNullException">Thrown when addresses field is null. </exception>
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
         /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-        public NamespaceManager(IEnumerable<string> addresses)
+        public NamespaceManager(IList<string> addresses)
             : this(addresses, (TokenProvider)null)
         {
         }
@@ -92,7 +92,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
         /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
 
-        public NamespaceManager(IEnumerable<string> addresses, TokenProvider tokenProvider)
+        public NamespaceManager(IList<string> addresses, TokenProvider tokenProvider)
             : this(MessagingUtilities.GetUriList(addresses), tokenProvider)
         {
         }
@@ -155,7 +155,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
         /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-        public NamespaceManager(IEnumerable<string> addresses, NamespaceManagerSettings settings)
+        public NamespaceManager(IList<string> addresses, NamespaceManagerSettings settings)
             : this(MessagingUtilities.GetUriList(addresses), settings)
         {
         }

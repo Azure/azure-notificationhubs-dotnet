@@ -25,7 +25,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         private readonly bool _isWebTokenSupported;
         private readonly TimeSpan _retrySleepTime;
         private readonly int _cacheSize;
-        private const TokenScope DefaultTokenScope = TokenScope.Entity;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenProvider"/> class.
@@ -121,7 +120,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             IEnumerable<Uri> stsUris,
             NetworkCredential credential)
         {
-            return (TokenProvider)new WindowsTokenProvider(stsUris, credential);
+            return new WindowsTokenProvider(stsUris, credential);
         }
 
         /// <summary>
@@ -136,7 +135,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             IEnumerable<Uri> stsUris,
             NetworkCredential credential)
         {
-            return (TokenProvider)new OAuthTokenProvider(stsUris, credential);
+            return new OAuthTokenProvider(stsUris, credential);
         }
 
         /// <summary>
@@ -149,7 +148,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string keyName,
             string sharedAccessKey)
         {
-            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, DefaultTokenTimeout);
+            return new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, DefaultTokenTimeout);
         }
 
         /// <summary>
@@ -164,7 +163,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string sharedAccessKey,
             TimeSpan tokenTimeToLive)
         {
-            return (TokenProvider)new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, tokenTimeToLive);
+            return new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, tokenTimeToLive);
         }
 
         /// <summary>
@@ -208,8 +207,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 
             var normalizedAppliesTo = NormalizeAppliesTo(appliesTo);
 
-            string token = null;
-            if(TryFetchFromCache(normalizedAppliesTo, action, bypassCache, out token))
+            if(TryFetchFromCache(normalizedAppliesTo, action, bypassCache, out string token))
             {
                 return token;
             }
