@@ -107,7 +107,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
         public static TokenProvider CreateWindowsTokenProvider(IEnumerable<Uri> stsUris)
         {
-            return (TokenProvider)new WindowsTokenProvider(stsUris, (NetworkCredential)null);
+            return new WindowsTokenProvider(stsUris, (NetworkCredential)null);
         }
 
         /// <summary>Creates a windows token provider.</summary>
