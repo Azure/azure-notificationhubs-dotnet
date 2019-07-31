@@ -24,7 +24,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class NamespaceManager
     {
-        const string ApiVersion = "2017-04";
+        private const string ApiVersion = "2017-04";
 
         readonly NamespaceManagerSettings _settings;
         readonly IEnumerable<Uri> _addresses;
@@ -202,30 +202,24 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="hubName">The notification hub description name.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public NotificationHubDescription CreateNotificationHub(string hubName)
-        {
-            return CreateNotificationHubAsync(hubName).GetAwaiter().GetResult();
-        }
+        public NotificationHubDescription CreateNotificationHub(string hubName) => 
+            CreateNotificationHubAsync(hubName).GetAwaiter().GetResult();
 
         /// <summary>
         /// Creates a notification hub.
         /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description)
-        {
-            return CreateNotificationHubAsync(description).GetAwaiter().GetResult();
-        }
+        public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description) => 
+            CreateNotificationHubAsync(description).GetAwaiter().GetResult();
 
         /// <summary>
         /// Creates a notification hub.
         /// </summary>
         /// <param name="hubName">The notification hub description name.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public async Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName)
-        {
-            return await CreateNotificationHubAsync(new NotificationHubDescription(hubName));
-        }
+        public async Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName) => 
+            await CreateNotificationHubAsync(new NotificationHubDescription(hubName));
 
         /// <summary>
         /// Creates the notification hub asynchronously.
