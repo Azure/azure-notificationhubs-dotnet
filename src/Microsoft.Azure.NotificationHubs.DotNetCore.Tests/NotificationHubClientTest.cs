@@ -517,6 +517,37 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        public async Task RegistrationExistsAsync_GetExistingRegistration()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var appleRegistration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new []{ "tag1" });
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(appleRegistration);
+
+            var registrationExists = await _hubClient.RegistrationExistsAsync(createdRegistration.RegistrationId);
+            Assert.True(registrationExists);
+        }
+
+        [Fact]
+        public async Task RegistrationExistsAsync_GetNonExistingRegistration()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var appleRegistration = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new []{ "tag1" });
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(appleRegistration);
+
+            var registrationExists = await _hubClient.RegistrationExistsAsync(createdRegistration.RegistrationId);
+            Assert.True(registrationExists);
+
+            await _hubClient.DeleteRegistrationAsync(createdRegistration.RegistrationId);
+
+            registrationExists = await _hubClient.RegistrationExistsAsync(createdRegistration.RegistrationId);
+            Assert.False(registrationExists);
+        }
+
+        [Fact]
         public async Task UpdateRegistrationAsync_UpdateAppleNativeRegistration_GetUpdatedRegistrationBack()
         {
             LoadMockData();

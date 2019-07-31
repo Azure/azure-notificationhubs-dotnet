@@ -2010,11 +2010,13 @@ namespace Microsoft.Azure.NotificationHubs
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
             using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
             {
+                if (response.Content == null)
+                    return default;
+
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
                     return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
                 }
-
             }
         }
 
