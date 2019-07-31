@@ -74,7 +74,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             string issuerSecret,
             Uri stsUri)
         {
-            return (TokenProvider)new SharedSecretTokenProvider(issuerName, issuerSecret, stsUri);
+            return new SharedSecretTokenProvider(issuerName, issuerSecret, stsUri);
         }
 
         /// <summary>
