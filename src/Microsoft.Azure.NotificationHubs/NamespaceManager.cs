@@ -232,8 +232,6 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(description));
             }
 
-            var client = new HttpClient();
-
             var xmlRequest = SerializeObject(description);
             var xmlBody = AddHeaderAndFooterToXml(xmlRequest);
 
@@ -255,7 +253,10 @@ namespace Microsoft.Azure.NotificationHubs
                     httpRequestMessage.Headers.Add("Authorization", token);
                     httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
 
-                    return await client.SendAsync(httpRequestMessage);
+                    using (var client = new HttpClient())
+                    {
+                        return await client.SendAsync(httpRequestMessage);
+                    }
                 });
 
             if (response.IsSuccessStatusCode)
@@ -267,9 +268,22 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 var xmlError = await GetXmlError(response);
                 var error = GetModelFromResponse<ErrorResponse>(xmlError);
-
                 var innerException = new WebException($"The remote server returned an error: {error.Code}");
-                throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                    case HttpStatusCode.Unauthorized:
+                        throw new UnauthorizedAccessException(error.Detail, innerException);
+                    case HttpStatusCode.BadRequest:
+                        throw new MessagingCommunicationException(error.Detail, innerException);
+                    case HttpStatusCode.Conflict:
+                        throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
+                    default:
+                        throw new Exception(error.Detail, innerException);
+                }
+                
             }
         }
 
@@ -381,7 +395,11 @@ namespace Microsoft.Azure.NotificationHubs
         private T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
         {
             var serializer = new DataContractSerializer(typeof(T));
-            return (T)serializer.ReadObject(xmlReader);
+
+            using (xmlReader)
+            {
+                return (T)serializer.ReadObject(xmlReader);
+            }
         }
     }
 }
