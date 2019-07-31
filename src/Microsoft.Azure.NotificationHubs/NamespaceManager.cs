@@ -260,7 +260,9 @@ namespace Microsoft.Azure.NotificationHubs
                 if (response.IsSuccessStatusCode)
                 {
                     var xmlResponse = await GetXmlContent(response);
-                    return GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    model.Path = description.Path;
+                    return model;
                 }
                 else
                 {
@@ -329,7 +331,9 @@ namespace Microsoft.Azure.NotificationHubs
                 if (response.IsSuccessStatusCode)
                 {
                     var xmlResponse = await GetXmlContent(response);
-                    return GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    model.Path = path;
+                    return model;
                 }
                 else
                 {
