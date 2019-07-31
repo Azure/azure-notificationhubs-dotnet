@@ -25,9 +25,8 @@ namespace Microsoft.Azure.NotificationHubs
     public sealed class NamespaceManager
     {
         private const string ApiVersion = "2017-04";
-
-        readonly NamespaceManagerSettings _settings;
-        readonly IEnumerable<Uri> _addresses;
+        private readonly NamespaceManagerSettings _settings;
+        private readonly IEnumerable<Uri> _addresses;
         
         /// <summary> Gets the first namespace base address. </summary>
         /// <value> The namespace base address. </value>
