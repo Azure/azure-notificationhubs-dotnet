@@ -2011,7 +2011,7 @@ namespace Microsoft.Azure.NotificationHubs
             using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
             {
                 if (response.Content == null)
-                    return default;
+                    return null;
 
                 using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
