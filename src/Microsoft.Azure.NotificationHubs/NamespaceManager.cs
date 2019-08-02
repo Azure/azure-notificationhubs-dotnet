@@ -245,47 +245,47 @@ namespace Microsoft.Azure.NotificationHubs
             };
 
             var token = _settings.TokenProvider.GetToken(uriBuilder.Uri.ToString());
-
-            var response = await _settings.RetryPolicy
-                .ExecuteAsync(async () => 
-                {
-                    var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, uriBuilder.Uri);
-
-                    httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-                    httpRequestMessage.Headers.Add("Authorization", token);
-                    httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
-
-                    using (var client = new HttpClient())
+            using (var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () => 
                     {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, uriBuilder.Uri);
+
+                        httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+                        httpRequestMessage.Headers.Add("Authorization", token);
+                        httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+
                         return await client.SendAsync(httpRequestMessage);
-                    }
-                });
+                    });
 
-            if (response.IsSuccessStatusCode)
-            {
-                var xmlResponse = await GetXmlContent(response);
-                return GetModelFromResponse<NotificationHubDescription>(xmlResponse);
-            }
-            else
-            {
-                var xmlError = await GetXmlError(response);
-                var error = GetModelFromResponse<ErrorResponse>(xmlError);
-                var innerException = new WebException($"The remote server returned an error: {error.Code}");
-
-                switch (response.StatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    case HttpStatusCode.NotFound:
-                        throw new MessagingEntityNotFoundException(error.Detail, innerException);
-                    case HttpStatusCode.Unauthorized:
-                        throw new UnauthorizedAccessException(error.Detail, innerException);
-                    case HttpStatusCode.BadRequest:
-                        throw new MessagingCommunicationException(error.Detail, innerException);
-                    case HttpStatusCode.Conflict:
-                        throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
-                    default:
-                        throw new Exception(error.Detail, innerException);
+                    var xmlResponse = await GetXmlContent(response);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    model.Path = description.Path;
+                    return model;
                 }
-                
+                else
+                {
+                    var xmlError = await GetXmlError(response);
+                    var error = GetModelFromResponse<ErrorResponse>(xmlError);
+                    var innerException = new WebException($"The remote server returned an error: {error.Code}");
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                        case HttpStatusCode.Unauthorized:
+                            throw new UnauthorizedAccessException(error.Detail, innerException);
+                        case HttpStatusCode.BadRequest:
+                            throw new MessagingCommunicationException(error.Detail, innerException);
+                        case HttpStatusCode.Conflict:
+                            throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
+                        default:
+                            throw new Exception(error.Detail, innerException);
+                    }
+                }
             }
         }
 
@@ -294,19 +294,68 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>A notification hub description object.</returns>
-        public NotificationHubDescription GetNotificationHub(string path)
-        {
-            throw new NotImplementedException();
-        }
+        public NotificationHubDescription GetNotificationHub(string path) => 
+            GetNotificationHubAsync(path).GetAwaiter().GetResult();
 
         /// <summary>
         /// Gets the notification hub asynchronously.
         /// </summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>A task that represents the asynchronous get hub operation</returns>
-        public Task<NotificationHubDescription> GetNotificationHubAsync(string path)
+        public async Task<NotificationHubDescription> GetNotificationHubAsync(string path)
         {
-            throw new NotImplementedException();
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            var requestUri = new UriBuilder(Address)
+                {
+                    Scheme = Uri.UriSchemeHttps,
+                    Path = path,  
+                    Query = $"?api-version={ApiVersion}"
+                };
+            var token = _settings.TokenProvider.GetToken(requestUri.Uri.ToString());
+
+            using(var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () => 
+                    {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
+
+                        httpRequestMessage.Headers.Add("Authorization", token);
+                        httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+
+                        return await client.SendAsync(httpRequestMessage);
+                    });
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var xmlResponse = await GetXmlContent(response);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    model.Path = path;
+                    return model;
+                }
+                else
+                {
+                    var xmlError = await GetXmlError(response);
+                    var error = GetModelFromResponse<ErrorResponse>(xmlError);
+                    var innerException = new WebException($"The remote server returned an error: {error.Code}");
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                        case HttpStatusCode.Unauthorized:
+                            throw new UnauthorizedAccessException(error.Detail, innerException);
+                        case HttpStatusCode.BadRequest:
+                            throw new MessagingCommunicationException(error.Detail, innerException);
+                        default:
+                            throw new Exception(error.Detail, innerException);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -327,6 +376,10 @@ namespace Microsoft.Azure.NotificationHubs
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Delete the notification hub.
+        /// </summary>
+        /// <param name="path">The notification hub path.</param>
         public void DeleteNotificationHub(string path)
         {
             throw new NotImplementedException();
