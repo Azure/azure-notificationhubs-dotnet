@@ -25,7 +25,9 @@ namespace Microsoft.Azure.NotificationHubs
         public NamespaceManagerSettings()
         {
             TokenProvider = null;
-            _retryPolicy = Policy.HandleResult<HttpResponseMessage>(response => !response.IsSuccessStatusCode).WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(2));
+            _retryPolicy = Policy
+                .HandleResult<HttpResponseMessage>(response => !response.IsSuccessStatusCode)
+                .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(2));
         }
 
         /// <summary>

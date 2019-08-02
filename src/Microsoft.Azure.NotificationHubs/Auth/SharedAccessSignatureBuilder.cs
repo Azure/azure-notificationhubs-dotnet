@@ -12,7 +12,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     using System.Security.Cryptography;
     using System.Text;
     using System.Web;
-    using Microsoft.IdentityModel.Tokens;
 
     internal static class SharedAccessSignatureBuilder
     {
