@@ -382,7 +382,60 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="path">The notification hub path.</param>
         public void DeleteNotificationHub(string path)
         {
-            throw new NotImplementedException();
+            DeleteNotificationHubAsync(path).Wait();
+        }
+
+        /// <summary>
+        /// Delete the notification hub.
+        /// </summary>
+        /// <param name="path">The notification hub path.</param>
+        public async Task DeleteNotificationHubAsync(string path)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            var requestUri = new UriBuilder(Address)
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Path = path,
+                Query = $"?api-version={ApiVersion}"
+            };
+            var token = _settings.TokenProvider.GetToken(requestUri.Uri.ToString());
+
+            using (var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () =>
+                    {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUri.Uri);
+
+                        httpRequestMessage.Headers.Add("Authorization", token);
+                        httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+
+                        return await client.SendAsync(httpRequestMessage);
+                    });
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var xmlError = await GetXmlError(response);
+                    var error = GetModelFromResponse<ErrorResponse>(xmlError);
+                    var innerException = new WebException($"The remote server returned an error: {error.Code}");
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                        case HttpStatusCode.Unauthorized:
+                            throw new UnauthorizedAccessException(error.Detail, innerException);
+                        case HttpStatusCode.BadRequest:
+                            throw new MessagingCommunicationException(error.Detail, innerException);
+                        default:
+                            throw new Exception(error.Detail, innerException);
+                    }
+                }
+            }
         }
 
         /// <summary>
