@@ -9,7 +9,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     using Common;
     using System;
     using System.Text;
-
+    
     public class SharedAccessSignatureTokenProvider : TokenProvider
     {
         private const int MaxKeyNameLength = 256;

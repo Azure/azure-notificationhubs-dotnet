@@ -6,18 +6,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
+    /// <summary>
+    /// Represents a namespace manager
+    /// </summary>
     public sealed class NamespaceManager
     {
-        readonly NamespaceManagerSettings _settings;
-        readonly IEnumerable<Uri> _addresses;
-
+        private const string ApiVersion = "2017-04";
+        private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
+        private const string Footer = "</content></entry>";
+        private readonly NamespaceManagerSettings _settings;
+        private readonly IEnumerable<Uri> _addresses;
+        
         /// <summary> Gets the first namespace base address. </summary>
         /// <value> The namespace base address. </value>
         public Uri Address => _addresses.First();
@@ -183,32 +195,98 @@ namespace Microsoft.Azure.NotificationHubs
             MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses);
 
             _addresses = addresses.ToList();
-            _settings = _settings ?? throw new ArgumentNullException("settings");
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
+
+        /// <summary>
+        /// Creates a notification hub.
+        /// </summary>
+        /// <param name="hubName">The notification hub description name.</param>
+        /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
+        public NotificationHubDescription CreateNotificationHub(string hubName) => 
+            CreateNotificationHubAsync(hubName).GetAwaiter().GetResult();
 
         /// <summary>
         /// Creates a notification hub.
         /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description)
-        {
-            throw new NotImplementedException();
-        }
+        public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description) => 
+            CreateNotificationHubAsync(description).GetAwaiter().GetResult();
 
-        public Task<NotificationHubDescription> CreateNotificationHub(string hubName)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Creates a notification hub.
+        /// </summary>
+        /// <param name="hubName">The notification hub description name.</param>
+        /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
+        public Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName) => 
+            CreateNotificationHubAsync(new NotificationHubDescription(hubName));
 
         /// <summary>
         /// Creates the notification hub asynchronously.
         /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>A task that represents the asynchronous create hub operation</returns>
-        public Task<NotificationHubDescription> CreateNotificationHubAsync(NotificationHubDescription description)
+        public async Task<NotificationHubDescription> CreateNotificationHubAsync(NotificationHubDescription description)
         {
-            throw new NotImplementedException();
+            if (description == null)
+            {
+                throw new ArgumentNullException(nameof(description));
+            }
+
+            var xmlRequest = SerializeObject(description);
+            var xmlBody = AddHeaderAndFooterToXml(xmlRequest);
+
+            var uriBuilder = new UriBuilder(Address)
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Path = description.Path,
+                Query = $"?api-version={ApiVersion}"
+            };
+
+            var token = _settings.TokenProvider.GetToken(uriBuilder.Uri.ToString());
+            using (var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () => 
+                    {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, uriBuilder.Uri);
+
+                        httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+                        httpRequestMessage.Headers.Add("Authorization", token);
+                        httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+
+                        return await client.SendAsync(httpRequestMessage);
+                    });
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var xmlResponse = await GetXmlContent(response);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    model.Path = description.Path;
+                    return model;
+                }
+                else
+                {
+                    var xmlError = await GetXmlError(response);
+                    var error = GetModelFromResponse<ErrorResponse>(xmlError);
+                    var innerException = new WebException($"The remote server returned an error: {error.Code}");
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                        case HttpStatusCode.Unauthorized:
+                            throw new UnauthorizedAccessException(error.Detail, innerException);
+                        case HttpStatusCode.BadRequest:
+                            throw new MessagingCommunicationException(error.Detail, innerException);
+                        case HttpStatusCode.Conflict:
+                            throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
+                        default:
+                            throw new Exception(error.Detail, innerException);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -216,19 +294,68 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>A notification hub description object.</returns>
-        public NotificationHubDescription GetNotificationHub(string path)
-        {
-            throw new NotImplementedException();
-        }
+        public NotificationHubDescription GetNotificationHub(string path) => 
+            GetNotificationHubAsync(path).GetAwaiter().GetResult();
 
         /// <summary>
         /// Gets the notification hub asynchronously.
         /// </summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>A task that represents the asynchronous get hub operation</returns>
-        public Task<NotificationHubDescription> GetNotificationHubAsync(string path)
+        public async Task<NotificationHubDescription> GetNotificationHubAsync(string path)
         {
-            throw new NotImplementedException();
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            var requestUri = new UriBuilder(Address)
+                {
+                    Scheme = Uri.UriSchemeHttps,
+                    Path = path,  
+                    Query = $"?api-version={ApiVersion}"
+                };
+            var token = _settings.TokenProvider.GetToken(requestUri.Uri.ToString());
+
+            using(var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () => 
+                    {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
+
+                        httpRequestMessage.Headers.Add("Authorization", token);
+                        httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+
+                        return await client.SendAsync(httpRequestMessage);
+                    });
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var xmlResponse = await GetXmlContent(response);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    model.Path = path;
+                    return model;
+                }
+                else
+                {
+                    var xmlError = await GetXmlError(response);
+                    var error = GetModelFromResponse<ErrorResponse>(xmlError);
+                    var innerException = new WebException($"The remote server returned an error: {error.Code}");
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                        case HttpStatusCode.Unauthorized:
+                            throw new UnauthorizedAccessException(error.Detail, innerException);
+                        case HttpStatusCode.BadRequest:
+                            throw new MessagingCommunicationException(error.Detail, innerException);
+                        default:
+                            throw new Exception(error.Detail, innerException);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -249,6 +376,10 @@ namespace Microsoft.Azure.NotificationHubs
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Delete the notification hub.
+        /// </summary>
+        /// <param name="path">The notification hub path.</param>
         public void DeleteNotificationHub(string path)
         {
             throw new NotImplementedException();
@@ -272,6 +403,49 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationHubDescription> UpdateNotificationHubAsync(NotificationHubDescription description)
         {
             throw new NotImplementedException();
+        }
+
+        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
+
+
+        private static string SerializeObject<T>(T model)
+        {
+            var serializer = new DataContractSerializer(typeof(T));
+            var stringBuilder = new StringBuilder();
+
+            using (var xmlWriter = XmlWriter.Create(stringBuilder, new XmlWriterSettings { OmitXmlDeclaration = true }))
+            {
+                serializer.WriteObject(xmlWriter, model);
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response)
+        {
+            var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
+            if (xmlReader.ReadToFollowing("entry"))
+            {
+                if (xmlReader.ReadToDescendant("content"))
+                {
+                    xmlReader.ReadStartElement();
+                }
+            }
+
+            return xmlReader;
+        }
+
+        private static async Task<XmlReader> GetXmlError(HttpResponseMessage response) => 
+            XmlReader.Create(await response.Content.ReadAsStreamAsync());
+
+        private static T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
+        {
+            var serializer = new DataContractSerializer(typeof(T));
+
+            using (xmlReader)
+            {
+                return (T)serializer.ReadObject(xmlReader);
+            }
         }
     }
 }
