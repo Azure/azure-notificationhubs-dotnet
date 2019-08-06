@@ -246,7 +246,6 @@ namespace Microsoft.Azure.NotificationHubs
             };
 
             var token = _settings.TokenProvider.GetToken(uriBuilder.Uri.ToString());
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             using (var client = new HttpClient())
             {
