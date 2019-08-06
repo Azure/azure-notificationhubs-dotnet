@@ -26,9 +26,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            _namespaceUriString = Environment.GetEnvironmentVariable(NotificationHubNamespaceUriString) ?? configuration[NotificationHubNamespaceUriString];
-            _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString) ?? configuration[NotificationHubConnectionString];
-            _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName) ?? configuration[NotificationHubName];
+            _namespaceUriString = Environment.GetEnvironmentVariable(NotificationHubNamespaceUriString.ToUpper()) ?? configuration[NotificationHubNamespaceUriString];
+            _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpper()) ?? configuration[NotificationHubConnectionString];
+            _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpper()) ?? configuration[NotificationHubName];
 
             _namespaceManagerSettings = new NamespaceManagerSettings();
             _namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(_notificationHubConnectionString);
