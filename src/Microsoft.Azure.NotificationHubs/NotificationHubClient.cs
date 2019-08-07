@@ -1362,18 +1362,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <typeparam name="TRegistrationDescription">The type of registration description.</typeparam>
         /// <param name="registrationId">The registration ID.</param>
+        /// <param name="throwIfNotFound">Will throw a MessagingEntityNotFound exception if the registration is not found.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown when registrationId is null</exception>
-        public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId) where TRegistrationDescription : RegistrationDescription
+        public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId, bool throwIfNotFound = false) where TRegistrationDescription : RegistrationDescription
         {
             if (string.IsNullOrWhiteSpace(registrationId))
             {
                 throw new ArgumentNullException("registrationId");
             }
 
-            return GetEntityImplAsync<TRegistrationDescription>("registrations", registrationId, CancellationToken.None);
+            return GetEntityImplAsync<TRegistrationDescription>("registrations", registrationId, CancellationToken.None, throwIfNotFound);
         }
 
         /// <summary>
@@ -1521,7 +1522,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public async Task<bool> RegistrationExistsAsync(string registrationId)
         {
-            return await GetRegistrationAsync<RegistrationDescription>(registrationId).ConfigureAwait(false) != null;
+            return await GetRegistrationAsync<RegistrationDescription>(registrationId, true).ConfigureAwait(false) != null;
         }
 
         /// <summary>
@@ -2002,13 +2003,19 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        private async Task<TEntity> GetEntityImplAsync<TEntity>(string entityCollection, string entityId, CancellationToken cancellationToken) where TEntity : EntityDescription
+        private async Task<TEntity> GetEntityImplAsync<TEntity>(string entityCollection, string entityId, CancellationToken cancellationToken, bool throwIfNotFound = true) where TEntity : EntityDescription
         {
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"{entityCollection}/{entityId}";
 
+            var successfulResponseStatuses = new List<HttpStatusCode> {HttpStatusCode.OK};
+            if (throwIfNotFound == false)
+            {
+                successfulResponseStatuses.Add(HttpStatusCode.NotFound);
+            }
+
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
+            using (var response = await SendRequestAsync(request, trackingId, successfulResponseStatuses.ToArray(), cancellationToken).ConfigureAwait(false))
             {
                 if (response.Content == null)
                     return null;
