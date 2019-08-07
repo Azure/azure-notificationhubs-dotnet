@@ -119,7 +119,6 @@ namespace Microsoft.Azure.NotificationHubs
         ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
         public NamespaceManager(Uri address, TokenProvider tokenProvider)
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             MessagingUtilities.ThrowIfNullAddressOrPathExists(address);
 
             _addresses = new List<Uri> { address };
