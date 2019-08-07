@@ -1367,7 +1367,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown when registrationId is null</exception>
-        public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId, bool throwIfNotFound = false) where TRegistrationDescription : RegistrationDescription
+        public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId, bool throwIfNotFound = true) where TRegistrationDescription : RegistrationDescription
         {
             if (string.IsNullOrWhiteSpace(registrationId))
             {
@@ -1522,7 +1522,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public async Task<bool> RegistrationExistsAsync(string registrationId)
         {
-            return await GetRegistrationAsync<RegistrationDescription>(registrationId, true).ConfigureAwait(false) != null;
+            return await GetRegistrationAsync<RegistrationDescription>(registrationId, false).ConfigureAwait(false) != null;
         }
 
         /// <summary>
