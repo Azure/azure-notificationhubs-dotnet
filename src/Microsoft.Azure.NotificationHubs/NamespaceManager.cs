@@ -245,10 +245,11 @@ namespace Microsoft.Azure.NotificationHubs
             };
 
             var token = _settings.TokenProvider.GetToken(uriBuilder.Uri.ToString());
+
             using (var client = new HttpClient())
             {
                 var response = await _settings.RetryPolicy
-                    .ExecuteAsync(async () => 
+                    .ExecuteAsync(async () =>
                     {
                         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, uriBuilder.Uri);
 
@@ -333,9 +334,16 @@ namespace Microsoft.Azure.NotificationHubs
                 if (response.IsSuccessStatusCode)
                 {
                     var xmlResponse = await GetXmlContent(response);
-                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
-                    model.Path = path;
-                    return model;
+                    if (xmlResponse.NodeType != XmlNodeType.None)
+                    {
+                        var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                        model.Path = path;
+                        return model;
+                    }
+                    else
+                    {
+                        throw new MessagingEntityNotFoundException("Notification Hub not found");
+                    }
                 }
                 else
                 {
@@ -382,7 +390,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="path">The notification hub path.</param>
         public void DeleteNotificationHub(string path)
         {
-            DeleteNotificationHubAsync(path).Wait();
+            DeleteNotificationHubAsync(path).GetAwaiter().GetResult();
         }
 
         /// <summary>
