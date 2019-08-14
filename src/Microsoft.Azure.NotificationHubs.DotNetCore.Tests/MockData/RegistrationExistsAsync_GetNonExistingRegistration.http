@@ -53,6 +53,31 @@
                 "Content-Type": "application/atom+xml; type=entry; charset=utf-8"
             },
             "Content": "<entry a:etag=\"W/&quot;2&quot;\" xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/5267365982808935704-4914086341193203009-2?api-version=2017-04</id><title type=\"text\">5267365982808935704-4914086341193203009-2</title><published>2018-11-07T00:18:27Z</published><updated>2018-11-07T00:18:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/5267365982808935704-4914086341193203009-2?api-version=2017-04\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>2</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>5267365982808935704-4914086341193203009-2</RegistrationId><Tags>tag1</Tags><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry>"
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/5267365982808935704-4914086341193203009-2?api-version=2017-04",
+            "StatusCode": 200,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:26 GMT",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        },
+        {
+            "RequestUriPath": "/sdk-sample-nh/registrations/5267365982808935704-4914086341193203009-2?api-version=2017-04",
+            "StatusCode": 404,
+            "Headers": {
+                "Date": "Wed, 07 Nov 2018 00:18:26 GMT",
+                "Transfer-Encoding": "chunked",
+                "Server": "Microsoft-HTTPAPI/2.0"
+            },
+            "ContentHeaders": {
+                "Content-Type": "application/xml; charset=utf-8",
+            },
+            "Content": "<Error><Code>404</Code><Detail>.TrackingId:33e8ef5f-b183-4f11-9ce0-ce01afffd462_G8,TimeStamp:8/14/2019 4:58:19 AM</Detail></Error>"
         }
     ],
     "Guids": []

@@ -1362,19 +1362,18 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <typeparam name="TRegistrationDescription">The type of registration description.</typeparam>
         /// <param name="registrationId">The registration ID.</param>
-        /// <param name="throwIfNotFound">Will throw a MessagingEntityNotFound exception if the registration is not found.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown when registrationId is null</exception>
-        public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId, bool throwIfNotFound = true) where TRegistrationDescription : RegistrationDescription
+        public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId) where TRegistrationDescription : RegistrationDescription
         {
             if (string.IsNullOrWhiteSpace(registrationId))
             {
                 throw new ArgumentNullException("registrationId");
             }
 
-            return GetEntityImplAsync<TRegistrationDescription>("registrations", registrationId, CancellationToken.None, throwIfNotFound);
+            return GetEntityImplAsync<TRegistrationDescription>("registrations", registrationId, CancellationToken.None);
         }
 
         /// <summary>
@@ -1522,7 +1521,10 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public async Task<bool> RegistrationExistsAsync(string registrationId)
         {
-            return await GetRegistrationAsync<RegistrationDescription>(registrationId, false).ConfigureAwait(false) != null;
+            if (string.IsNullOrWhiteSpace(registrationId))
+                throw new ArgumentNullException(nameof(registrationId));
+
+            return await GetEntityImplAsync<RegistrationDescription>("registrations", registrationId, CancellationToken.None, throwIfNotFound: false) != null;
         }
 
         /// <summary>
@@ -2008,21 +2010,23 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"{entityCollection}/{entityId}";
 
-            var successfulResponseStatuses = new List<HttpStatusCode> {HttpStatusCode.OK};
-            if (throwIfNotFound == false)
-            {
-                successfulResponseStatuses.Add(HttpStatusCode.NotFound);
-            }
+            HttpStatusCode[] successfulResponseStatuses;
+            if (throwIfNotFound)
+                successfulResponseStatuses = new [] { HttpStatusCode.OK };
+            else
+                successfulResponseStatuses = new [] { HttpStatusCode.OK, HttpStatusCode.NotFound };
 
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, successfulResponseStatuses.ToArray(), cancellationToken).ConfigureAwait(false))
             {
-                if (response.Content == null)
-                    return null;
-
-                using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, successfulResponseStatuses, cancellationToken).ConfigureAwait(false))
                 {
-                    return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                        return null;
+
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    {
+                        return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
+                    }
                 }
             }
         }
