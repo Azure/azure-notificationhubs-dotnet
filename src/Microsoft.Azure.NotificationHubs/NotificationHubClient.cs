@@ -1521,7 +1521,10 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public async Task<bool> RegistrationExistsAsync(string registrationId)
         {
-            return await GetRegistrationAsync<RegistrationDescription>(registrationId).ConfigureAwait(false) != null;
+            if (string.IsNullOrWhiteSpace(registrationId))
+                throw new ArgumentNullException(nameof(registrationId));
+
+            return await GetEntityImplAsync<RegistrationDescription>("registrations", registrationId, CancellationToken.None, throwIfNotFound: false) != null;
         }
 
         /// <summary>
@@ -2002,19 +2005,29 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        private async Task<TEntity> GetEntityImplAsync<TEntity>(string entityCollection, string entityId, CancellationToken cancellationToken) where TEntity : EntityDescription
+        private async Task<TEntity> GetEntityImplAsync<TEntity>(string entityCollection, string entityId, CancellationToken cancellationToken, bool throwIfNotFound = true) where TEntity : EntityDescription
         {
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"{entityCollection}/{entityId}";
 
-            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
-            {
-                using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                {
-                    return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
-                }
+            HttpStatusCode[] successfulResponseStatuses;
+            if (throwIfNotFound)
+                successfulResponseStatuses = new [] { HttpStatusCode.OK };
+            else
+                successfulResponseStatuses = new [] { HttpStatusCode.OK, HttpStatusCode.NotFound };
 
+            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
+            {
+                using (var response = await SendRequestAsync(request, trackingId, successfulResponseStatuses, cancellationToken).ConfigureAwait(false))
+                {
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                        return null;
+
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    {
+                        return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
+                    }
+                }
             }
         }
 
