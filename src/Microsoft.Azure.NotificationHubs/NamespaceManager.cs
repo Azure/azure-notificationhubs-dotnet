@@ -528,6 +528,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
+
         private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
         private static string SerializeObject<T>(T model)
