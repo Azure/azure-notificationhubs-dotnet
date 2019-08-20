@@ -466,8 +466,74 @@ namespace Microsoft.Azure.NotificationHubs
             throw new NotImplementedException();
         }
 
-        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
+        /// <summary>Submits the notification hub job asynchronously.</summary>
+        /// <param name="job">The job to submit.</param>
+        /// <param name="notificationHubPath">The notification hub path.</param>
+        /// <returns>A task that represents the asynchronous get job operation</returns>
+        public async Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job, string notificationHubPath)
+        {
+            if (job == null)
+            {
+                throw new ArgumentNullException(nameof(job));
+            }
 
+            if (job.OutputContainerUri == null)
+            {
+                throw new ArgumentNullException(nameof(job.OutputContainerUri));
+            }
+
+            var requestUri = new UriBuilder(Address)
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Path = $"{notificationHubPath}/jobs",
+                Query = $"?api-version={ApiVersion}"
+            };
+            var token = _settings.TokenProvider.GetToken(requestUri.Uri.ToString());
+
+            var xmlRequest = SerializeObject(job);
+            var xmlBody = AddHeaderAndFooterToXml(xmlRequest);
+
+            using(var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () => 
+                    {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri.Uri);
+                                            
+                        httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+                        httpRequestMessage.Headers.Add("Authorization", token);
+                        httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+
+                        return await client.SendAsync(httpRequestMessage);
+                    });
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var xmlResponse = await GetXmlContent(response);
+                    return GetModelFromResponse<NotificationHubJob>(xmlResponse);
+                }
+                else
+                {
+                    var xmlError = await GetXmlError(response);
+                    var error = GetModelFromResponse<ErrorResponse>(xmlError);
+                    var innerException = new WebException($"The remote server returned an error: {error.Code}");
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                        case HttpStatusCode.Unauthorized:
+                            throw new UnauthorizedAccessException(error.Detail, innerException);
+                        case HttpStatusCode.BadRequest:
+                            throw new MessagingCommunicationException(error.Detail, innerException);
+                        default:
+                            throw new Exception(error.Detail, innerException);
+                    }
+                }
+            }
+        }
+
+        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
         private static string SerializeObject<T>(T model)
         {

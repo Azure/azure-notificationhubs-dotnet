@@ -4,30 +4,26 @@
 // license information.
 //----------------------------------------------------------------
 
-using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
+using System.Xml;
+using Microsoft.Azure.NotificationHubs.Auth;
+using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using Auth;
-    using Messaging;
-    using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Runtime.Serialization;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Web;
-    using System.Xml;
-
-
-
     /// <summary>
     /// Represents a notification hub client.
     /// </summary>
@@ -42,6 +38,7 @@ namespace Microsoft.Azure.NotificationHubs
         private readonly EntityDescriptionSerializer _entitySerializer = new EntityDescriptionSerializer();
         private readonly string _notificationHubPath;
         private readonly TokenProvider _tokenProvider;
+        private NamespaceManager _namespaceManager;
 
         /// <summary>
         /// Initializes a new instance of <see cref="NotificationHubClient"/>
@@ -73,6 +70,7 @@ namespace Microsoft.Azure.NotificationHubs
             _notificationHubPath = notificationHubPath;
             _tokenProvider = Auth.SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
             var configurationManager = new KeyValueConfigurationManager(connectionString);
+            _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
             _baseUri = GetBaseUri(configurationManager);
 
             if (settings?.MessageHandler != null)
@@ -246,33 +244,9 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The submitted <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />s.
         /// </returns>
-        public async Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job)
+        public Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job)
         {
-            if (job == null)
-            {
-                throw new ArgumentNullException("job");
-            }
-
-            if (job.OutputContainerUri == null)
-            {
-                throw new ArgumentNullException("OutputContainerUri");
-            }
-
-            var requestUri = GetGenericRequestUriBuilder();
-            requestUri.Path += "jobs";
-
-            using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
-            {
-                AddEntityToRequestContent(request, job);
-
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, CancellationToken.None).ConfigureAwait(false))
-                {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                    {
-                        return await ReadEntityAsync<NotificationHubJob>(responseStream).ConfigureAwait(false);
-                    }
-                }
-            }
+            return _namespaceManager.SubmitNotificationHubJobAsync(job, _notificationHubPath);            
         }
 
         /// <summary>
