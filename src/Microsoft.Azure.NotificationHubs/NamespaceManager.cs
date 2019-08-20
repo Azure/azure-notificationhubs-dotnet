@@ -482,7 +482,7 @@ namespace Microsoft.Azure.NotificationHubs
             try
             {
                 var hubDescription = await GetNotificationHubAsync(path);
-                return String.Equals(hubDescription.Path, path, StringComparison.OrdinalIgnoreCase) 
+                return String.Equals(hubDescription.Path, path, StringComparison.OrdinalIgnoreCase);
             }
             catch (MessagingEntityNotFoundException)
             {
