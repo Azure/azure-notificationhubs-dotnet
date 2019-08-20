@@ -230,7 +230,7 @@ namespace Microsoft.Azure.NotificationHubs
                     });
 
                 if (response.Headers.TryGetValues("MaxProtocolVersion", out var values)) {
-                    return values.First();
+                    return values.FirstOrDefault();
                 }
                 return string.Empty;
             }
