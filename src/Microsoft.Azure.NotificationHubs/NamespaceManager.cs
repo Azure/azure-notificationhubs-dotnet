@@ -199,6 +199,44 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Gets the version information.
+        /// </summary>
+        /// <returns>The version information</returns>
+        public string GetVersionInfo() => 
+            GetVersionInfoAsync().GetAwaiter().GetResult();
+
+        /// <summary>
+        /// Gets the version information asynchronously.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous version information extraction operation</returns>
+        public async Task<string> GetVersionInfoAsync()
+        {
+            var requestUri = new UriBuilder(Address)
+                {
+                    Scheme = Uri.UriSchemeHttps,
+                    Path = "/$protocol-version"
+                };
+
+            using(var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () => 
+                    {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
+
+                        httpRequestMessage.Headers.Add("X-PROCESS-AT", "ServiceBus");
+
+                        return await client.SendAsync(httpRequestMessage);
+                    });
+
+                if (response.Headers.TryGetValues("MaxProtocolVersion", out var values)) {
+                    return values.First();
+                }
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// Creates a notification hub.
         /// </summary>
         /// <param name="hubName">The notification hub description name.</param>
@@ -466,8 +504,31 @@ namespace Microsoft.Azure.NotificationHubs
             throw new NotImplementedException();
         }
 
-        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
+        /// <summary>Checks whether a notifications hub exists.</summary>
+        /// <param name="path">The notification hub path.</param>
+        /// <returns>True if the hub exists</returns>
+        public bool NotificationHubExists(string path) => 
+            NotificationHubExistsAsync(path).GetAwaiter().GetResult();
 
+        /// <summary>
+        /// Checks whether a notification hub exists asynchronously.
+        /// </summary>
+        /// <param name="path">The notification hub path.</param>
+        /// <returns>A task that represents the asynchronous hub check operation</returns>
+        public async Task<bool> NotificationHubExistsAsync(string path)
+        {
+            try
+            {
+                var hubDescription = await GetNotificationHubAsync(path);
+                return hubDescription.Path == path;
+            }
+            catch (MessagingEntityNotFoundException)
+            {
+                return false;
+            }
+        }
+
+        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
         private static string SerializeObject<T>(T model)
         {
