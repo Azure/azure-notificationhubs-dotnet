@@ -466,8 +466,31 @@ namespace Microsoft.Azure.NotificationHubs
             throw new NotImplementedException();
         }
 
-        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
+        /// <summary>Checks whether a notifications hub exists.</summary>
+        /// <param name="path">The notification hub path.</param>
+        /// <returns>True if the hub exists</returns>
+        public bool NotificationHubExists(string path) => 
+            NotificationHubExistsAsync(path).GetAwaiter().GetResult();
 
+        /// <summary>
+        /// Checks whether a notification hub exists asynchronously.
+        /// </summary>
+        /// <param name="path">The notification hub path.</param>
+        /// <returns>A task that represents the asynchronous hub check operation</returns>
+        public async Task<bool> NotificationHubExistsAsync(string path)
+        {
+            try
+            {
+                var hubDescription = await GetNotificationHubAsync(path);
+                return hubDescription.Path == path;
+            }
+            catch (MessagingEntityNotFoundException)
+            {
+                return false;
+            }
+        }
+
+        private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
         private static string SerializeObject<T>(T model)
         {
