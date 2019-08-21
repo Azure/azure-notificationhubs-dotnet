@@ -217,7 +217,8 @@ namespace Microsoft.Azure.NotificationHubs
                     Path = "/$protocol-version"
                 };
 
-            using(var response = await SendAsync((client) => {
+            using(var response = await SendAsync((client) => 
+            {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
                 httpRequestMessage.Headers.Add("X-PROCESS-AT", "ServiceBus");
 
@@ -294,7 +295,8 @@ namespace Microsoft.Azure.NotificationHubs
                 };
             var token = CreateToken(requestUri.Uri);
 
-            using(var response = await SendAsync((client) => {
+            using(var response = await SendAsync((client) => 
+            {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
                 httpRequestMessage.Headers.Add("Authorization", token);
                 httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
@@ -336,7 +338,8 @@ namespace Microsoft.Azure.NotificationHubs
             };
             var token = CreateToken(requestUri.Uri);
 
-            using(var response = await SendAsync((client) => {
+            using(var response = await SendAsync((client) => 
+            {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
                 httpRequestMessage.Headers.Add("Authorization", token);
 
@@ -397,7 +400,8 @@ namespace Microsoft.Azure.NotificationHubs
             };
             var token = CreateToken(requestUri.Uri);
 
-            await SendAsync((client) => {
+            await SendAsync((client) => 
+            {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUri.Uri);
 
                 httpRequestMessage.Headers.Add("Authorization", token);
@@ -465,7 +469,8 @@ namespace Microsoft.Azure.NotificationHubs
             var token = CreateToken(requestUri.Uri);
             var xmlBody = CreateRequestBody(description);
 
-            using(var response = await SendAsync((client) => {
+            using(var response = await SendAsync((client) => 
+            {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, requestUri.Uri);
 
                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
@@ -512,7 +517,8 @@ namespace Microsoft.Azure.NotificationHubs
             var token = CreateToken(requestUri.Uri);
             var xmlBody = CreateRequestBody(job);
 
-            using(var response = await SendAsync((client) => {
+            using(var response = await SendAsync((client) => 
+            {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri.Uri);
                                             
                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
