@@ -370,18 +370,60 @@ namespace Microsoft.Azure.NotificationHubs
         /// Gets the notification hubs.
         /// </summary>
         /// <returns>A collection of notification hubs</returns>
-        public IEnumerable<NotificationHubDescription> GetNotificationHubs()
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<NotificationHubDescription> GetNotificationHubs() => 
+            GetNotificationHubsAsync().GetAwaiter().GetResult();
+
 
         /// <summary>
         /// Gets the notification hubs asynchronously.
         /// </summary>
         /// <returns>A task that represents the asynchronous get hubs operation</returns>
-        public Task<IEnumerable<NotificationHubDescription>> GetNotificationHubsAsync()
+        public async Task<IEnumerable<NotificationHubDescription>> GetNotificationHubsAsync()
         {
-            throw new NotImplementedException();
+            var requestUri = new UriBuilder(Address)
+                {
+                    Scheme = Uri.UriSchemeHttps
+                };
+            var token = _settings.TokenProvider.GetToken(requestUri.Uri.ToString());
+
+            using(var client = new HttpClient())
+            {
+                var response = await _settings.RetryPolicy
+                    .ExecuteAsync(async () => 
+                    {
+                        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
+
+                        httpRequestMessage.Headers.Add("Authorization", token);
+
+                        return await client.SendAsync(httpRequestMessage);
+                    });
+
+                var result = new List<NotificationHubDescription>();
+
+                using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync(), new XmlReaderSettings { Async = true }))
+                {
+                    // Advancing to the first element skipping non-content nodes
+                    await xmlReader.MoveToContentAsync().ConfigureAwait(false);
+
+                    if (!xmlReader.IsStartElement("feed"))
+                    {
+                        throw new FormatException("Required 'feed' element is missing");
+                    }
+
+                    while (xmlReader.ReadToFollowing("entry"))
+                    {
+                        if (xmlReader.ReadToDescendant("title"))
+                        {
+                            xmlReader.ReadStartElement();
+                            var hubName = xmlReader.Value;  
+                            
+                            result.Add(await GetNotificationHubAsync(hubName));
+                        }
+                    }
+                }
+
+                return result;
+            }
         }
 
         /// <summary>
