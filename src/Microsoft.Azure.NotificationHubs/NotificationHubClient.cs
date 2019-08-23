@@ -649,7 +649,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(notificationId))
             {
-                throw new ArgumentNullException("notificationId");
+                throw new ArgumentNullException(nameof(notificationId), "value may not be null, and must contain more than just whitespace");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
