@@ -27,6 +27,7 @@ namespace Microsoft.Azure.NotificationHubs
         private const string ApiVersion = "2017-04";
         private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
         private const string Footer = "</content></entry>";
+        private const string TrackingIdHeaderKey = "TrackingId";
         private readonly NamespaceManagerSettings _settings;
         private readonly IEnumerable<Uri> _addresses;
         
@@ -217,12 +218,12 @@ namespace Microsoft.Azure.NotificationHubs
                     Path = "/$protocol-version"
                 };
 
-            using(var response = await SendAsync((client) => 
+            using(var response = await SendAsync(() => 
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
+                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
                 httpRequestMessage.Headers.Add("X-PROCESS-AT", "ServiceBus");
 
-                return client.SendAsync(httpRequestMessage);
+                return httpRequestMessage;
             }).ConfigureAwait(false))
             {
                 if (response.Headers.TryGetValues("MaxProtocolVersion", out var values)) {
@@ -293,15 +294,12 @@ namespace Microsoft.Azure.NotificationHubs
                     Path = path,  
                     Query = $"?api-version={ApiVersion}"
                 };
-            var token = CreateToken(requestUri.Uri);
 
-            using(var response = await SendAsync((client) => 
+            using(var response = await SendAsync(() => 
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
-                httpRequestMessage.Headers.Add("Authorization", token);
-                httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
-                return client.SendAsync(httpRequestMessage);
+                return httpRequestMessage;
             }).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
@@ -325,7 +323,6 @@ namespace Microsoft.Azure.NotificationHubs
         public IEnumerable<NotificationHubDescription> GetNotificationHubs() => 
             GetNotificationHubsAsync().GetAwaiter().GetResult();
 
-
         /// <summary>
         /// Gets the notification hubs asynchronously.
         /// </summary>
@@ -336,14 +333,12 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps
             };
-            var token = CreateToken(requestUri.Uri);
 
-            using(var response = await SendAsync((client) => 
+            using(var response = await SendAsync(() => 
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri.Uri);
-                httpRequestMessage.Headers.Add("Authorization", token);
+                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
-                return client.SendAsync(httpRequestMessage);
+                return httpRequestMessage;
             }).ConfigureAwait(false))
             {
                 var result = new List<NotificationHubDescription>();
@@ -398,16 +393,12 @@ namespace Microsoft.Azure.NotificationHubs
                 Path = path,
                 Query = $"?api-version={ApiVersion}"
             };
-            var token = CreateToken(requestUri.Uri);
 
-            await SendAsync((client) => 
+            await SendAsync(() => 
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUri.Uri);
+                var httpRequestMessage = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri);
 
-                httpRequestMessage.Headers.Add("Authorization", token);
-                httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
-
-                return client.SendAsync(httpRequestMessage); 
+                return httpRequestMessage; 
             }).ConfigureAwait(false);
         }
 
@@ -466,23 +457,19 @@ namespace Microsoft.Azure.NotificationHubs
                 Path = description.Path,
                 Query = $"?api-version={ApiVersion}"
             };
-            var token = CreateToken(requestUri.Uri);
             var xmlBody = CreateRequestBody(description);
 
-            using(var response = await SendAsync((client) => 
+            using(var response = await SendAsync(() => 
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, requestUri.Uri);
-
+                var httpRequestMessage = CreateHttpRequest(HttpMethod.Put, requestUri.Uri);
                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-                httpRequestMessage.Headers.Add("Authorization", token);
-                httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
 
                 if (update) 
                 {
                     httpRequestMessage.Headers.Add("If-Match", "*");        
                 }
 
-                return client.SendAsync(httpRequestMessage);
+                return httpRequestMessage;
             }).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
@@ -513,19 +500,15 @@ namespace Microsoft.Azure.NotificationHubs
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
                 Query = $"?api-version={ApiVersion}"
-            };
-            var token = CreateToken(requestUri.Uri);
+            };  
             var xmlBody = CreateRequestBody(job);
 
-            using(var response = await SendAsync((client) => 
+            using(var response = await SendAsync(() => 
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri.Uri);
-                                            
+                var httpRequestMessage = CreateHttpRequest(HttpMethod.Post, requestUri.Uri);                                            
                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-                httpRequestMessage.Headers.Add("Authorization", token);
-                httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
 
-                return client.SendAsync(httpRequestMessage);        
+                return httpRequestMessage;      
             }).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
@@ -585,13 +568,31 @@ namespace Microsoft.Azure.NotificationHubs
             return _settings.TokenProvider.GetToken(uri.ToString());
         }
 
-        private async Task<HttpResponseMessage> SendAsync(Func<HttpClient, Task<HttpResponseMessage>> action) 
+        private HttpRequestMessage CreateHttpRequest(HttpMethod method, Uri uri)
+        {
+            var httpRequestMessage = new HttpRequestMessage(method, uri);
+
+            httpRequestMessage.Headers.Add("Authorization", CreateToken(uri));
+            httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+
+            return httpRequestMessage;
+        }
+        private async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> generateHttpRequestMessage) 
         {
             using (var client = new HttpClient())
             {
                 var response = await _settings.RetryPolicy
-                    .ExecuteAsync(() => {
-                        return action(client);
+                    .ExecuteAsync(async () => 
+                    {
+                        var trackingId = Guid.NewGuid().ToString();
+
+                        var httpRequestMessage = generateHttpRequestMessage(); 
+                        httpRequestMessage.Headers.Add(TrackingIdHeaderKey, trackingId);   
+
+                        var httpResponseMessage = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                        httpResponseMessage.Headers.Add(TrackingIdHeaderKey, trackingId);
+
+                        return httpResponseMessage;
                     })
                     .ConfigureAwait(false);
 
@@ -603,7 +604,14 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     var xmlError = await GetXmlError(response).ConfigureAwait(false);
                     var error = GetModelFromResponse<ErrorResponse>(xmlError);
-                    var innerException = new WebException($"The remote server returned an error: {error.Code}");
+                    var trackingId = string.Empty;
+
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    
+                    var innerException = new WebException($"The remote server returned an error: {error.Code}\nTrackingId: {trackingId}");
 
                     switch (response.StatusCode)
                     {
