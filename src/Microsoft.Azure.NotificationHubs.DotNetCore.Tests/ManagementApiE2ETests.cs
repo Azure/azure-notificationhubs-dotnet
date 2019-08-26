@@ -15,11 +15,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string NotificationHubNamespaceUriString = "NotificationHubNamespaceUriString";
         private const string NotificationHubConnectionString = "NotificationHubConnectionString";
         private const string NotificationHubName = "NotificationHubName";
-        private const string BaiduApiKey = "BaiduApiKey";
         private NamespaceManager _namespaceManager;
         private NamespaceManagerSettings _namespaceManagerSettings;
         private readonly string _notificationHubName;
-
         private string _namespaceUriString;
         private string _notificationHubConnectionString;
 
@@ -81,9 +79,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             Assert.Equal(_notificationHubName, getNotificationHubDescription.Path);
 
             // Check that UpdateNotificationHub correctly update hub
-            createNotificationHubDescription.BaiduCredential = new BaiduCredential(BaiduApiKey);
+            createNotificationHubDescription.IsDisabled = true;
             var updatedNotificationHubDescription = _namespaceManager.UpdateNotificationHub(createNotificationHubDescription);
-            Assert.Equal(BaiduApiKey, updatedNotificationHubDescription.BaiduCredential.BaiduApiKey);
+            Assert.True(updatedNotificationHubDescription.IsDisabled);
 
             // Check that DeleteNotificationHub correctly remove hub
             _namespaceManager.DeleteNotificationHub(_notificationHubName);
