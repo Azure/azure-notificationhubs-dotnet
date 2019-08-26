@@ -45,6 +45,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             bool isNotificationHubExist = true;
             IEnumerable<NotificationHubDescription> notificationHubDescriptions;
 
+            var protocolVersion = _namespaceManager.GetVersionInfo();
+            Assert.Equal("2017-11", protocolVersion);
+
             // Check that GetNotification returns MessagingEntityNotFoundException than hub is not exist
             Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.GetNotificationHub(_notificationHubName));
 
@@ -115,6 +118,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
             // Check that GetNotificationHub returns UnauthorizedAccessException when connection string is incorrect
             Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.GetNotificationHub(_notificationHubName));
+
+            // Check that NotificationHubExists returns UnauthorizedAccessException when connection string is incorrect
+            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.NotificationHubExists(_notificationHubName));
 
             // Check that DeleteNotificationHub returns UnauthorizedAccessException when connection string is incorrect
             Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
