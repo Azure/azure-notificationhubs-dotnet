@@ -57,8 +57,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
             // Check that GetNotificationHubs returns collection without not existed hub
             notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-            var numberOfNotificationHubDescriptions = notificationHubDescriptions.Count();
-            Assert.True(notificationHubDescriptions.Where(nhd => nhd.Path == _notificationHubName).Count() == 0);
+            Assert.DoesNotContain(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
 
             // Check that CreateNotificationHub method create hub with correct Path
             var createNotificationHubDescription = _namespaceManager.CreateNotificationHub(_notificationHubName);
@@ -70,8 +69,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
             // Check that GetNotificationHubs returns collection with existed hub
             notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-            Assert.True(notificationHubDescriptions.Where(nhd => nhd.Path == _notificationHubName).Count() > 0);
-            Assert.True(numberOfNotificationHubDescriptions < notificationHubDescriptions.Count());
+            Assert.Contains(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
 
             // Check that CreateNotificationHub returns MessagingEntityAlreadyExistsException than hub is alredy exist
             Assert.Throws<MessagingEntityAlreadyExistsException>(() => _namespaceManager.CreateNotificationHub(_notificationHubName));
@@ -89,9 +87,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
             // Check that GetNotificationHubs returns collection without not existed hub
             notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-            Assert.True(notificationHubDescriptions.Count() >= 0);
-            Assert.True(numberOfNotificationHubDescriptions == notificationHubDescriptions.Count());
-            Assert.True(notificationHubDescriptions.Where(nhd => nhd.Path == _notificationHubName).Count() == 0);
+            Assert.DoesNotContain(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
 
             // Check that DeleteNotificationHub returns MessagingEntityNotFoundException than hub is not exist
             Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.DeleteNotificationHub(_notificationHubName));
