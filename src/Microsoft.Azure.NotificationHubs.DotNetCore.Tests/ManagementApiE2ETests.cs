@@ -123,9 +123,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             // Check that NotificationHubExists returns UnauthorizedAccessException when connection string is incorrect
             Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.NotificationHubExists(_notificationHubName));
 
-            // Check that UpdateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.UpdateNotificationHub(notificationHubDescription));
-
             // Check that DeleteNotificationHub returns UnauthorizedAccessException when connection string is incorrect
             Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
 
