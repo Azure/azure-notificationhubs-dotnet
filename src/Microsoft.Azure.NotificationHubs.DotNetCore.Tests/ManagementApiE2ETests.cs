@@ -15,9 +15,11 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string NotificationHubNamespaceUriString = "NotificationHubNamespaceUriString";
         private const string NotificationHubConnectionString = "NotificationHubConnectionString";
         private const string NotificationHubName = "NotificationHubName";
+        private const string BaiduApiKey = "BaiduApiKey";
         private NamespaceManager _namespaceManager;
         private NamespaceManagerSettings _namespaceManagerSettings;
         private readonly string _notificationHubName;
+
         private string _namespaceUriString;
         private string _notificationHubConnectionString;
 
@@ -79,9 +81,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             Assert.Equal(_notificationHubName, getNotificationHubDescription.Path);
 
             // Check that UpdateNotificationHub correctly update hub
-            createNotificationHubDescription.IsDisabled = true;
+            createNotificationHubDescription.BaiduCredential = new BaiduCredential(BaiduApiKey);
             var updatedNotificationHubDescription = _namespaceManager.UpdateNotificationHub(createNotificationHubDescription);
-            Assert.True(updatedNotificationHubDescription.IsDisabled);
+            Assert.Equal(BaiduApiKey, updatedNotificationHubDescription.BaiduCredential.BaiduApiKey);
 
             // Check that DeleteNotificationHub correctly remove hub
             _namespaceManager.DeleteNotificationHub(_notificationHubName);
@@ -122,6 +124,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
             // Check that NotificationHubExists returns UnauthorizedAccessException when connection string is incorrect
             Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.NotificationHubExists(_notificationHubName));
+
+            // Check that UpdateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
+            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.UpdateNotificationHub(notificationHubDescription));
 
             // Check that DeleteNotificationHub returns UnauthorizedAccessException when connection string is incorrect
             Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
