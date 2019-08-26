@@ -54,7 +54,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
             // Check that GetNotificationHubs returns collection without not existed hub
             notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-            Assert.True(notificationHubDescriptions.Count() >= 0);
             var numberOfNotificationHubDescriptions = notificationHubDescriptions.Count();
             Assert.True(notificationHubDescriptions.Where(nhd => nhd.Path == _notificationHubName).Count() == 0);
 
