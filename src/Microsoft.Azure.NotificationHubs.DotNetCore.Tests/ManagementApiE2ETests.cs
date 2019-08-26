@@ -41,7 +41,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         {
             CleanUp();
 
-            bool isNotificationHubExist = true;
+            bool notificationHubExists = true;
             IEnumerable<NotificationHubDescription> notificationHubDescriptions;
 
             var protocolVersion = _namespaceManager.GetVersionInfo();
@@ -51,8 +51,8 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.GetNotificationHub(_notificationHubName));
 
             // Check that NotificationHubExists return false when notification hub is not exist
-            isNotificationHubExist = _namespaceManager.NotificationHubExists(_notificationHubName);
-            Assert.False(isNotificationHubExist);
+            notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
+            Assert.False(notificationHubExists);
 
             // Check that GetNotificationHubs returns collection without not existed hub
             notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
@@ -63,8 +63,8 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             Assert.Equal(_notificationHubName, createNotificationHubDescription.Path);
 
             // Check that NotificationHubExists return true when notification hub exist
-            isNotificationHubExist = _namespaceManager.NotificationHubExists(_notificationHubName);
-            Assert.True(isNotificationHubExist);
+            notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
+            Assert.True(notificationHubExists);
 
             // Check that GetNotificationHubs returns collection with existed hub
             notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
@@ -86,8 +86,8 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _namespaceManager.DeleteNotificationHub(_notificationHubName);
 
             // Check that NotificationHubExists return false when notification hub is not exist
-            isNotificationHubExist = _namespaceManager.NotificationHubExists(_notificationHubName);
-            Assert.False(isNotificationHubExist);
+            notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
+            Assert.False(notificationHubExists);
 
             // Check that GetNotificationHubs returns collection without not existed hub
             notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
