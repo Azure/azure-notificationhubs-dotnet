@@ -77,6 +77,13 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             var getNotificationHubDescription = _namespaceManager.GetNotificationHub(_notificationHubName);
             Assert.Equal(_notificationHubName, getNotificationHubDescription.Path);
 
+            // Check 
+            var notificationHubJob = new NotificationHubJob();
+            var submitedNotificationHubJob 
+                = _namespaceManager.SubmitNotificationHubJobAsync(notificationHubJob, _notificationHubName).GetAwaiter().GetResult();
+            Assert.Equal("15", submitedNotificationHubJob.JobId);
+
+
             // Check that UpdateNotificationHub correctly update hub
             createNotificationHubDescription.IsDisabled = true;
             var updatedNotificationHubDescription = _namespaceManager.UpdateNotificationHub(createNotificationHubDescription);
