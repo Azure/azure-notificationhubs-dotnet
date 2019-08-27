@@ -516,6 +516,31 @@ namespace Microsoft.Azure.NotificationHubs
             };
         }
 
+        /// <summary>Gets the notification hub job asynchronously.</summary>
+        /// <param name="jobId">The job identifier.</param>
+        /// <param name="notificationHubPath">The notification hub path.</param>
+        /// <returns>A task that represents the asynchronous get job operation</returns>
+        public async Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId, string notificationHubPath)
+        {
+            var requestUri = new UriBuilder(Address)
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Path = $"{notificationHubPath}/jobs/{jobId}",
+                Query = $"api-version={ApiVersion}"
+            };
+
+            using(var response = await SendAsync(() => 
+            {
+                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+
+                return httpRequestMessage;
+            }).ConfigureAwait(false))
+            {
+                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
+                return GetModelFromResponse<NotificationHubJob>(xmlResponse);    
+            };
+        }
+
         private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
         private static string SerializeObject<T>(T model)
