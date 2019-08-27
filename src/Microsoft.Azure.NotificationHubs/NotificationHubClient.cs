@@ -214,7 +214,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(jobId));
             }
 
-            return GetEntityImplAsync<NotificationHubJob>("jobs", jobId, CancellationToken.None);
+            return _namespaceManager.GetNotificationHubJobAsync(jobId, _notificationHubPath);
         }
 
         /// <summary>
