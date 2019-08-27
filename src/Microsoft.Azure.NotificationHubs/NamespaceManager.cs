@@ -455,7 +455,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = description.Path,
-                Query = $"?api-version={ApiVersion}"
+                Query = $"api-version={ApiVersion}"
             };
             var xmlBody = CreateRequestBody(description);
 
