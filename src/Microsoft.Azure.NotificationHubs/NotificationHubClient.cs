@@ -227,12 +227,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync()
         {
-            var requestUri = GetGenericRequestUriBuilder();
-
-            requestUri.Path += "jobs";
-
-            var jobs = await GetAllEntitiesImplAsync<NotificationHubJob>(requestUri, null, EntitiesPerRequest, CancellationToken.None).ConfigureAwait(false);
-            return jobs;
+            return await _namespaceManager.GetNotificationHubJobsAsync(_notificationHubPath);
         }
 
         /// <summary>
