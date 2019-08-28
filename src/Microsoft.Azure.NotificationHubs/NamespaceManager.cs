@@ -292,7 +292,7 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     Scheme = Uri.UriSchemeHttps,
                     Path = path,  
-                    Query = $"?api-version={ApiVersion}"
+                    Query = $"api-version={ApiVersion}"
                 };
 
             using(var response = await SendAsync(() => 
@@ -391,7 +391,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = path,
-                Query = $"?api-version={ApiVersion}"
+                Query = $"api-version={ApiVersion}"
             };
 
             await SendAsync(() => 
@@ -499,7 +499,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
-                Query = $"?api-version={ApiVersion}"
+                Query = $"api-version={ApiVersion}"
             };  
             var xmlBody = CreateRequestBody(job);
 
@@ -550,7 +550,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
-                Query = $"?api-version={ApiVersion}"
+                Query = $"api-version={ApiVersion}"
             };
 
             using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri)).ConfigureAwait(false))
