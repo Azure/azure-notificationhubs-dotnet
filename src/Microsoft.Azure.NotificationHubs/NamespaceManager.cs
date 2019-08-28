@@ -541,6 +541,44 @@ namespace Microsoft.Azure.NotificationHubs
             };
         }
 
+        /// <summary>Gets the notification hub jobs asynchronously.</summary>
+        /// <param name="notificationHubPath">The notification hub path.</param>
+        /// <returns>A task that represents the asynchronous get jobs operation</returns>
+        public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync(string notificationHubPath)
+        {
+            var requestUri = new UriBuilder(Address)
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Path = $"{notificationHubPath}/jobs",
+                Query = $"?api-version={ApiVersion}"
+            };
+
+            using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri)).ConfigureAwait(false))
+            {
+                var result = new List<NotificationHubJob>();
+                using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
+                {
+                    await xmlReader.MoveToContentAsync().ConfigureAwait(false);
+
+                    if (!xmlReader.IsStartElement("feed"))
+                    {
+                        throw new FormatException("Required 'feed' element is missing");
+                    }
+
+                    while (xmlReader.ReadToFollowing("entry"))
+                    {
+                        if (xmlReader.ReadToDescendant("content"))
+                        {
+                            xmlReader.ReadStartElement();
+                            result.Add(GetModelFromResponse<NotificationHubJob>(xmlReader));
+                        }
+                    }
+                }
+
+                return result;
+            }
+        }
+
         private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
 
         private static string SerializeObject<T>(T model)
