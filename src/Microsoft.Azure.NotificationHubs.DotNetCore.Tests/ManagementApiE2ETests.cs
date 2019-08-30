@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Xunit;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System.Text;
 using Microsoft.WindowsAzure.Storage.Auth;
 
 namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
@@ -18,11 +17,11 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string NotificationHubNamespaceUriString = "NotificationHubNamespaceUriString";
         private const string NotificationHubConnectionString = "NotificationHubConnectionString";
         private const string NotificationHubName = "NotificationHubName";
+        private const string InputFileName = "ImportRegistrations.txt";
 
         private const string StorageAccount = "StorageAccount";
         private const string StoragePassword = "StoragePassword";
         private const string StorageEndpointString = "StorageEndpointString";
-        private const string InputFileName = "InputFileName";
         private const string ContainerName = "ContainerName";
 
         private NamespaceManager _namespaceManager;
@@ -30,7 +29,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private static StorageUri _storageEndpoint;
         private readonly string _notificationHubName;
 
-        private readonly string _inputFileName;
         private readonly string _storageAccount;
         private readonly string _storagePassword;
         private readonly string _storageEndpointAddress;
@@ -51,7 +49,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpper()) ?? configuration[NotificationHubConnectionString];
             _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpper()) ?? configuration[NotificationHubName];
 
-            _inputFileName = Environment.GetEnvironmentVariable(InputFileName.ToUpper()) ?? configuration[InputFileName];
             _storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpper()) ?? configuration[StorageAccount];
             _storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpper()) ?? configuration[StoragePassword];
             _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpper()) ?? configuration[StorageEndpointString];
@@ -141,7 +138,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             var container = blobClient.GetContainerReference(_containerName);
 
             var outputContainerSasUri = GetOutputDirectoryUrl(container);
-            var inputFileSasUri = GetInputFileUrl(container, _inputFileName);
+            var inputFileSasUri = GetInputFileUrl(container, InputFileName);
 
             var notificationHubJob = new NotificationHubJob()
             {
