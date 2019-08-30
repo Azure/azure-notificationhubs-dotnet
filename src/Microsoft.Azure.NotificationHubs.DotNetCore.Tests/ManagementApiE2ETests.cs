@@ -5,6 +5,9 @@ using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
 using Microsoft.Extensions.Configuration;
 using Xunit;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Auth;
 
 namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 {
@@ -14,9 +17,23 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string NotificationHubNamespaceUriString = "NotificationHubNamespaceUriString";
         private const string NotificationHubConnectionString = "NotificationHubConnectionString";
         private const string NotificationHubName = "NotificationHubName";
+        private const string InputFileName = "ImportRegistrations.txt";
+
+        private const string StorageAccount = "StorageAccount";
+        private const string StoragePassword = "StoragePassword";
+        private const string StorageEndpointString = "StorageEndpointString";
+        private const string ContainerName = "ContainerName";
+
         private NamespaceManager _namespaceManager;
         private NamespaceManagerSettings _namespaceManagerSettings;
+        private static StorageUri _storageEndpoint;
         private readonly string _notificationHubName;
+
+        private readonly string _storageAccount;
+        private readonly string _storagePassword;
+        private readonly string _storageEndpointAddress;
+        private readonly string _containerName;
+        
         private string _namespaceUriString;
         private string _notificationHubConnectionString;
 
@@ -27,13 +44,20 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            _namespaceUriString = Environment.GetEnvironmentVariable(NotificationHubNamespaceUriString.ToUpper()) ?? configuration[NotificationHubNamespaceUriString];
-            _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpper()) ?? configuration[NotificationHubConnectionString];
-            _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpper()) ?? configuration[NotificationHubName];
+            _namespaceUriString = Environment.GetEnvironmentVariable(NotificationHubNamespaceUriString.ToUpperInvariant()) ?? configuration[NotificationHubNamespaceUriString];
+            _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpperInvariant()) ?? configuration[NotificationHubConnectionString];
+            _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpperInvariant()) ?? configuration[NotificationHubName];
+
+            _storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpperInvariant()) ?? configuration[StorageAccount];
+            _storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpperInvariant()) ?? configuration[StoragePassword];
+            _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpperInvariant()) ?? configuration[StorageEndpointString];
+            _containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpperInvariant()) ?? configuration[ContainerName];
 
             _namespaceManagerSettings = new NamespaceManagerSettings();
             _namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(_notificationHubConnectionString);
             _namespaceManager = new NamespaceManager(new Uri(_namespaceUriString), _namespaceManagerSettings);
+
+            _storageEndpoint = new StorageUri(new Uri(_storageEndpointAddress));
         }
 
         [Fact]
@@ -100,6 +124,42 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         }
 
         [Fact]
+        public async void SubmitAndGetNotificationHubJob_ShouldReceiveCorrectJobs()
+        {
+            CleanUp();
+
+            _namespaceManager.CreateNotificationHub(_notificationHubName);
+
+            var blobClient = new CloudBlobClient(
+                _storageEndpoint,
+                new StorageCredentials(_storageAccount, _storagePassword));
+
+            var container = blobClient.GetContainerReference(_containerName);
+
+            var outputContainerSasUri = GetOutputDirectoryUrl(container);
+            var inputFileSasUri = GetInputFileUrl(container, InputFileName);
+
+            var notificationHubJob = new NotificationHubJob
+            {
+                JobType = NotificationHubJobType.ImportCreateRegistrations,
+                OutputContainerUri = outputContainerSasUri,
+                ImportFileUri = inputFileSasUri
+            };
+
+            var submitedNotificationHubJob 
+                = await _namespaceManager.SubmitNotificationHubJobAsync(notificationHubJob, _notificationHubName);
+            Assert.NotNull(submitedNotificationHubJob);
+            Assert.NotEmpty(submitedNotificationHubJob.JobId);
+
+            var recievedNotificationHubJob
+                = await _namespaceManager.GetNotificationHubJobAsync(submitedNotificationHubJob.JobId, _notificationHubName);
+
+            Assert.Equal(submitedNotificationHubJob.JobId, recievedNotificationHubJob.JobId);
+
+            CleanUp();
+        }
+
+        [Fact]
         public void ExecuteCreateGetAndDeleteNotificationHubMethodsWithIncorrectConnectionString_ShouldRecieveUnauthorizedAccessException()
         {
             CleanUp();
@@ -141,6 +201,30 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             {
                 // no-op
             }
+        }
+
+        private static Uri GetInputFileUrl(CloudBlobContainer container, string filePath)
+        {
+            SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy
+            {
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(4),
+                Permissions = SharedAccessBlobPermissions.Write | SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Create
+            };
+
+            var sasToken = container.GetBlockBlobReference(filePath).GetSharedAccessSignature(sasConstraints);
+            return new Uri(container.Uri + "/" + filePath + sasToken);
+        }
+
+        private static Uri GetOutputDirectoryUrl(CloudBlobContainer container)
+        {
+            SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy
+            {
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(4),
+                Permissions = SharedAccessBlobPermissions.Write | SharedAccessBlobPermissions.List | SharedAccessBlobPermissions.Read
+            };
+            
+            string sasContainerToken = container.GetSharedAccessSignature(sasConstraints);
+            return new Uri(container.Uri + sasContainerToken);
         }
     }
 }
