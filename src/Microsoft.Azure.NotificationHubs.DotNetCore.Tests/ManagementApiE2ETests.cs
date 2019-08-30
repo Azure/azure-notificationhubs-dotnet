@@ -44,14 +44,14 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            _namespaceUriString = Environment.GetEnvironmentVariable(NotificationHubNamespaceUriString.ToUpper()) ?? configuration[NotificationHubNamespaceUriString];
-            _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpper()) ?? configuration[NotificationHubConnectionString];
-            _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpper()) ?? configuration[NotificationHubName];
+            _namespaceUriString = Environment.GetEnvironmentVariable(NotificationHubNamespaceUriString.ToUpperInvariant()) ?? configuration[NotificationHubNamespaceUriString];
+            _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpperInvariant()) ?? configuration[NotificationHubConnectionString];
+            _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpperInvariant()) ?? configuration[NotificationHubName];
 
-            _storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpper()) ?? configuration[StorageAccount];
-            _storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpper()) ?? configuration[StoragePassword];
-            _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpper()) ?? configuration[StorageEndpointString];
-            _containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpper()) ?? configuration[ContainerName];
+            _storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpperInvariant()) ?? configuration[StorageAccount];
+            _storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpperInvariant()) ?? configuration[StoragePassword];
+            _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpperInvariant()) ?? configuration[StorageEndpointString];
+            _containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpperInvariant()) ?? configuration[ContainerName];
 
             _namespaceManagerSettings = new NamespaceManagerSettings();
             _namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(_notificationHubConnectionString);
@@ -124,7 +124,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         }
 
         [Fact]
-        public void SubmitAndGetNotificationHubJob_ShouldReceiveCorrectJobs()
+        public async void SubmitAndGetNotificationHubJob_ShouldReceiveCorrectJobs()
         {
             CleanUp();
 
@@ -139,7 +139,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             var outputContainerSasUri = GetOutputDirectoryUrl(container);
             var inputFileSasUri = GetInputFileUrl(container, InputFileName);
 
-            var notificationHubJob = new NotificationHubJob()
+            var notificationHubJob = new NotificationHubJob
             {
                 JobType = NotificationHubJobType.ImportCreateRegistrations,
                 OutputContainerUri = outputContainerSasUri,
@@ -147,14 +147,12 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             };
 
             var submitedNotificationHubJob 
-                = _namespaceManager.SubmitNotificationHubJobAsync(notificationHubJob, _notificationHubName)
-                .GetAwaiter().GetResult();
+                = await _namespaceManager.SubmitNotificationHubJobAsync(notificationHubJob, _notificationHubName);
             Assert.NotNull(submitedNotificationHubJob);
             Assert.NotEmpty(submitedNotificationHubJob.JobId);
 
-            var recievedNotificationHubJob 
-                = _namespaceManager.GetNotificationHubJobAsync(submitedNotificationHubJob.JobId, _notificationHubName)
-                .GetAwaiter().GetResult();
+            var recievedNotificationHubJob
+                = await _namespaceManager.GetNotificationHubJobAsync(submitedNotificationHubJob.JobId, _notificationHubName);
 
             Assert.Equal(submitedNotificationHubJob.JobId, recievedNotificationHubJob.JobId);
 
@@ -205,7 +203,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             }
         }
 
-        private Uri GetInputFileUrl(CloudBlobContainer container, string filePath)
+        private static Uri GetInputFileUrl(CloudBlobContainer container, string filePath)
         {
             SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy
             {
@@ -217,7 +215,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             return new Uri(container.Uri + "/" + filePath + sasToken);
         }
 
-        private Uri GetOutputDirectoryUrl(CloudBlobContainer container)
+        private static Uri GetOutputDirectoryUrl(CloudBlobContainer container)
         {
             SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy
             {
