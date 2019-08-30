@@ -21,7 +21,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
         private const string StorageAccount = "StorageAccount";
         private const string StoragePassword = "StoragePassword";
-        private const string StorageEndpointAddress = "StorageEndpointAddress";
+        private const string StorageEndpointString = "StorageEndpointString";
         private const string InputFileName = "InputFileName";
         private const string ContainerName = "ContainerName";
 
@@ -54,7 +54,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _inputFileName = Environment.GetEnvironmentVariable(InputFileName.ToUpper()) ?? configuration[InputFileName];
             _storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpper()) ?? configuration[StorageAccount];
             _storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpper()) ?? configuration[StoragePassword];
-            _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointAddress.ToUpper()) ?? configuration[StorageEndpointAddress];
+            _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpper()) ?? configuration[StorageEndpointString];
             _containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpper()) ?? configuration[ContainerName];
 
             _namespaceManagerSettings = new NamespaceManagerSettings();
