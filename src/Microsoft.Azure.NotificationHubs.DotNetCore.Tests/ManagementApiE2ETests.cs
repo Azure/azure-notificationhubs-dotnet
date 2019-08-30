@@ -34,7 +34,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private readonly string _storageEndpointAddress;
         private readonly string _containerName;
         
-
         private string _namespaceUriString;
         private string _notificationHubConnectionString;
 
