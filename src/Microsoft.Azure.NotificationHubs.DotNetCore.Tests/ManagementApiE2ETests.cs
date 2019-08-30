@@ -23,6 +23,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string StoragePassword = "StoragePassword";
         private const string StorageEndpointAddress = "StorageEndpointAddress";
         private const string InputFileName = "InputFileName";
+        private const string ContainerName = "ContainerName";
 
         private NamespaceManager _namespaceManager;
         private NamespaceManagerSettings _namespaceManagerSettings;
@@ -33,6 +34,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private readonly string _storageAccount;
         private readonly string _storagePassword;
         private readonly string _storageEndpointAddress;
+        private readonly string _containerName;
         
 
         private string _namespaceUriString;
@@ -53,6 +55,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpper()) ?? configuration[StorageAccount];
             _storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpper()) ?? configuration[StoragePassword];
             _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointAddress.ToUpper()) ?? configuration[StorageEndpointAddress];
+            _containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpper()) ?? configuration[ContainerName];
 
             _namespaceManagerSettings = new NamespaceManagerSettings();
             _namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(_notificationHubConnectionString);
@@ -135,7 +138,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 _storageEndpoint,
                 new StorageCredentials(_storageAccount, _storagePassword));
 
-            var container = blobClient.GetContainerReference("testimportbulk");
+            var container = blobClient.GetContainerReference(_containerName);
 
             var outputContainerSasUri = GetOutputDirectoryUrl(container);
             var inputFileSasUri = GetInputFileUrl(container, _inputFileName);
@@ -153,8 +156,10 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             Assert.NotNull(submitedNotificationHubJob);
             Assert.NotEmpty(submitedNotificationHubJob.JobId);
 
-            var recievedNotificationHubJob = _namespaceManager.GetNotificationHubJobAsync(submitedNotificationHubJob.JobId, _notificationHubName)
+            var recievedNotificationHubJob 
+                = _namespaceManager.GetNotificationHubJobAsync(submitedNotificationHubJob.JobId, _notificationHubName)
                 .GetAwaiter().GetResult();
+
             Assert.Equal(submitedNotificationHubJob.JobId, recievedNotificationHubJob.JobId);
 
             CleanUp();
@@ -226,22 +231,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             
             string sasContainerToken = container.GetSharedAccessSignature(sasConstraints);
             return new Uri(container.Uri + sasContainerToken);
-        }
-
-        private void SerializeToBlob(CloudBlobContainer container, RegistrationDescription[] descriptions)
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach (var registrationDescription in descriptions)
-            {
-                builder.AppendLine(registrationDescription.Serialize());
-            }
-
-            var inputBlob = container.GetBlockBlobReference(_inputFileName);
-            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(builder.ToString())))
-            {
-                inputBlob.UploadFromStreamAsync(stream).GetAwaiter().GetResult();
-
-            }
         }
     }
 }
