@@ -14,8 +14,8 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             };
             
             Assert.Equal(
-            "Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=key-name;SharedAccessKey=secret",
-            b.ToString());
+                "Endpoint=sb://my-namespace.servicebus.windows.net/;SharedAccessKeyName=key-name;SharedAccessKey=secret",
+                b.ToString());
         }
     }
 }
