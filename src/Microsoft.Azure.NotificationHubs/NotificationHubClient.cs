@@ -62,12 +62,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
 
             if (string.IsNullOrWhiteSpace(notificationHubPath))
             {
-                throw new ArgumentNullException("notificationHubPath");
+                throw new ArgumentNullException(nameof(notificationHubPath));
             }
 
             _notificationHubPath = notificationHubPath;
@@ -250,12 +250,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (job == null)
             {
-                throw new ArgumentNullException("job");
+                throw new ArgumentNullException(nameof(job));
             }
 
             if (job.OutputContainerUri == null)
             {
-                throw new ArgumentNullException("OutputContainerUri");
+                throw new ArgumentNullException($"{nameof(job)}.{nameof(job.OutputContainerUri)}");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -562,7 +562,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             return SendNotificationImplAsync(notification, notification.tag, null, CancellationToken.None);
@@ -582,12 +582,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (notification.tag != null)
             {
-                throw new ArgumentException("notification.Tag property should be null");
+                throw new ArgumentException($"{nameof(notification)}.{nameof(notification.tag)} property should be null");
             }
 
             return SendNotificationImplAsync(notification, tagExpression, null, CancellationToken.None);
@@ -613,22 +613,22 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (notification.tag != null)
             {
-                throw new ArgumentException("notification.Tag property should be null");
+                throw new ArgumentException($"{nameof(notification)}.{nameof(notification.tag)} property should be null");
             }
 
             if (tags == null)
             {
-                throw new ArgumentNullException("tags");
+                throw new ArgumentNullException(nameof(tags));
             }
 
             if (tags.Count() == 0)
             {
-                throw new ArgumentException("tags argument should contain at least one tag");
+                throw new ArgumentException($"{nameof(tags)} argument should contain at least one value");
             }
 
             string tagExpression = string.Join("||", tags);
@@ -705,12 +705,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (installation==null)
             {
-                throw new ArgumentNullException("installation");
+                throw new ArgumentNullException(nameof(installation));
             }
 
             if (string.IsNullOrWhiteSpace(installation.InstallationId))
             {
-                throw new InvalidOperationException("InstallationId must be specified");
+                throw new InvalidOperationException($"{nameof(installation)}.{nameof(installation.InstallationId)} must be specified");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -755,12 +755,12 @@ namespace Microsoft.Azure.NotificationHubs
 
             if (operations == null)
             {
-                throw new ArgumentNullException("operations");
+                throw new ArgumentNullException(nameof(operations));
             }
 
             if (operations.Count == 0)
             {
-                throw new InvalidOperationException("Operations list is empty");
+                throw new InvalidOperationException($"{nameof(operations)} list is empty");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -1301,12 +1301,12 @@ namespace Microsoft.Azure.NotificationHubs
             if (!string.IsNullOrWhiteSpace(registration.NotificationHubPath) &&
                 registration.NotificationHubPath != _notificationHubPath)
             {
-                throw new ArgumentException("NotificationHubPath in RegistrationDescription is not valid.");
+                throw new ArgumentException($"{nameof(registration)}.{nameof(registration.NotificationHubPath)} in {nameof(RegistrationDescription)} is not valid.");
             }
 
             if (!string.IsNullOrWhiteSpace(registration.RegistrationId))
             {
-                throw new ArgumentException("RegistrationId should be null or empty");
+                throw new ArgumentException($"{nameof(registration)}.{nameof(registration.RegistrationId)} should be null or empty");
             }
 
             return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.Create, CancellationToken.None);
@@ -1327,12 +1327,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(registration.RegistrationId))
             {
-                throw new ArgumentNullException("RegistrationId");
+                throw new ArgumentNullException($"{nameof(registration)}.{nameof(registration.RegistrationId)}");
             }
 
             if (string.IsNullOrWhiteSpace(registration.ETag))
             {
-                throw new ArgumentNullException("ETag");
+                throw new ArgumentNullException($"{nameof(registration)}.{nameof(registration.ETag)}");
             }
 
             return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.Update, CancellationToken.None);
@@ -1351,7 +1351,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(registration.RegistrationId))
             {
-                throw new ArgumentNullException("RegistrationId");
+                throw new ArgumentNullException($"{nameof(registration)}.{nameof(registration.RegistrationId)}");
             }
 
             return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.CreateOrUpdate, CancellationToken.None);
@@ -1370,7 +1370,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(registrationId))
             {
-                throw new ArgumentNullException("registrationId");
+                throw new ArgumentNullException(nameof(registrationId));
             }
 
             return GetEntityImplAsync<TRegistrationDescription>("registrations", registrationId, CancellationToken.None);
@@ -1433,7 +1433,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(pnsHandle))
             {
-                throw new ArgumentNullException("pnsHandle");
+                throw new ArgumentNullException(nameof(pnsHandle));
             }
 
             return GetAllRegistrationsImplAsync(continuationToken, top, pnsHandle, null, CancellationToken.None);
@@ -1451,7 +1451,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (registration == null)
             {
-                throw new ArgumentNullException("registration");
+                throw new ArgumentNullException(nameof(registration));
             }
 
             return DeleteRegistrationAsync(registration.RegistrationId, registration.ETag);
@@ -1482,7 +1482,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(registrationId))
             {
-                throw new ArgumentNullException("registrationId");
+                throw new ArgumentNullException(nameof(registrationId));
             }
 
             return DeleteRegistrationImplAsync(registrationId, etag, CancellationToken.None);
@@ -1500,7 +1500,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(pnsHandle))
             {
-                throw new ArgumentNullException("pnsHandle");
+                throw new ArgumentNullException(nameof(pnsHandle));
             }
 
             var registrationsToDelete = await GetRegistrationsByChannelAsync(pnsHandle, EntitiesPerRequest).ConfigureAwait(false);
@@ -1539,7 +1539,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(tag))
             {
-                throw new ArgumentNullException("tag");
+                throw new ArgumentNullException(nameof(tag));
             }
 
             return GetAllRegistrationsImplAsync(null, top, null, tag, CancellationToken.None);
@@ -1559,7 +1559,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(tag))
             {
-                throw new ArgumentNullException("tag");
+                throw new ArgumentNullException(nameof(tag));
             }
 
             return GetAllRegistrationsImplAsync(continuationToken, top, null, tag, CancellationToken.None);
@@ -1599,12 +1599,12 @@ namespace Microsoft.Azure.NotificationHubs
 
             if (tags == null)
             {
-                throw new ArgumentNullException("tags");
+                throw new ArgumentNullException(nameof(tags));
             }
 
             if (tags.Count() == 0)
             {
-                throw new ArgumentException("tags argument should contain at least one tag");
+                throw new ArgumentException(message: $"{nameof(tags)} argument should contain at least one value", paramName: nameof(tags));
             }
 
             string tagExpression = String.Join("||", tags);
@@ -1665,12 +1665,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (string.IsNullOrEmpty(deviceHandle))
             {
-                throw new ArgumentNullException("deviceHandle");
+                throw new ArgumentNullException(nameof(deviceHandle));
             }
 
             return SendNotificationImplAsync(notification, null, deviceHandle, CancellationToken.None);
@@ -1692,17 +1692,17 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (deviceHandles==null)
             {
-                throw new ArgumentNullException("deviceHandles");
+                throw new ArgumentNullException(nameof(deviceHandles));
             }
 
             if (deviceHandles.Count == 0)
             {
-                throw new ArgumentException("deviceHandles");
+                throw new ArgumentException(message: $"{nameof(deviceHandles)} should contain at least one value", paramName: nameof(deviceHandles));
             }
 
             var requestUri = GetGenericRequestUriBuilder();
