@@ -54,7 +54,6 @@ namespace AppBackend.Controllers
                 }
             }
 
-            // return Request.CreateResponse(ret);
             return StatusCode((int)ret);
         }
     }

@@ -11,10 +11,11 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace AppBackend.Controllers
 {
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     public class RegisterController : ControllerBase
     {
         private NotificationHubClient hub;
@@ -100,7 +101,6 @@ namespace AppBackend.Controllers
                 ReturnGoneIfHubResponseIsGone(e);
             }
 
-            //return HttpContext.Request.CreateResponse(HttpStatusCode.OK);
             return Ok();
         }
 
@@ -108,7 +108,6 @@ namespace AppBackend.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await hub.DeleteRegistrationAsync(id);
-            //return Request.CreateResponse(HttpStatusCode.OK);
             return Ok();
         }
 
