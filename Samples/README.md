@@ -63,6 +63,16 @@ namespace UwpSample
 }
 ```
 
+## CreateHubSample
+Sample dotnet core WebApi application for sending push notifications.
+
+Update the '/WebApiSample/WebApiSample/Models/Notification.cs' with your Notification Hubs 'DefaultFullSharedAccessSignature' Access Policy connection string and 'Hub name', than execute the sample as such:
+
+```
+cd WebApiSample
+dotnet run
+```
+
 To run the sample open the solution, select UwpSample as a startup project, and hit F5.
 
 ## Azure Functions
