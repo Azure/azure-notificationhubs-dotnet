@@ -14,6 +14,7 @@ namespace AppBackend.Models
 
         private Notifications()
         {
+            // Please update the following connection string with your hub's DefaultFullSharedAccessSignature with the full access such as Listen, Manage, Send
             Hub = NotificationHubClient.CreateClientFromConnectionString("<your hub's DefaultFullSharedAccessSignature>",
                                                                             "<hub name>");
         }

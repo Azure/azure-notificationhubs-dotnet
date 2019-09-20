@@ -18,9 +18,11 @@ namespace AppBackend.Controllers
         public async Task<IActionResult> Post(string pns, [FromBody]string message, string to_tag)
         {
             var user = HttpContext.User.Identity.Name;
-            string[] userTag = new string[2];
-            userTag[0] = "username:" + to_tag;
-            userTag[1] = "from:" + user;
+            var userTag = new string[]
+            {
+                "username:" + to_tag,
+                "from:" + user
+            };
 
             Microsoft.Azure.NotificationHubs.NotificationOutcome outcome = null;
             var ret = HttpStatusCode.InternalServerError;

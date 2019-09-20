@@ -43,7 +43,7 @@ namespace AppBackend.Controllers
             {
                 var registrations = await hub.GetRegistrationsByChannelAsync(handle, 100);
 
-                foreach (RegistrationDescription registration in registrations)
+                foreach (var registration in registrations)
                 {
                     if (newRegistrationId == null)
                     {

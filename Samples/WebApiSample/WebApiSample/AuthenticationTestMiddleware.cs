@@ -26,12 +26,12 @@ namespace AppBackend
             if (authorizationHeader != null && authorizationHeader
                 .StartsWith("Basic ", StringComparison.InvariantCultureIgnoreCase))
             {
-                string authorizationUserAndPwdBase64 =
+                var authorizationUserAndPwdBase64 =
                     authorizationHeader.Substring("Basic ".Length);
-                string authorizationUserAndPwd = Encoding.Default
+                var authorizationUserAndPwd = Encoding.Default
                     .GetString(Convert.FromBase64String(authorizationUserAndPwdBase64));
-                string user = authorizationUserAndPwd.Split(':')[0];
-                string password = authorizationUserAndPwd.Split(':')[1];
+                var user = authorizationUserAndPwd.Split(':')[0];
+                var password = authorizationUserAndPwd.Split(':')[1];
 
                 if (verifyUserAndPwd(user, password))
                 {
