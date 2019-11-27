@@ -30,11 +30,11 @@ namespace Microsoft.Azure.NotificationHubs
         public NotificationOutcomeState State { get; internal set; }
 
         /// <summary>
-        /// Gets or sets a number of devices that successfully received the notification.
+        /// Gets or sets the number of devices that successfully received the notification.
         /// </summary>
         /// 
         /// <returns>
-        /// A number of devices that successfully received the notification.
+        /// The number of devices that successfully received the notification.
         /// </returns>
         /// <remarks>
         /// The property contains value only when <see cref="NotificationHubClient.EnableTestSend"/> property is turned on for troubleshooting purposes.
@@ -44,11 +44,11 @@ namespace Microsoft.Azure.NotificationHubs
         public long Success { get; set; }
 
         /// <summary>
-        /// Gets or sets a number of devices that failed to receive a notification.
+        /// Gets or sets the number of devices that failed to receive a notification.
         /// </summary>
         /// 
         /// <returns>
-        /// A number of devices that failed to receive a notification.
+        /// The number of devices that failed to receive a notification.
         /// </returns>
         /// <remarks>
         /// The property contains value only when <see cref="NotificationHubClient.EnableTestSend"/> property is turned on for troubleshooting purposes.
@@ -58,11 +58,11 @@ namespace Microsoft.Azure.NotificationHubs
         public long Failure { get; set; }
 
         /// <summary>
-        /// Gets or sets the list of notification outcome results for each device registered for the hub to which notification was sent.
+        /// Gets or sets the list of notification outcome results for each device registered with the hub, to which this notification was sent.
         /// </summary>
         /// 
         /// <returns>
-        /// The list of notification outcome results for each device registered for the hub to which notification was sent.
+        /// The list of notification outcome results for each device registered with the hub, to which this notification was sent.
         /// </returns>
         /// <remarks>
         /// The property contains value only when <see cref="NotificationHubClient.EnableTestSend"/> property is turned on for troubleshooting purposes.
