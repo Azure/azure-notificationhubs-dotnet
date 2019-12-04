@@ -30,32 +30,44 @@ namespace Microsoft.Azure.NotificationHubs
         public NotificationOutcomeState State { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the success value of the outcome.
+        /// Gets or sets the number of devices that successfully received the notification.
         /// </summary>
         /// 
         /// <returns>
-        /// The success value of the outcome.
+        /// The number of devices that successfully received the notification.
         /// </returns>
+        /// <remarks>
+        /// The property contains value only when <see cref="NotificationHubClient.EnableTestSend"/> property is turned on for troubleshooting purposes.
+        /// </remarks>
+        /// <seealso cref="NotificationHubClient.EnableTestSend"/>
         [DataMember(Name = ManagementStrings.Success, IsRequired = true, Order = 1001, EmitDefaultValue = true)]
         public long Success { get; set; }
 
         /// <summary>
-        /// Gets or sets the failure value of the outcome.
+        /// Gets or sets the number of devices that failed to receive a notification.
         /// </summary>
         /// 
         /// <returns>
-        /// The failure value of the outcome.
+        /// The number of devices that failed to receive a notification.
         /// </returns>
+        /// <remarks>
+        /// The property contains value only when <see cref="NotificationHubClient.EnableTestSend"/> property is turned on for troubleshooting purposes.
+        /// </remarks>
+        /// <seealso cref="NotificationHubClient.EnableTestSend"/>
         [DataMember(Name = ManagementStrings.Failure, IsRequired = true, Order = 1002, EmitDefaultValue = true)]
         public long Failure { get; set; }
 
         /// <summary>
-        /// Gets or sets the list of notification outcome results.
+        /// Gets or sets the list of notification outcome results for each device registered with the hub, to which this notification was sent.
         /// </summary>
         /// 
         /// <returns>
-        /// The list of notification outcome results.
+        /// The list of notification outcome results for each device registered with the hub, to which this notification was sent.
         /// </returns>
+        /// <remarks>
+        /// The property contains value only when <see cref="NotificationHubClient.EnableTestSend"/> property is turned on for troubleshooting purposes.
+        /// </remarks>
+        /// <seealso cref="NotificationHubClient.EnableTestSend"/>
         [DataMember(Name = ManagementStrings.Results, IsRequired = true, Order = 1003, EmitDefaultValue = true)]
         public List<RegistrationResult> Results { get; set; }
 
@@ -64,8 +76,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// 
         /// <returns>
-        /// notification ID.
+        /// Notification ID.
         /// </returns>
+        /// <remarks>
+        /// The property contains value only when using Standard tier Notification Hubs.
+        /// </remarks>
         public string NotificationId { get; set; }
 
         /// <summary>
