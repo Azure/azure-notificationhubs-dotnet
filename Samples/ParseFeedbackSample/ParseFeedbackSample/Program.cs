@@ -50,7 +50,14 @@ namespace ParseFeedbackSample
 
             // Send notifications to all users
             var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent);
-            
+
+            // The Notification ID is only available for Standard SKUs. For Basic and Free SKUs the API to get notification outcome details can not be called.
+            if (string.IsNullOrEmpty(outcomeFcm.NotificationId))
+            {
+                Console.WriteLine($"FCM has no outcome, due to it is only available for Standard SKU pricing tier.");
+                return;
+            }
+
             // Gather send outcome
             var fcmOutcomeDetails = await WaitForThePushStatusAsync("FCM", nhClient, outcomeFcm);
 
