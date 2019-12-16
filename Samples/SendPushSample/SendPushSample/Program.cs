@@ -54,10 +54,10 @@ namespace SendPushSample
                 case SampleConfiguration.Operation.Broadcast:
                     // Notification groups should be created on client side
                     var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent);
-                    GetPushDetailsAndPrintOutcome("FCM", nhClient, outcomeFcm);
+                    await GetPushDetailsAndPrintOutcome("FCM", nhClient, outcomeFcm);
 
                     var outcomeSilentFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleSilentNotificationContent);
-                    GetPushDetailsAndPrintOutcome("FCM Silent", nhClient, outcomeSilentFcm);
+                    await GetPushDetailsAndPrintOutcome("FCM Silent", nhClient, outcomeSilentFcm);
 
                     // Send groupable notifications to iOS
                     var notification = new AppleNotification(AppleSampleNotificationContent);
@@ -67,31 +67,31 @@ namespace SendPushSample
                     }
 
                     var outcomeApns = await nhClient.SendNotificationAsync(notification);
-                    GetPushDetailsAndPrintOutcome("APNS", nhClient, outcomeApns);
+                    await GetPushDetailsAndPrintOutcome("APNS", nhClient, outcomeApns);
 
                     var outcomeSilentApns = await nhClient.SendAppleNativeNotificationAsync(AppleSampleSilentNotificationContent);
-                    GetPushDetailsAndPrintOutcome("APNS Silent", nhClient, outcomeSilentApns);
+                    await GetPushDetailsAndPrintOutcome("APNS Silent", nhClient, outcomeSilentApns);
 
                     var outcomeWns = await nhClient.SendWindowsNativeNotificationAsync(WnsSampleNotification);
-                    GetPushDetailsAndPrintOutcome("WNS", nhClient, outcomeWns);
+                    await GetPushDetailsAndPrintOutcome("WNS", nhClient, outcomeWns);
 
                     break;
                 case SampleConfiguration.Operation.SendByTag:
                     // Send notifications by tag
                     var outcomeFcmByTag = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, config.Tag ?? "fcm");
-                    GetPushDetailsAndPrintOutcome("FCM Tags", nhClient, outcomeFcmByTag);
+                    await GetPushDetailsAndPrintOutcome("FCM Tags", nhClient, outcomeFcmByTag);
 
                     var outcomeApnsByTag = await nhClient.SendAppleNativeNotificationAsync(AppleSampleNotificationContent, config.Tag ?? "apns");
-                    GetPushDetailsAndPrintOutcome("APNS Tags", nhClient, outcomeApnsByTag);
+                    await GetPushDetailsAndPrintOutcome("APNS Tags", nhClient, outcomeApnsByTag);
 
                     break;
                 case SampleConfiguration.Operation.SendByDevice:
                     // Send notifications by deviceId
                     var outcomeFcmByDeviceId = await nhClient.SendDirectNotificationAsync(CreateFcmNotification(), config.FcmDeviceId ?? fcmDeviceId);
-                    GetPushDetailsAndPrintOutcome("FCM Direct", nhClient, outcomeFcmByDeviceId);
+                    await GetPushDetailsAndPrintOutcome("FCM Direct", nhClient, outcomeFcmByDeviceId);
 
                     var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), config.AppleDeviceId ?? appleDeviceId);
-                    GetPushDetailsAndPrintOutcome("APNS Direct", nhClient, outcomeApnsByDeviceId);
+                    await GetPushDetailsAndPrintOutcome("APNS Direct", nhClient, outcomeApnsByDeviceId);
 
                     break;
                 default:
@@ -147,6 +147,11 @@ namespace SendPushSample
             Console.WriteLine($"{pnsType} error details URL: {details.PnsErrorDetailsUri}");
         }
 
+        private static void PrintPushNoOutcome(string pnsType)
+        {
+            Console.WriteLine($"{pnsType} has no outcome due to it is only available for Standard SKU pricing tier.");
+        }
+
         private static SampleConfiguration LoadConfiguration(string[] args)
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
@@ -158,12 +163,7 @@ namespace SendPushSample
             return sampleConfig;
         }
 
-        private static void PrintPushNoOutcome(string pnsType)
-        {
-            Console.WriteLine($"{pnsType} no outcomes. Please, note: notification outcome is only available for Standard SKUs.");
-        }
-
-        private static async void GetPushDetailsAndPrintOutcome(
+        private static async Task GetPushDetailsAndPrintOutcome(
             string pnsType,
             NotificationHubClient nhClient,
             NotificationOutcome notificationOutcome)
