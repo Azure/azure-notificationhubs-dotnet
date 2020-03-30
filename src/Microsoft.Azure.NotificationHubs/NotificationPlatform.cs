@@ -50,5 +50,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         [EnumMember(Value = "adm")]
         Adm=5,
+
+        /// <summary>
+        /// Baidu Installation Platform
+        /// </summary>
+        [EnumMember(Value = "baidu")]
+        Baidu=6,
     }
 }

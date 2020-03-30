@@ -3,13 +3,12 @@
 // Licensed under the MIT License. See License.txt in the project root for 
 // license information.
 //------------------------------------------------------------
+using System;
+using System.Runtime.Serialization;
+using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents a WNS credential.
     /// </summary>
@@ -119,6 +118,32 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             return unchecked(this.PackageSid.GetHashCode() ^ this.SecretKey.GetHashCode());
+        }
+
+        /// <summary>Validates the credential.</summary>
+        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
+        protected override void OnValidate(bool allowLocalMockPns)
+        {
+            if (this.Properties == null || this.Properties.Count > 3)
+            {
+                throw new InvalidDataContractException(SRClient.PackageSidAndSecretKeyAreRequired);
+            }
+
+            if (this.Properties.Count < 2 || string.IsNullOrWhiteSpace(this.PackageSid) ||
+                string.IsNullOrWhiteSpace(this.SecretKey))
+            {
+                throw new InvalidDataContractException(SRClient.PackageSidOrSecretKeyInvalid);
+            }
+
+            if (this.Properties.Count == 3 && string.IsNullOrEmpty(this["WindowsLiveEndpoint"]))
+            {
+                throw new InvalidDataContractException(SRClient.PackageSidAndSecretKeyAreRequired);
+            }
+
+            if (!Uri.TryCreate(this.WindowsLiveEndpoint, UriKind.Absolute, out Uri result))
+            {
+                throw new InvalidDataContractException(SRClient.InvalidWindowsLiveEndpoint);
+            }
         }
     }
 }

@@ -99,5 +99,14 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentException(exception.Message, "connectionString", exception);
             }
         }
+
+        /// <summary>
+        /// Returns string representation of parsed connection string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"Endpoint={Endpoint};SharedAccessKeyName={SharedAccessKeyName};SharedAccessKey={SharedAccessKey}";
+        }
     }
 }

@@ -4,11 +4,12 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Runtime.Serialization;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using Microsoft.Azure.NotificationHubs.Messaging;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// Represents Baidu credentials
     /// </summary>
@@ -107,6 +108,22 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             return this.BaiduApiKey.GetHashCode();
+        }
+
+        /// <summary>Validates the credential.</summary>
+        /// <param name="allowLocalMockPns">true to allow local mock PNS; otherwise, false.</param>
+        /// <exception cref="T:System.Runtime.Serialization.InvalidDataContractException">
+        /// </exception>
+        protected override void OnValidate(bool allowLocalMockPns)
+        {
+            if (this.Properties == null || this.Properties.Count > 2)
+                throw new InvalidDataContractException(SRClient.BaiduRequiredProperties);
+            if (this.Properties.Count < 1 || string.IsNullOrWhiteSpace(this.BaiduApiKey))
+                throw new InvalidDataContractException(SRClient.BaiduApiKeyNotSpecified);
+            bool flag = !string.Equals(this.BaiduEndPoint, "https://channel.api.duapp.com/rest/2.0/channel/channel", StringComparison.OrdinalIgnoreCase) && !string.Equals(this.BaiduEndPoint, "https://nnapi.ovi.com/nnapi/2.0/send", StringComparison.OrdinalIgnoreCase) && (!string.Equals(this.BaiduEndPoint, "http://pushtestservice.cloudapp.net/gcm/send", StringComparison.OrdinalIgnoreCase) && !string.Equals(this.BaiduEndPoint, "http://pushtestservice4.cloudapp.net/gcm/send", StringComparison.OrdinalIgnoreCase)) && (!string.Equals(this.BaiduEndPoint, "http://pushperfnotificationserver.cloudapp.net/gcm/send", StringComparison.OrdinalIgnoreCase) && !string.Equals(this.BaiduEndPoint, "http://pushstressnotificationserver.cloudapp.net/gcm/send", StringComparison.OrdinalIgnoreCase) && !string.Equals(this.BaiduEndPoint, "http://pushnotificationserver.cloudapp.net/gcm/send", StringComparison.OrdinalIgnoreCase)) && (!allowLocalMockPns || !string.Equals(this.BaiduEndPoint, "http://localhost:8450/gcm/send", StringComparison.OrdinalIgnoreCase));
+            Uri result;
+            if (!Uri.TryCreate(this.BaiduEndPoint, UriKind.Absolute, out result) | flag)
+                throw new InvalidDataContractException(SRClient.InvalidBaiduEndpoint);
         }
     }
 }

@@ -8,12 +8,10 @@
 namespace Microsoft.Azure.NotificationHubs
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
-    using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Collections.Generic;
@@ -26,15 +24,15 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     [DataContract(Namespace = ManagementStrings.Namespace)]
     [KnownType(typeof(GcmRegistrationDescription))]
+    [KnownType(typeof(GcmTemplateRegistrationDescription))]
     [KnownType(typeof(FcmRegistrationDescription))]
+    [KnownType(typeof(FcmTemplateRegistrationDescription))]
     [KnownType(typeof(AppleRegistrationDescription))]
     [KnownType(typeof(AppleTemplateRegistrationDescription))]
     [KnownType(typeof(WindowsRegistrationDescription))]
     [KnownType(typeof(WindowsTemplateRegistrationDescription))]
     [KnownType(typeof(MpnsRegistrationDescription))]
     [KnownType(typeof(MpnsTemplateRegistrationDescription))]
-    [KnownType(typeof(GcmTemplateRegistrationDescription))]
-    [KnownType(typeof(FcmTemplateRegistrationDescription))]
     [KnownType(typeof(AdmRegistrationDescription))]
     [KnownType(typeof(AdmTemplateRegistrationDescription))]
     [KnownType(typeof(BaiduRegistrationDescription))]
@@ -89,7 +87,7 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        /// Gets or sets the ETag associated with this description.
+        /// Gets the ETag associated with this description.
         /// </summary>
         /// 
         /// <returns>
@@ -99,7 +97,7 @@ namespace Microsoft.Azure.NotificationHubs
         public string ETag { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the expiration time of the registration.
+        /// Gets the expiration time of the registration.
         /// </summary>
         /// 
         /// <returns>
@@ -160,7 +158,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        // Only used in client to help easier manupulate tagsString
+        // Only used in client to help easier manipulate tagsString
         /// <summary>
         /// Gets or sets a set of tags associated with the registration.
         /// </summary>
@@ -216,6 +214,15 @@ namespace Microsoft.Azure.NotificationHubs
         internal abstract void SetPnsHandle(string pnsHandle);
 
         internal abstract RegistrationDescription Clone();
+
+        /// <summary>
+        /// Returns platform-specific Pns handle.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// Platform-specific Pns handle.
+        /// </returns>
+        public string PnsHandle => GetPnsHandle();
 
         /// <summary>
         /// Validates the given tags.

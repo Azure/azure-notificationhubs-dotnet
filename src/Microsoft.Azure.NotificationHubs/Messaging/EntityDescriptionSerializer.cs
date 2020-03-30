@@ -24,6 +24,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             this.entirySerializers = new Dictionary<string, DataContractSerializer>();
             this.entirySerializers.Add(
+                typeof(RegistrationDescription).Name,
+                this.CreateSerializer<RegistrationDescription>());
+
+            this.entirySerializers.Add(
                 typeof(WindowsRegistrationDescription).Name,
                 this.CreateSerializer<WindowsRegistrationDescription>());
 
@@ -92,38 +96,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             });
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times",
-            Justification = "Safe here. Any future behavior change is easy to detect")]
-        public TMessagingDescription DeserializeFromAtomFeed<TMessagingDescription>(Stream stream)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException("stream");
-            }
-
-            XmlReaderSettings settings = new XmlReaderSettings
-            {
-                ValidationType = ValidationType.None
-            };
-
-            MemoryStream streamCopy = new MemoryStream();
-            stream.CopyTo(streamCopy);
-
-            foreach (KeyValuePair<string, DataContractSerializer> item in this.entirySerializers)
-            {
-                streamCopy.Seek(0, SeekOrigin.Begin);
-                using (XmlReader xmlReader = XmlReader.Create(streamCopy, settings))
-                {
-                    if (xmlReader.ReadToDescendant(item.Key))
-                    {
-                        return (TMessagingDescription)item.Value.ReadObject(xmlReader);
-                    }
-                }
-            }
-
-            throw new SerializationException();
-        }
-
         public EntityDescription Deserialize(XmlReader reader, string typeName)
         {
             if (reader == null)
@@ -143,27 +115,14 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public string Serialize(EntityDescription description)
         {
             var stringBuilder = new StringBuilder();
-
             var settings = new XmlWriterSettings
             {
                 OmitXmlDeclaration = true
             };
 
-            // Convert FCM descriptions into their GCM counterparts
-            if (description.GetType().Name == "FcmRegistrationDescription")
-            {
-                description = new GcmRegistrationDescription((FcmRegistrationDescription) description);
-            }
-
-            if (description.GetType().Name == "FcmTemplateRegistrationDescription")
-            {
-                description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
-            }
-
-            var serializer = GetSerializer(description.GetType().Name);
             using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
-                serializer.WriteObject(xmlWriter, description);
+                Serialize(description, xmlWriter);
             }
 
             return stringBuilder.ToString();
@@ -182,7 +141,16 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 description = new GcmTemplateRegistrationDescription((FcmTemplateRegistrationDescription) description);
             }
 
-            var serializer = GetSerializer(description.GetType().Name);
+            DataContractSerializer serializer;
+            if (description is RegistrationDescription)
+            {
+                serializer = GetSerializer(typeof(RegistrationDescription).Name);
+            }
+            else
+            {
+                serializer = GetSerializer(description.GetType().Name);
+            }
+            
             serializer.WriteObject(writer, description);
         }
 

@@ -62,12 +62,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
 
             if (string.IsNullOrWhiteSpace(notificationHubPath))
             {
-                throw new ArgumentNullException("notificationHubPath");
+                throw new ArgumentNullException(nameof(notificationHubPath));
             }
 
             _notificationHubPath = notificationHubPath;
@@ -171,7 +171,21 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public Task<NotificationOutcome> SendWindowsNativeNotificationAsync(string windowsNativePayload)
         {
-            return SendWindowsNativeNotificationAsync(windowsNativePayload, string.Empty);
+            return SendWindowsNativeNotificationAsync(windowsNativePayload, string.Empty, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously sends a Windows native notification. To specify headers for WNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="windowsNativePayload">The Windows native payload. This can be used to send any valid WNS notification, 
+        /// including Tile, Toast, and Badge values, as described in the WNS documentation.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendWindowsNativeNotificationAsync(string windowsNativePayload, CancellationToken cancellationToken)
+        {
+            return SendWindowsNativeNotificationAsync(windowsNativePayload, string.Empty, cancellationToken);
         }
 
         /// <summary>
@@ -184,7 +198,21 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public Task<NotificationOutcome> SendWindowsNativeNotificationAsync(string windowsNativePayload, string tagExpression)
         {
-            return SendNotificationAsync(new WindowsNotification(windowsNativePayload), tagExpression);
+            return SendNotificationAsync(new WindowsNotification(windowsNativePayload), tagExpression, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously sends a Windows native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify headers for WNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="windowsNativePayload">The Windows native payload. This can be used to send any valid WNS notification, including Tile, Toast, and Badge values, as described in the WNS documentation.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendWindowsNativeNotificationAsync(string windowsNativePayload, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new WindowsNotification(windowsNativePayload), tagExpression, cancellationToken);
         }
 
         /// <summary>
@@ -197,7 +225,21 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public Task<NotificationOutcome> SendWindowsNativeNotificationAsync(string windowsNativePayload, IEnumerable<string> tags)
         {
-            return SendNotificationAsync(new WindowsNotification(windowsNativePayload), tags);
+            return SendWindowsNativeNotificationAsync(windowsNativePayload, tags, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously sends a Windows native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||"). To specify headers for WNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="windowsNativePayload">The Windows native payload. This can be used to send any valid WNS notification, including Tile, Toast, and Badge values, as described in the WNS documentation.</param>
+        /// <param name="tags">A non-empty set of tags (max 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendWindowsNativeNotificationAsync(string windowsNativePayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new WindowsNotification(windowsNativePayload), tags, cancellationToken);
         }
 
         /// <summary>
@@ -211,12 +253,27 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId)
         {
+            return GetNotificationHubJobAsync(jobId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Given a jobId, returns the associated <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />. This method
+        /// is used to get the status of the job to see if that job completed, failed, or is still in progress.
+        /// This API is only available for Standard namespaces.
+        /// </summary>
+        /// <param name="jobId">The jobId is returned after creating a new job using <see cref="Microsoft.Azure.NotificationHubs.NotificationHubClient.SubmitNotificationHubJobAsync(NotificationHubJob)" />.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The current state of the <see cref="Microsoft.Azure.NotificationHubs.NotificationHubClient.SubmitNotificationHubJobAsync(NotificationHubJob)" />.
+        /// </returns>
+        public Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId, CancellationToken cancellationToken)
+        {
             if (jobId == null)
             {
                 throw new ArgumentNullException(nameof(jobId));
             }
 
-            return GetEntityImplAsync<NotificationHubJob>("jobs", jobId, CancellationToken.None);
+            return GetEntityImplAsync<NotificationHubJob>("jobs", jobId, cancellationToken);
         }
 
         /// <summary>
@@ -227,13 +284,27 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The current state of the <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />s.
         /// </returns>
-        public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync()
+        public Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync()
+        {
+            return GetNotificationHubJobsAsync(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Returns all known <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />s. This method
+        /// is used to get the status of all job to see if those jobs completed, failed, or are still in progress.
+        /// This API is only available for Standard namespaces.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The current state of the <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />s.
+        /// </returns>
+        public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync(CancellationToken cancellationToken)
         {
             var requestUri = GetGenericRequestUriBuilder();
 
             requestUri.Path += "jobs";
 
-            var jobs = await GetAllEntitiesImplAsync<NotificationHubJob>(requestUri, null, EntitiesPerRequest, CancellationToken.None).ConfigureAwait(false);
+            var jobs = await GetAllEntitiesImplAsync<NotificationHubJob>(requestUri, null, EntitiesPerRequest, cancellationToken).ConfigureAwait(false);
             return jobs;
         }
 
@@ -246,16 +317,31 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The submitted <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />s.
         /// </returns>
-        public async Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job)
+        public Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job)
+        {
+            return SubmitNotificationHubJobAsync(job, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />. This API is only
+        /// available for Standard namespaces.
+        /// </summary>
+        /// <param name="job">The <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" /> to
+        /// export registrations, import registrations, or create registrations.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The submitted <see cref="Microsoft.Azure.NotificationHubs.NotificationHubJob" />s.
+        /// </returns>
+        public async Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job, CancellationToken cancellationToken)
         {
             if (job == null)
             {
-                throw new ArgumentNullException("job");
+                throw new ArgumentNullException(nameof(job));
             }
 
             if (job.OutputContainerUri == null)
             {
-                throw new ArgumentNullException("OutputContainerUri");
+                throw new ArgumentNullException($"{nameof(job)}.{nameof(job.OutputContainerUri)}");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -265,7 +351,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 AddEntityToRequestContent(request, job);
 
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, cancellationToken).ConfigureAwait(false))
                 {
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     {
@@ -290,6 +376,21 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends an Apple native notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
+        /// Documentation on the APNS payload can be found
+        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendAppleNativeNotificationAsync(string jsonPayload, CancellationToken cancellationToken)
+        {
+            return SendAppleNativeNotificationAsync(jsonPayload, string.Empty, cancellationToken);
+        }
+
+        /// <summary>
         /// Asynchronously sends an Apple native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
         /// </summary>
         /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
@@ -302,6 +403,22 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendAppleNativeNotificationAsync(string jsonPayload, string tagExpression)
         {
             return SendNotificationAsync(new AppleNotification(jsonPayload), tagExpression);
+        }
+
+        /// <summary>
+        /// Asynchronously sends an Apple native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
+        /// Documentation on the APNS payload can be found
+        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendAppleNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new AppleNotification(jsonPayload), tagExpression, cancellationToken);
         }
 
         /// <summary>
@@ -320,6 +437,22 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Asynchronously sends an Apple native notification to a non-empty set of tags (maximum 20). This is equivalent to a tagged expression with boolean ORs ("||"). To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
+        /// Documentation on the APNS payload can be found
+        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendAppleNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new AppleNotification(jsonPayload), tags, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a template notification.
         /// </summary>
         /// <param name="properties">The properties to apply to the template.</param>
@@ -329,6 +462,19 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendTemplateNotificationAsync(IDictionary<string, string> properties)
         {
             return SendTemplateNotificationAsync(properties, string.Empty);
+        }
+
+        /// <summary>
+        /// Sends a template notification.
+        /// </summary>
+        /// <param name="properties">The properties to apply to the template.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendTemplateNotificationAsync(IDictionary<string, string> properties, CancellationToken cancellationToken)
+        {
+            return SendTemplateNotificationAsync(properties, string.Empty, cancellationToken);
         }
 
         /// <summary>
@@ -345,6 +491,20 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends a template notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="properties">The properties to apply to the template.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendTemplateNotificationAsync(IDictionary<string, string> properties, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new TemplateNotification(properties), tagExpression, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a template notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||").
         /// </summary>
         /// <param name="properties">The properties to apply to the template.</param>
@@ -355,6 +515,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendTemplateNotificationAsync(IDictionary<string, string> properties, IEnumerable<string> tags)
         {
             return SendNotificationAsync(new TemplateNotification(properties), tags);
+        }
+
+        /// <summary>
+        /// Sends a template notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="properties">The properties to apply to the template.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendTemplateNotificationAsync(IDictionary<string, string> properties, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new TemplateNotification(properties), tags, cancellationToken);
         }
 
         /// <summary>
@@ -411,6 +585,19 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends Firebase Cloud Messaging (FCM) native notification.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, CancellationToken cancellationToken)
+        {
+            return SendFcmNativeNotificationAsync(jsonPayload, string.Empty, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends FCM native notification to a tag expression (a single tag "tag" is a valid tag expression).
         /// </summary>
         /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
@@ -421,6 +608,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression)
         {
             return SendNotificationAsync(new FcmNotification(jsonPayload), tagExpression);
+        }
+
+        /// <summary>
+        /// Sends FCM native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new FcmNotification(jsonPayload), tagExpression, cancellationToken);
         }
 
         /// <summary>
@@ -437,6 +638,20 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends a FCM native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/cloud-messaging/send-message">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new FcmNotification(jsonPayload), tags, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a Baidu native notification.
         /// </summary>
         /// <param name="message">This is a json request. Baidu documents the format for the json <a href="http://push.baidu.com/doc/restapi/restapi">here</a>.</param>
@@ -446,6 +661,19 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendBaiduNativeNotificationAsync(string message)
         {
             return SendNotificationAsync(new BaiduNotification(message), string.Empty);
+        }
+
+        /// <summary>
+        /// Sends a Baidu native notification.
+        /// </summary>
+        /// <param name="message">This is a json request. Baidu documents the format for the json <a href="http://push.baidu.com/doc/restapi/restapi">here</a>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBaiduNativeNotificationAsync(string message, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new BaiduNotification(message), string.Empty, cancellationToken);
         }
 
         /// <summary>
@@ -465,6 +693,20 @@ namespace Microsoft.Azure.NotificationHubs
         /// Sends Baidu native notification to a tag expression (a single tag "tag" is a valid tag expression).
         /// </summary>
         /// <param name="message">This is a json request. Baidu documents the format for the json <a href="http://push.baidu.com/doc/restapi/restapi">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBaiduNativeNotificationAsync(string message, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new BaiduNotification(message), tagExpression, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends Baidu native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="message">This is a json request. Baidu documents the format for the json <a href="http://push.baidu.com/doc/restapi/restapi">here</a>.</param>
         /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
@@ -472,6 +714,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendBaiduNativeNotificationAsync(string message, IEnumerable<string> tags)
         {
             return SendNotificationAsync(new BaiduNotification(message), tags);
+        }
+
+        /// <summary>
+        /// Sends Baidu native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="message">This is a json request. Baidu documents the format for the json <a href="http://push.baidu.com/doc/restapi/restapi">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBaiduNativeNotificationAsync(string message, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new BaiduNotification(message), tags, cancellationToken);
         }
 
         /// <summary>
@@ -484,6 +740,19 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendAdmNativeNotificationAsync(string jsonPayload)
         {
             return SendAdmNativeNotificationAsync(jsonPayload, string.Empty);
+        }
+
+        /// <summary>
+        /// Sends the Amazon Device Messaging (ADM) native notification.
+        /// </summary>
+        /// <param name="jsonPayload">A valid, ADM JSON payload, described in detail <a href="https://developer.amazon.com/public/apis/engage/device-messaging/tech-docs/06-sending-a-message#Message Payloads and Uniqueness">here</a>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendAdmNativeNotificationAsync(string jsonPayload, CancellationToken cancellationToken)
+        {
+            return SendAdmNativeNotificationAsync(jsonPayload, string.Empty, cancellationToken);
         }
 
         /// <summary>
@@ -503,6 +772,20 @@ namespace Microsoft.Azure.NotificationHubs
         /// Sends the Amazon Device Messaging (ADM) native notification.
         /// </summary>
         /// <param name="jsonPayload">A valid, ADM JSON payload, described in detail <a href="https://developer.amazon.com/public/apis/engage/device-messaging/tech-docs/06-sending-a-message#Message Payloads and Uniqueness">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendAdmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new AdmNotification(jsonPayload), tagExpression, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends the Amazon Device Messaging (ADM) native notification.
+        /// </summary>
+        /// <param name="jsonPayload">A valid, ADM JSON payload, described in detail <a href="https://developer.amazon.com/public/apis/engage/device-messaging/tech-docs/06-sending-a-message#Message Payloads and Uniqueness">here</a>.</param>
         /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
@@ -510,6 +793,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendAdmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
         {
             return SendNotificationAsync(new AdmNotification(jsonPayload), tags);
+        }
+
+        /// <summary>
+        /// Sends the Amazon Device Messaging (ADM) native notification.
+        /// </summary>
+        /// <param name="jsonPayload">A valid, ADM JSON payload, described in detail <a href="https://developer.amazon.com/public/apis/engage/device-messaging/tech-docs/06-sending-a-message#Message Payloads and Uniqueness">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendAdmNativeNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new AdmNotification(jsonPayload), tags, cancellationToken);
         }
 
         /// <summary>
@@ -522,6 +819,19 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload)
         {
             return SendMpnsNativeNotificationAsync(nativePayload, string.Empty);
+        }
+
+        /// <summary>
+        /// Sends a Microsoft Push Notification Service (MPNS) native notification. To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="nativePayload">The native payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, CancellationToken cancellationToken)
+        {
+            return SendMpnsNativeNotificationAsync(nativePayload, string.Empty, cancellationToken);
         }
 
         /// <summary>
@@ -538,6 +848,20 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends a Microsoft Push Notification Service (MPNS) native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="nativePayload">The native payload.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new MpnsNotification(nativePayload), tagExpression, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a Microsoft Push Notification Service (MPNS) native notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||"). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
         /// </summary>
         /// <param name="nativePayload">The notification payload.</param>
@@ -551,6 +875,20 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends a Microsoft Push Notification Service (MPNS) native notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||"). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="nativePayload">The notification payload.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendMpnsNativeNotificationAsync(string nativePayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new MpnsNotification(nativePayload), tags, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
         /// </summary>
         /// <param name="notification">The notification to send.</param>
@@ -560,12 +898,26 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">notification</exception>
         public Task<NotificationOutcome> SendNotificationAsync(Notification notification)
         {
+            return SendNotificationAsync(notification, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Sends a notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="notification">The notification to send.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">notification</exception>
+        public Task<NotificationOutcome> SendNotificationAsync(Notification notification, CancellationToken cancellationToken)
+        {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
-            return SendNotificationImplAsync(notification, notification.tag, null, CancellationToken.None);
+            return SendNotificationImplAsync(notification, notification.tag, null, cancellationToken);
         }
 
         /// <summary>
@@ -580,17 +932,33 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentException">notification.Tag property should be null</exception>
         public Task<NotificationOutcome> SendNotificationAsync(Notification notification, string tagExpression)
         {
+            return SendNotificationAsync(notification, tagExpression, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Sends a notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="notification">The notification to send.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">notification</exception>
+        /// <exception cref="System.ArgumentException">notification.Tag property should be null</exception>
+        public Task<NotificationOutcome> SendNotificationAsync(Notification notification, string tagExpression, CancellationToken cancellationToken)
+        {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (notification.tag != null)
             {
-                throw new ArgumentException("notification.Tag property should be null");
+                throw new ArgumentException($"{nameof(notification)}.{nameof(notification.tag)} property should be null");
             }
 
-            return SendNotificationImplAsync(notification, tagExpression, null, CancellationToken.None);
+            return SendNotificationImplAsync(notification, tagExpression, null, cancellationToken);
         }
 
         /// <summary>
@@ -611,28 +979,50 @@ namespace Microsoft.Azure.NotificationHubs
         /// </exception>
         public Task<NotificationOutcome> SendNotificationAsync(Notification notification, IEnumerable<string> tags)
         {
+            return SendNotificationAsync(notification, tags, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously sends a notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="notification">The notification to send.</param>
+        /// <param name="tags">A non-empty set of tags (max 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when notification or tag object is null
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// notification.Tag property should not be null
+        /// or
+        /// tags argument should contain at least one tag
+        /// </exception>
+        public Task<NotificationOutcome> SendNotificationAsync(Notification notification, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (notification.tag != null)
             {
-                throw new ArgumentException("notification.Tag property should be null");
+                throw new ArgumentException($"{nameof(notification)}.{nameof(notification.tag)} property should be null");
             }
 
             if (tags == null)
             {
-                throw new ArgumentNullException("tags");
+                throw new ArgumentNullException(nameof(tags));
             }
 
             if (tags.Count() == 0)
             {
-                throw new ArgumentException("tags argument should contain at least one tag");
+                throw new ArgumentException($"{nameof(tags)} argument should contain at least one value");
             }
 
             string tagExpression = string.Join("||", tags);
-            return SendNotificationImplAsync(notification, tagExpression, null, CancellationToken.None);
+            return SendNotificationImplAsync(notification, tagExpression, null, cancellationToken);
         }
 
         /// <summary>
@@ -645,11 +1035,27 @@ namespace Microsoft.Azure.NotificationHubs
         /// The result of the Send operation, as expressed by a <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" />.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">notificationId</exception>
-        public async Task<NotificationDetails> GetNotificationOutcomeDetailsAsync(string notificationId)
+        public Task<NotificationDetails> GetNotificationOutcomeDetailsAsync(string notificationId)
+        {
+            return GetNotificationOutcomeDetailsAsync(notificationId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Retrieves the results of a Send* operation. This can retrieve intermediate results if the send is being processed
+        /// or final results if the Send* has completed. This API can only be called for Standard namespaces.
+        /// </summary>
+        /// <param name="notificationId"><see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome.NotificationId" /> which was returned
+        /// when calling Send*.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The result of the Send operation, as expressed by a <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" />.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">notificationId</exception>
+        public async Task<NotificationDetails> GetNotificationOutcomeDetailsAsync(string notificationId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(notificationId))
             {
-                throw new ArgumentNullException("notificationId");
+                throw new ArgumentNullException(nameof(notificationId), "value may not be null, and must contain more than just whitespace");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -657,7 +1063,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK,  CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
                 {
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     {
@@ -671,14 +1077,24 @@ namespace Microsoft.Azure.NotificationHubs
         /// Gets the feedback container URI asynchronously.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task<Uri> GetFeedbackContainerUriAsync()
+        public Task<Uri> GetFeedbackContainerUriAsync()
+        {
+            return GetFeedbackContainerUriAsync(CancellationToken.None);
+        }
+        
+        /// <summary>
+        /// Gets the feedback container URI asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task<Uri> GetFeedbackContainerUriAsync(CancellationToken cancellationToken)
         {
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += "feedbackcontainer";
 
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
                 {
                     return new Uri(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                 }
@@ -701,16 +1117,29 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous operation.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the installation object is null</exception>
         /// <exception cref="System.InvalidOperationException">InstallationId must be specified</exception>
-        public async Task CreateOrUpdateInstallationAsync(Installation installation)
+        public Task CreateOrUpdateInstallationAsync(Installation installation)
+        {
+            return CreateOrUpdateInstallationAsync(installation, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Creates or updates a device installation asynchronously.
+        /// </summary>
+        /// <param name="installation">The device installation object.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when the installation object is null</exception>
+        /// <exception cref="System.InvalidOperationException">InstallationId must be specified</exception>
+        public async Task CreateOrUpdateInstallationAsync(Installation installation, CancellationToken cancellationToken)
         {
             if (installation==null)
             {
-                throw new ArgumentNullException("installation");
+                throw new ArgumentNullException(nameof(installation));
             }
 
             if (string.IsNullOrWhiteSpace(installation.InstallationId))
             {
-                throw new InvalidOperationException("InstallationId must be specified");
+                throw new InvalidOperationException($"{nameof(installation)}.{nameof(installation.InstallationId)} must be specified");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -720,7 +1149,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 request.Content = new StringContent(installation.ToJson(), Encoding.UTF8, "application/json");
 
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
                 {
                 }
             }
@@ -746,7 +1175,23 @@ namespace Microsoft.Azure.NotificationHubs
         /// Thrown when the installationId or operations object is null
         /// </exception>
         /// <exception cref="System.InvalidOperationException">Thrown when the operations list is empty</exception>
-        public async Task PatchInstallationAsync(string installationId, IList<PartialUpdateOperation> operations)
+        public Task PatchInstallationAsync(string installationId, IList<PartialUpdateOperation> operations)
+        {
+            return PatchInstallationAsync(installationId, operations, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Patches the installation asynchronously.
+        /// </summary>
+        /// <param name="installationId">The installation identifier.</param>
+        /// <param name="operations">The collection of update operations.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when the installationId or operations object is null
+        /// </exception>
+        /// <exception cref="System.InvalidOperationException">Thrown when the operations list is empty</exception>
+        public async Task PatchInstallationAsync(string installationId, IList<PartialUpdateOperation> operations, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(installationId))
             {
@@ -755,12 +1200,12 @@ namespace Microsoft.Azure.NotificationHubs
 
             if (operations == null)
             {
-                throw new ArgumentNullException("operations");
+                throw new ArgumentNullException(nameof(operations));
             }
 
             if (operations.Count == 0)
             {
-                throw new InvalidOperationException("Operations list is empty");
+                throw new InvalidOperationException($"{nameof(operations)} list is empty");
             }
 
             var requestUri = GetGenericRequestUriBuilder();
@@ -770,11 +1215,10 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 request.Content = new StringContent(operations.ToJson(), Encoding.UTF8, "application/json-patch+json");
 
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
                 {
                 }
             }
-            
         }
 
         /// <summary>
@@ -792,7 +1236,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="installationId">The installation identifier.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the installationId object is null</exception>
-        public async Task DeleteInstallationAsync(string installationId)
+        public Task DeleteInstallationAsync(string installationId)
+        {
+            return DeleteInstallationAsync(installationId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Deletes the installation asynchronously.
+        /// </summary>
+        /// <param name="installationId">The installation identifier.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when the installationId object is null</exception>
+        public async Task DeleteInstallationAsync(string installationId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(installationId))
             {
@@ -804,7 +1260,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             using (var request = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri, out var trackingId))
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.NoContent, CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.NoContent, cancellationToken).ConfigureAwait(false))
                 {
                 }
             }
@@ -825,7 +1281,18 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="installationId">The installation identifier.</param>
         /// <returns>Returns a task which is true if the installation exists, else false.</returns>
-        public async Task<bool> InstallationExistsAsync(string installationId)
+        public Task<bool> InstallationExistsAsync(string installationId)
+        {
+            return InstallationExistsAsync(installationId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Determines whether the given installation exists based upon the installation identifier.
+        /// </summary>
+        /// <param name="installationId">The installation identifier.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>Returns a task which is true if the installation exists, else false.</returns>
+        public async Task<bool> InstallationExistsAsync(string installationId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(installationId))
             {
@@ -837,7 +1304,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
             {
-                using (var response = await SendRequestAsync(request, trackingId, new [] { HttpStatusCode.OK, HttpStatusCode.NotFound }, CancellationToken.None))
+                using (var response = await SendRequestAsync(request, trackingId, new [] { HttpStatusCode.OK, HttpStatusCode.NotFound }, cancellationToken))
                 {
                     return response.StatusCode == HttpStatusCode.OK;
                 }
@@ -860,7 +1327,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="installationId">The installation identifier.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the installationId object is null</exception>
-        public async Task<Installation> GetInstallationAsync(string installationId)
+        public Task<Installation> GetInstallationAsync(string installationId)
+        {
+            return GetInstallationAsync(installationId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets the installation asynchronously.
+        /// </summary>
+        /// <param name="installationId">The installation identifier.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when the installationId object is null</exception>
+        public async Task<Installation> GetInstallationAsync(string installationId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(installationId))
             {
@@ -872,7 +1351,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
                 {
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return JsonConvert.DeserializeObject<Installation>(responseContent);
@@ -886,7 +1365,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task object representing the asynchronous operation.
         /// </returns>
-        public async Task<string> CreateRegistrationIdAsync()
+        public Task<string> CreateRegistrationIdAsync()
+        {
+            return CreateRegistrationIdAsync(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously creates a registration identifier.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task object representing the asynchronous operation.
+        /// </returns>
+        public async Task<string> CreateRegistrationIdAsync(CancellationToken cancellationToken)
         {
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += "registrationids";
@@ -894,7 +1385,7 @@ namespace Microsoft.Azure.NotificationHubs
             string registrationId = null;
 
             using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, CancellationToken.None).ConfigureAwait(false))
+            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, cancellationToken).ConfigureAwait(false))
             {
                 if (response.Headers.Location != null)
                 {
@@ -925,6 +1416,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// Asynchronously creates Windows native registration.
         /// </summary>
         /// <param name="channelUri">The channel URI.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<WindowsRegistrationDescription> CreateWindowsNativeRegistrationAsync(string channelUri, CancellationToken cancellationToken)
+        {
+            return CreateWindowsNativeRegistrationAsync(channelUri, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates Windows native registration.
+        /// </summary>
+        /// <param name="channelUri">The channel URI.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
@@ -932,6 +1436,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<WindowsRegistrationDescription> CreateWindowsNativeRegistrationAsync(string channelUri, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new WindowsRegistrationDescription(new Uri(channelUri), tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates Windows native registration.
+        /// </summary>
+        /// <param name="channelUri">The channel URI.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<WindowsRegistrationDescription> CreateWindowsNativeRegistrationAsync(string channelUri, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new WindowsRegistrationDescription(new Uri(channelUri), tags), cancellationToken);
         }
 
         /// <summary>
@@ -952,6 +1470,20 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="channelUri">The channel URI.</param>
         /// <param name="xmlTemplate">The XML template.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<WindowsTemplateRegistrationDescription> CreateWindowsTemplateRegistrationAsync(string channelUri, string xmlTemplate, CancellationToken cancellationToken)
+        {
+            return CreateWindowsTemplateRegistrationAsync(channelUri, xmlTemplate, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates Windows template registration.
+        /// </summary>
+        /// <param name="channelUri">The channel URI.</param>
+        /// <param name="xmlTemplate">The XML template.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
@@ -960,6 +1492,22 @@ namespace Microsoft.Azure.NotificationHubs
             string channelUri, string xmlTemplate, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new WindowsTemplateRegistrationDescription(new Uri(channelUri), xmlTemplate, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates Windows template registration.
+        /// </summary>
+        /// <param name="channelUri">The channel URI.</param>
+        /// <param name="xmlTemplate">The XML template.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<WindowsTemplateRegistrationDescription> CreateWindowsTemplateRegistrationAsync(
+            string channelUri, string xmlTemplate, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new WindowsTemplateRegistrationDescription(new Uri(channelUri), xmlTemplate, tags), cancellationToken);
         }
 
         /// <summary>
@@ -978,6 +1526,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// Asynchronously creates an Apple native registration.
         /// </summary>
         /// <param name="deviceToken">The device token.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<AppleRegistrationDescription> CreateAppleNativeRegistrationAsync(string deviceToken, CancellationToken cancellationToken)
+        {
+            return CreateAppleNativeRegistrationAsync(deviceToken, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates an Apple native registration.
+        /// </summary>
+        /// <param name="deviceToken">The device token.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
@@ -985,6 +1546,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<AppleRegistrationDescription> CreateAppleNativeRegistrationAsync(string deviceToken, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new AppleRegistrationDescription(deviceToken, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates an Apple native registration.
+        /// </summary>
+        /// <param name="deviceToken">The device token.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<AppleRegistrationDescription> CreateAppleNativeRegistrationAsync(string deviceToken, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new AppleRegistrationDescription(deviceToken, tags), cancellationToken);
         }
 
         /// <summary>
@@ -1005,6 +1580,20 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="deviceToken">The device token.</param>
         /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<AppleTemplateRegistrationDescription> CreateAppleTemplateRegistrationAsync(string deviceToken, string jsonPayload, CancellationToken cancellationToken)
+        {
+            return CreateAppleTemplateRegistrationAsync(deviceToken, jsonPayload, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates an Apple template registration. To specify additional properties at creation, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.CreateRegistrationAsync``1(``0)" /> method.
+        /// </summary>
+        /// <param name="deviceToken">The device token.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
@@ -1012,6 +1601,21 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<AppleTemplateRegistrationDescription> CreateAppleTemplateRegistrationAsync(string deviceToken, string jsonPayload, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new AppleTemplateRegistrationDescription(deviceToken, jsonPayload, tags));
+        }
+        
+        /// <summary>
+        /// Asynchronously creates an Apple template registration. To specify additional properties at creation, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.CreateRegistrationAsync``1(``0)" /> method.
+        /// </summary>
+        /// <param name="deviceToken">The device token.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<AppleTemplateRegistrationDescription> CreateAppleTemplateRegistrationAsync(string deviceToken, string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new AppleTemplateRegistrationDescription(deviceToken, jsonPayload, tags), cancellationToken);
         }
 
         /// <summary>
@@ -1030,6 +1634,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// Asynchronously creates a native administrative registration.
         /// </summary>
         /// <param name="admRegistrationId">The administrative registration identifier.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task object representing the asynchronous operation.
+        /// </returns>
+        public Task<AdmRegistrationDescription> CreateAdmNativeRegistrationAsync(string admRegistrationId, CancellationToken cancellationToken)
+        {
+            return CreateAdmNativeRegistrationAsync(admRegistrationId, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates a native administrative registration.
+        /// </summary>
+        /// <param name="admRegistrationId">The administrative registration identifier.</param>
         /// <param name="tags">The tags for the registration.</param>
         /// <returns>
         /// The task object representing the asynchronous operation.
@@ -1037,6 +1654,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<AdmRegistrationDescription> CreateAdmNativeRegistrationAsync(string admRegistrationId, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new AdmRegistrationDescription(admRegistrationId, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates a native administrative registration.
+        /// </summary>
+        /// <param name="admRegistrationId">The administrative registration identifier.</param>
+        /// <param name="tags">The tags for the registration.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task object representing the asynchronous operation.
+        /// </returns>
+        public Task<AdmRegistrationDescription> CreateAdmNativeRegistrationAsync(string admRegistrationId, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new AdmRegistrationDescription(admRegistrationId, tags), cancellationToken);
         }
 
         /// <summary>
@@ -1057,6 +1688,20 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="admRegistrationId">The administrative registration identifier.</param>
         /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task object representing the asynchronous operation.
+        /// </returns>
+        public Task<AdmTemplateRegistrationDescription> CreateAdmTemplateRegistrationAsync(string admRegistrationId, string jsonPayload, CancellationToken cancellationToken)
+        {
+            return CreateAdmTemplateRegistrationAsync(admRegistrationId, jsonPayload, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates an administrative template registration.
+        /// </summary>
+        /// <param name="admRegistrationId">The administrative registration identifier.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>
         /// The task object representing the asynchronous operation.
@@ -1064,6 +1709,21 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<AdmTemplateRegistrationDescription> CreateAdmTemplateRegistrationAsync(string admRegistrationId, string jsonPayload, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new AdmTemplateRegistrationDescription(admRegistrationId, jsonPayload, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates an administrative template registration.
+        /// </summary>
+        /// <param name="admRegistrationId">The administrative registration identifier.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task object representing the asynchronous operation.
+        /// </returns>
+        public Task<AdmTemplateRegistrationDescription> CreateAdmTemplateRegistrationAsync(string admRegistrationId, string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new AdmTemplateRegistrationDescription(admRegistrationId, jsonPayload, tags), cancellationToken);
         }
 
         /// <summary>
@@ -1138,6 +1798,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// Asynchronously creates FCM native registration.
         /// </summary>
         /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId, CancellationToken cancellationToken)
+        {
+            return CreateFcmNativeRegistrationAsync(fcmRegistrationId, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM native registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
@@ -1145,6 +1818,20 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new FcmRegistrationDescription(fcmRegistrationId, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM native registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmRegistrationDescription> CreateFcmNativeRegistrationAsync(string fcmRegistrationId, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new FcmRegistrationDescription(fcmRegistrationId, tags), cancellationToken);
         }
 
         /// <summary>
@@ -1165,6 +1852,20 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="fcmRegistrationId">The FCM registration ID.</param>
         /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, CancellationToken cancellationToken)
+        {
+            return CreateFcmTemplateRegistrationAsync(fcmRegistrationId, jsonPayload, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM template registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
         /// <param name="tags">The tags.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
@@ -1172,6 +1873,21 @@ namespace Microsoft.Azure.NotificationHubs
         public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new FcmTemplateRegistrationDescription(fcmRegistrationId, jsonPayload, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM template registration.
+        /// </summary>
+        /// <param name="fcmRegistrationId">The FCM registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new FcmTemplateRegistrationDescription(fcmRegistrationId, jsonPayload, tags), cancellationToken);
         }
 
         #region Baidu Create Registration
@@ -1282,7 +1998,6 @@ namespace Microsoft.Azure.NotificationHubs
             return CreateRegistrationAsync(new MpnsTemplateRegistrationDescription(new Uri(channelUri), xmlTemplate, tags));
         }
 
-
         /// <summary>
         /// Asynchronously creates a registration.
         /// </summary>
@@ -1298,18 +2013,37 @@ namespace Microsoft.Azure.NotificationHubs
         /// </exception>
         public Task<T> CreateRegistrationAsync<T>(T registration) where T : RegistrationDescription
         {
+            return CreateRegistrationAsync(registration, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously creates a registration.
+        /// </summary>
+        /// <typeparam name="T">The type of registration.</typeparam>
+        /// <param name="registration">The registration to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentException">
+        /// NotificationHubPath in RegistrationDescription is not valid.
+        /// or
+        /// RegistrationId should be null or empty
+        /// </exception>
+        public Task<T> CreateRegistrationAsync<T>(T registration, CancellationToken cancellationToken) where T : RegistrationDescription
+        {
             if (!string.IsNullOrWhiteSpace(registration.NotificationHubPath) &&
                 registration.NotificationHubPath != _notificationHubPath)
             {
-                throw new ArgumentException("NotificationHubPath in RegistrationDescription is not valid.");
+                throw new ArgumentException($"{nameof(registration)}.{nameof(registration.NotificationHubPath)} in {nameof(RegistrationDescription)} is not valid.");
             }
 
             if (!string.IsNullOrWhiteSpace(registration.RegistrationId))
             {
-                throw new ArgumentException("RegistrationId should be null or empty");
+                throw new ArgumentException($"{nameof(registration)}.{nameof(registration.RegistrationId)} should be null or empty");
             }
 
-            return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.Create, CancellationToken.None);
+            return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.Create, cancellationToken);
         }
 
         /// <summary>
@@ -1325,17 +2059,34 @@ namespace Microsoft.Azure.NotificationHubs
         /// </exception>
         public Task<T> UpdateRegistrationAsync<T>(T registration) where T : RegistrationDescription
         {
+            return UpdateRegistrationAsync(registration, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously updates the registration.
+        /// </summary>
+        /// <typeparam name="T">The type of registration.</typeparam>
+        /// <param name="registration">The registration to update.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// A task that will complete when the update finishes.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when RegistrationId or ETag object is null
+        /// </exception>
+        public Task<T> UpdateRegistrationAsync<T>(T registration, CancellationToken cancellationToken) where T : RegistrationDescription
+        {
             if (string.IsNullOrWhiteSpace(registration.RegistrationId))
             {
-                throw new ArgumentNullException("RegistrationId");
+                throw new ArgumentNullException($"{nameof(registration)}.{nameof(registration.RegistrationId)}");
             }
 
             if (string.IsNullOrWhiteSpace(registration.ETag))
             {
-                throw new ArgumentNullException("ETag");
+                throw new ArgumentNullException($"{nameof(registration)}.{nameof(registration.ETag)}");
             }
 
-            return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.Update, CancellationToken.None);
+            return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.Update, cancellationToken);
         }
 
         /// <summary>
@@ -1349,12 +2100,27 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">Thrown when RegistrationId object is null</exception>
         public Task<T> CreateOrUpdateRegistrationAsync<T>(T registration) where T : RegistrationDescription
         {
+            return CreateOrUpdateRegistrationAsync(registration, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously creates or updates the client registration.
+        /// </summary>
+        /// <typeparam name="T">The type of registration.</typeparam>
+        /// <param name="registration">The registration to be created or updated.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task object representing the asynchronous operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when RegistrationId object is null</exception>
+        public Task<T> CreateOrUpdateRegistrationAsync<T>(T registration, CancellationToken cancellationToken) where T : RegistrationDescription
+        {
             if (string.IsNullOrWhiteSpace(registration.RegistrationId))
             {
-                throw new ArgumentNullException("RegistrationId");
+                throw new ArgumentNullException($"{nameof(registration)}.{nameof(registration.RegistrationId)}");
             }
 
-            return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.CreateOrUpdate, CancellationToken.None);
+            return CreateOrUpdateRegistrationImplAsync(registration, EntityOperatonType.CreateOrUpdate, cancellationToken);
         }
 
         /// <summary>
@@ -1368,12 +2134,27 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">Thrown when registrationId is null</exception>
         public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId) where TRegistrationDescription : RegistrationDescription
         {
+            return GetRegistrationAsync<TRegistrationDescription>(registrationId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves a registration with a given ID. The type of the registration depends upon the specified TRegistrationDescription parameter.
+        /// </summary>
+        /// <typeparam name="TRegistrationDescription">The type of registration description.</typeparam>
+        /// <param name="registrationId">The registration ID.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when registrationId is null</exception>
+        public Task<TRegistrationDescription> GetRegistrationAsync<TRegistrationDescription>(string registrationId, CancellationToken cancellationToken) where TRegistrationDescription : RegistrationDescription
+        {
             if (string.IsNullOrWhiteSpace(registrationId))
             {
-                throw new ArgumentNullException("registrationId");
+                throw new ArgumentNullException(nameof(registrationId));
             }
 
-            return GetEntityImplAsync<TRegistrationDescription>("registrations", registrationId, CancellationToken.None);
+            return GetEntityImplAsync<TRegistrationDescription>("registrations", registrationId, cancellationToken);
         }
 
         /// <summary>
@@ -1381,7 +2162,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="top">The location of the registration.</param>
         /// <returns>
-        /// The task that completes the asynchronous operation.
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         public Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(int top)
         {
@@ -1391,19 +2172,46 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Asynchronously retrieves all registrations in this notification hub.
         /// </summary>
+        /// <param name="top">The location of the registration.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
+        /// </returns>
+        public Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(int top, CancellationToken cancellationToken)
+        {
+            return GetAllRegistrationsImplAsync(null, top, null, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves all registrations in this notification hub.
+        /// </summary>
         /// <param name="continuationToken">The continuation token.</param>
         /// <param name="top">The location of the registration.</param>
         /// <returns>
-        /// The task that completes the asynchronous operation.
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         public Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(string continuationToken, int top)
+        {
+            return GetAllRegistrationsAsync(continuationToken, top, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves all registrations in this notification hub.
+        /// </summary>
+        /// <param name="continuationToken">The continuation token.</param>
+        /// <param name="top">The location of the registration.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
+        /// </returns>
+        public Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(string continuationToken, int top, CancellationToken cancellationToken)
         {
             if (continuationToken == null)
             {
                 throw new ArgumentNullException(nameof(continuationToken));
             }
 
-            return GetAllRegistrationsImplAsync(continuationToken, top, null, null, CancellationToken.None);
+            return GetAllRegistrationsImplAsync(continuationToken, top, null, null, cancellationToken);
         }
 
         /// <summary>
@@ -1412,7 +2220,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="pnsHandle">The PNS handle.</param>
         /// <param name="top">The location of the registration.</param>
         /// <returns>
-        /// The task that completes the asynchronous operation.
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, int top)
         {
@@ -1423,20 +2231,50 @@ namespace Microsoft.Azure.NotificationHubs
         /// Asynchronously gets the registrations by channel.
         /// </summary>
         /// <param name="pnsHandle">The PNS handle.</param>
+        /// <param name="top">The location of the registration.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
+        /// </returns>
+        public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, int top, CancellationToken cancellationToken)
+        {
+            return GetAllRegistrationsImplAsync(null, top, pnsHandle, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously gets the registrations by channel.
+        /// </summary>
+        /// <param name="pnsHandle">The PNS handle.</param>
         /// <param name="continuationToken">The continuation token.</param>
         /// <param name="top">The location of the registration.</param>
         /// <returns>
-        /// The task that completes the asynchronous operation.
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">pnsHandle</exception>
         public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, string continuationToken, int top)
         {
+            return GetRegistrationsByChannelAsync(pnsHandle, continuationToken, top, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously gets the registrations by channel.
+        /// </summary>
+        /// <param name="pnsHandle">The PNS handle.</param>
+        /// <param name="continuationToken">The continuation token.</param>
+        /// <param name="top">The location of the registration.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">pnsHandle</exception>
+        public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, string continuationToken, int top, CancellationToken cancellationToken)
+        {
             if (string.IsNullOrWhiteSpace(pnsHandle))
             {
-                throw new ArgumentNullException("pnsHandle");
+                throw new ArgumentNullException(nameof(pnsHandle));
             }
 
-            return GetAllRegistrationsImplAsync(continuationToken, top, pnsHandle, null, CancellationToken.None);
+            return GetAllRegistrationsImplAsync(continuationToken, top, pnsHandle, null, cancellationToken);
         }
 
         /// <summary>
@@ -1449,12 +2287,26 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">Thrown when registration object is null.</exception>
         public Task DeleteRegistrationAsync(RegistrationDescription registration)
         {
+            return DeleteRegistrationAsync(registration, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously deletes the registration.
+        /// </summary>
+        /// <param name="registration">The registration to delete.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when registration object is null.</exception>
+        public Task DeleteRegistrationAsync(RegistrationDescription registration, CancellationToken cancellationToken)
+        {
             if (registration == null)
             {
-                throw new ArgumentNullException("registration");
+                throw new ArgumentNullException(nameof(registration));
             }
 
-            return DeleteRegistrationAsync(registration.RegistrationId, registration.ETag);
+            return DeleteRegistrationAsync(registration.RegistrationId, registration.ETag, cancellationToken);
         }
 
         /// <summary>
@@ -1473,6 +2325,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// Asynchronously deletes the registration.
         /// </summary>
         /// <param name="registrationId">The registration ID.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task DeleteRegistrationAsync(string registrationId, CancellationToken cancellationToken)
+        {
+            return DeleteRegistrationAsync(registrationId, "*", cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously deletes the registration.
+        /// </summary>
+        /// <param name="registrationId">The registration ID.</param>
         /// <param name="etag">The entity tag.</param>
         /// <returns>
         /// The task that completes the asynchronous operation.
@@ -1480,12 +2345,27 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">registrationId</exception>
         public Task DeleteRegistrationAsync(string registrationId, string etag)
         {
+            return DeleteRegistrationAsync(registrationId, etag, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously deletes the registration.
+        /// </summary>
+        /// <param name="registrationId">The registration ID.</param>
+        /// <param name="etag">The entity tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">registrationId</exception>
+        public Task DeleteRegistrationAsync(string registrationId, string etag, CancellationToken cancellationToken)
+        {
             if (string.IsNullOrWhiteSpace(registrationId))
             {
-                throw new ArgumentNullException("registrationId");
+                throw new ArgumentNullException(nameof(registrationId));
             }
 
-            return DeleteRegistrationImplAsync(registrationId, etag, CancellationToken.None);
+            return DeleteRegistrationImplAsync(registrationId, etag, cancellationToken);
         }
 
         /// <summary>
@@ -1496,17 +2376,31 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">pnsHandle</exception>
-        public async Task DeleteRegistrationsByChannelAsync(string pnsHandle)
+        public Task DeleteRegistrationsByChannelAsync(string pnsHandle)
+        {
+            return DeleteRegistrationsByChannelAsync(pnsHandle, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously deletes the registrations by channel.
+        /// </summary>
+        /// <param name="pnsHandle">The PNS handle.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">pnsHandle</exception>
+        public async Task DeleteRegistrationsByChannelAsync(string pnsHandle, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(pnsHandle))
             {
-                throw new ArgumentNullException("pnsHandle");
+                throw new ArgumentNullException(nameof(pnsHandle));
             }
 
-            var registrationsToDelete = await GetRegistrationsByChannelAsync(pnsHandle, EntitiesPerRequest).ConfigureAwait(false);
+            var registrationsToDelete = await GetRegistrationsByChannelAsync(pnsHandle, EntitiesPerRequest, cancellationToken).ConfigureAwait(false);
             do
             {
-                var deletionTasks = registrationsToDelete.Select(r => DeleteRegistrationImplAsync(r.RegistrationId, null, CancellationToken.None));
+                var deletionTasks = registrationsToDelete.Select(r => DeleteRegistrationImplAsync(r.RegistrationId, null, cancellationToken));
                 await Task.WhenAll(deletionTasks).ConfigureAwait(false);
             }
             while (!string.IsNullOrEmpty(registrationsToDelete.ContinuationToken));
@@ -1519,9 +2413,25 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        public async Task<bool> RegistrationExistsAsync(string registrationId)
+        public Task<bool> RegistrationExistsAsync(string registrationId)
         {
-            return await GetRegistrationAsync<RegistrationDescription>(registrationId).ConfigureAwait(false) != null;
+            return RegistrationExistsAsync(registrationId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously indicates that the registration already exists.
+        /// </summary>
+        /// <param name="registrationId">The registration ID.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public async Task<bool> RegistrationExistsAsync(string registrationId, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(registrationId))
+                throw new ArgumentNullException(nameof(registrationId));
+
+            return await GetEntityImplAsync<RegistrationDescription>("registrations", registrationId, cancellationToken, throwIfNotFound: false) != null;
         }
 
         /// <summary>
@@ -1530,16 +2440,30 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="tag">The tag.</param>
         /// <param name="top">The location where to get the registrations.</param>
         /// <returns>
-        /// The task that completes the asynchronous operation.
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, int top)
         {
+            return GetRegistrationsByTagAsync(tag, top, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously gets the registrations by tag.
+        /// </summary>
+        /// <param name="tag">The tag.</param>
+        /// <param name="top">The location where to get the registrations.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
+        /// </returns>
+        public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, int top, CancellationToken cancellationToken)
+        {
             if (string.IsNullOrWhiteSpace(tag))
             {
-                throw new ArgumentNullException("tag");
+                throw new ArgumentNullException(nameof(tag));
             }
 
-            return GetAllRegistrationsImplAsync(null, top, null, tag, CancellationToken.None);
+            return GetAllRegistrationsImplAsync(null, top, null, tag, cancellationToken);
         }
 
         /// <summary>
@@ -1549,17 +2473,33 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="continuationToken">The continuation token.</param>
         /// <param name="top">The location where to get the registrations.</param>
         /// <returns>
-        /// The task that completes the asynchronous operation.
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown when tag object is null</exception>
         public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, string continuationToken, int top)
         {
+            return GetRegistrationsByTagAsync(tag, continuationToken, top, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Asynchronously gets the registrations by tag.
+        /// </summary>
+        /// <param name="tag">The tag.</param>
+        /// <param name="continuationToken">The continuation token.</param>
+        /// <param name="top">The location where to get the registrations.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when tag object is null</exception>
+        public Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, string continuationToken, int top, CancellationToken cancellationToken)
+        {
             if (string.IsNullOrWhiteSpace(tag))
             {
-                throw new ArgumentNullException("tag");
+                throw new ArgumentNullException(nameof(tag));
             }
 
-            return GetAllRegistrationsImplAsync(continuationToken, top, null, tag, CancellationToken.None);
+            return GetAllRegistrationsImplAsync(continuationToken, top, null, tag, cancellationToken);
         }
 
         /// <summary>
@@ -1570,12 +2510,24 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous operation.</returns>
         public Task<ScheduledNotification> ScheduleNotificationAsync(Notification notification, DateTimeOffset scheduledTime)
         {
+            return ScheduleNotificationAsync(notification, scheduledTime, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Schedules the notification asynchronously.
+        /// </summary>
+        /// <param name="notification">The notification.</param>
+        /// <param name="scheduledTime">The scheduled time.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public Task<ScheduledNotification> ScheduleNotificationAsync(Notification notification, DateTimeOffset scheduledTime, CancellationToken cancellationToken)
+        {
             if (notification == null)
             {
                 throw new ArgumentNullException(nameof(notification));
             }
 
-            return SendScheduledNotificationImplAsync(notification, scheduledTime, null, CancellationToken.None);
+            return SendScheduledNotificationImplAsync(notification, scheduledTime, null, cancellationToken);
         }
 
         /// <summary>
@@ -1589,6 +2541,21 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentException">tags argument should contain at least one tag</exception>
         public Task<ScheduledNotification> ScheduleNotificationAsync(Notification notification, DateTimeOffset scheduledTime, IEnumerable<string> tags)
         {
+            return ScheduleNotificationAsync(notification, scheduledTime, tags, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Schedules the notification asynchronously.
+        /// </summary>
+        /// <param name="notification">The notification.</param>
+        /// <param name="scheduledTime">The scheduled time.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when tags object is null</exception>
+        /// <exception cref="System.ArgumentException">tags argument should contain at least one tag</exception>
+        public Task<ScheduledNotification> ScheduleNotificationAsync(Notification notification, DateTimeOffset scheduledTime, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
             if (notification == null)
             {
                 throw new ArgumentNullException(nameof(notification));
@@ -1596,16 +2563,16 @@ namespace Microsoft.Azure.NotificationHubs
 
             if (tags == null)
             {
-                throw new ArgumentNullException("tags");
+                throw new ArgumentNullException(nameof(tags));
             }
 
             if (tags.Count() == 0)
             {
-                throw new ArgumentException("tags argument should contain at least one tag");
+                throw new ArgumentException(message: $"{nameof(tags)} argument should contain at least one value", paramName: nameof(tags));
             }
 
             string tagExpression = String.Join("||", tags);
-            return SendScheduledNotificationImplAsync(notification, scheduledTime, tagExpression, CancellationToken.None);
+            return SendScheduledNotificationImplAsync(notification, scheduledTime, tagExpression, cancellationToken);
         }
 
         /// <summary>
@@ -1617,12 +2584,25 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous operation.</returns>
         public Task<ScheduledNotification> ScheduleNotificationAsync(Notification notification, DateTimeOffset scheduledTime, string tagExpression)
         {
+            return ScheduleNotificationAsync(notification, scheduledTime, tagExpression, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Schedules the notification asynchronously.
+        /// </summary>
+        /// <param name="notification">The notification.</param>
+        /// <param name="scheduledTime">The scheduled time.</param>
+        /// <param name="tagExpression">The tag expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public Task<ScheduledNotification> ScheduleNotificationAsync(Notification notification, DateTimeOffset scheduledTime, string tagExpression, CancellationToken cancellationToken)
+        {
             if (notification == null)
             {
                 throw new ArgumentNullException(nameof(notification));
             }
 
-            return SendScheduledNotificationImplAsync(notification, scheduledTime, tagExpression, CancellationToken.None);
+            return SendScheduledNotificationImplAsync(notification, scheduledTime, tagExpression, cancellationToken);
         }
 
         /// <summary>
@@ -1630,7 +2610,18 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="scheduledNotificationId">The scheduled notification identifier.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task CancelNotificationAsync(string scheduledNotificationId)
+        public Task CancelNotificationAsync(string scheduledNotificationId)
+        {
+            return CancelNotificationAsync(scheduledNotificationId, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Cancels the notification asynchronously.
+        /// </summary>
+        /// <param name="scheduledNotificationId">The scheduled notification identifier.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task CancelNotificationAsync(string scheduledNotificationId, CancellationToken cancellationToken)
         {
             if (scheduledNotificationId == null)
             {
@@ -1641,7 +2632,7 @@ namespace Microsoft.Azure.NotificationHubs
             requestUri.Path += $"schedulednotifications/{scheduledNotificationId}";
 
             using (var request = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, CancellationToken.None).ConfigureAwait(false))
+            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
             {
             }
         }
@@ -1660,17 +2651,35 @@ namespace Microsoft.Azure.NotificationHubs
         /// </exception>
         public Task<NotificationOutcome> SendDirectNotificationAsync(Notification notification, string deviceHandle)
         {
+            return SendDirectNotificationAsync(notification, deviceHandle, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Sends a notification directly to a deviceHandle (a valid token as expressed by the Notification type).
+        /// Users of this API do not use Registrations or Installations. Instead, users of this API manage all devices
+        /// on their own and use Azure Notification Hub solely as a pass through service to communicate with
+        /// the various Push Notification Services.
+        /// </summary>
+        /// <param name="notification">A instance of a Notification, identifying which Push Notification Service to send to.</param>
+        /// <param name="deviceHandle">A valid device identifier.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when notification or deviceHandle object is null
+        /// </exception>
+        public Task<NotificationOutcome> SendDirectNotificationAsync(Notification notification, string deviceHandle, CancellationToken cancellationToken)
+        {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (string.IsNullOrEmpty(deviceHandle))
             {
-                throw new ArgumentNullException("deviceHandle");
+                throw new ArgumentNullException(nameof(deviceHandle));
             }
 
-            return SendNotificationImplAsync(notification, null, deviceHandle, CancellationToken.None);
+            return SendNotificationImplAsync(notification, null, deviceHandle, cancellationToken);
         }
 
         /// <summary>
@@ -1685,26 +2694,47 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when notification or deviceHandles object is null
         /// </exception>
-        public async Task<NotificationOutcome> SendDirectNotificationAsync(Notification notification, IList<string> deviceHandles)
+        public Task<NotificationOutcome> SendDirectNotificationAsync(Notification notification, IList<string> deviceHandles)
+        {
+            return SendDirectNotificationAsync(notification, deviceHandles, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Sends a notification directly to all devices listed in deviceHandles (a valid tokens as expressed by the Notification type).
+        /// Users of this API do not use Registrations or Installations. Instead, users of this API manage all devices
+        /// on their own and use Azure Notification Hub solely as a pass through service to communicate with
+        /// the various Push Notification Services.
+        /// </summary>
+        /// <param name="notification">A instance of a Notification, identifying which Push Notification Service to send to.</param>
+        /// <param name="deviceHandles">A list of valid device identifiers.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when notification or deviceHandles object is null
+        /// </exception>
+        public async Task<NotificationOutcome> SendDirectNotificationAsync(Notification notification, IList<string> deviceHandles, CancellationToken cancellationToken)
         {
             if (notification == null)
             {
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             }
 
             if (deviceHandles==null)
             {
-                throw new ArgumentNullException("deviceHandles");
+                throw new ArgumentNullException(nameof(deviceHandles));
             }
 
             if (deviceHandles.Count == 0)
             {
-                throw new ArgumentException("deviceHandles");
+                throw new ArgumentException(message: $"{nameof(deviceHandles)} should contain at least one value", paramName: nameof(deviceHandles));
             }
 
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += "messages/$batch";
             AddToQuery(requestUri, "&direct");
+
+            // Convert FcmNotification into GcmNotification
+            notification = FcmToGcmNotificationTypeCast(notification);
 
             notification.ValidateAndPopulateHeaders();
 
@@ -1727,7 +2757,7 @@ namespace Microsoft.Azure.NotificationHubs
 
                 request.Content = content;
 
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, CancellationToken.None).ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, cancellationToken).ConfigureAwait(false))
                 {
                     return new NotificationOutcome()
                     {
@@ -1785,10 +2815,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             // Convert FcmNotification into GcmNotification
-            if (notification.GetType().Name == "FcmNotification")
-            {
-                notification = new GcmNotification((FcmNotification) notification);
-            }
+            notification = FcmToGcmNotificationTypeCast(notification);
 
             notification.ValidateAndPopulateHeaders();
 
@@ -1846,10 +2873,7 @@ namespace Microsoft.Azure.NotificationHubs
             requestUri.Path += "schedulednotifications";
 
             // Convert FcmNotification into GcmNotification
-            if (notification.GetType().Name == "FcmNotification")
-            {
-                notification = new GcmNotification((FcmNotification) notification);
-            }
+            notification = FcmToGcmNotificationTypeCast(notification);
 
             notification.ValidateAndPopulateHeaders();
 
@@ -1999,55 +3023,35 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     {
-                        // Convert GcmTemplateRegistrationDescription returned by service into FcmTemplateRegistrationDescription to match method's return type.
-                        if (registration is FcmTemplateRegistrationDescription)
-                        {
-                            var gcmTemplateRegistrationResponse = await ReadEntityAsync<GcmTemplateRegistrationDescription>(responseStream).ConfigureAwait(false);
-                            var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationResponse);
-                            return (fcmTemplateRegistrationDescription as TRegistration);
-                        }
-
-                        // Convert GcmRegistrationDescription returned by service into FcmRegistrationDescription to match method's return type.
-                        if (registration is FcmRegistrationDescription)
-                        {
-                            var gcmRegistrationResponse = await ReadEntityAsync<GcmRegistrationDescription>(responseStream).ConfigureAwait(false);
-                            var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationResponse);
-                            return (fcmRegistrationDescription as TRegistration);
-                        }
-                        
                         return await ReadEntityAsync<TRegistration>(responseStream).ConfigureAwait(false);
                     }
                 }
             }
         }
 
-        private async Task<TEntity> GetEntityImplAsync<TEntity>(string entityCollection, string entityId, CancellationToken cancellationToken) where TEntity : EntityDescription
+        private async Task<TEntity> GetEntityImplAsync<TEntity>(string entityCollection, string entityId, CancellationToken cancellationToken, bool throwIfNotFound = true) where TEntity : EntityDescription
         {
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"{entityCollection}/{entityId}";
 
+            HttpStatusCode[] successfulResponseStatuses;
+            if (throwIfNotFound)
+                successfulResponseStatuses = new [] { HttpStatusCode.OK };
+            else
+                successfulResponseStatuses = new [] { HttpStatusCode.OK, HttpStatusCode.NotFound };
+
             using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
             {
-                using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (var response = await SendRequestAsync(request, trackingId, successfulResponseStatuses, cancellationToken).ConfigureAwait(false))
                 {
-                    if (typeof(FcmTemplateRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
-                    {
-                        var gcmTemplateRegistrationResponse = await ReadEntityAsync<GcmTemplateRegistrationDescription>(responseStream).ConfigureAwait(false);
-                        var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationResponse);
-                        return (fcmTemplateRegistrationDescription as TEntity);
-                    }
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                        return null;
 
-                    if (typeof(FcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
+                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     {
-                        var gcmRegistrationResponse = await ReadEntityAsync<GcmRegistrationDescription>(responseStream).ConfigureAwait(false);
-                        var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationResponse);
-                        return (fcmRegistrationDescription as TEntity);
+                        return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
                     }
-
-                    return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
                 }
-
             }
         }
 
@@ -2139,7 +3143,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             using (var xmlReader = XmlReader.Create(source, new XmlReaderSettings { Async = true }))
             {
-                // Advancing to the first element skiping non-content nodes
+                // Advancing to the first element skipping non-content nodes
                 await xmlReader.MoveToContentAsync().ConfigureAwait(false);
 
                 if (!xmlReader.IsStartElement("feed"))
@@ -2150,11 +3154,25 @@ namespace Microsoft.Azure.NotificationHubs
                 // Advancing to the next Atom entry
                 while (xmlReader.ReadToFollowing("entry"))
                 {
-                    // Anvancing to content of the Atom entry
+                    // Advancing to content of the Atom entry
                     if (xmlReader.ReadToDescendant("content"))
                     {
                         xmlReader.ReadStartElement();
-                        result.Add((TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name));
+                        var entity = (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+
+                        if (entity is GcmTemplateRegistrationDescription)
+                        {
+                            var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(entity as GcmTemplateRegistrationDescription);
+                            entity = (fcmTemplateRegistrationDescription as TEntity);
+                        }
+                        
+                        if (entity is GcmRegistrationDescription)
+                        {
+                            var fcmRegistrationDescription = new FcmRegistrationDescription(entity as GcmRegistrationDescription);
+                            entity = (fcmRegistrationDescription as TEntity);
+                        }
+                        
+                        result.Add(entity);
                     }
                 }
             }
@@ -2175,7 +3193,26 @@ namespace Microsoft.Azure.NotificationHubs
                 xmlReader.ReadToDescendant("content");
                 xmlReader.ReadStartElement();
 
-                return (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+                var entity = _entitySerializer.Deserialize(xmlReader, xmlReader.Name);
+
+                if (typeof(GcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
+                {
+                    return (TEntity)entity;
+                }
+
+                if (entity is GcmTemplateRegistrationDescription gcmTemplateRegistrationDescription)
+                {
+                    var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(gcmTemplateRegistrationDescription);
+                    return (fcmTemplateRegistrationDescription as TEntity);
+                }
+
+                if (entity is GcmRegistrationDescription gcmRegistrationDescription)
+                {
+                    var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationDescription);
+                    return (fcmRegistrationDescription as TEntity);
+                }
+
+                return (TEntity)entity;
             }
         }
 
@@ -2207,6 +3244,16 @@ namespace Microsoft.Azure.NotificationHubs
                 // Removing leading '?' from the result query
                 uriBuilder.Query = uriBuilder.Query.Substring(1) + query;
             }
+        }
+
+        private static Notification FcmToGcmNotificationTypeCast(Notification notification)
+        {
+            if (notification.GetType().Name == "FcmNotification")
+            {
+                notification = new GcmNotification((FcmNotification) notification);
+            }
+
+            return notification;
         }
     }
 }
