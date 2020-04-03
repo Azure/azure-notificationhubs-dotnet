@@ -149,7 +149,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="version">The version.</param>
         /// <exception cref="System.Runtime.Serialization.InvalidDataContractException"></exception>
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
             // Channel URI validations
             if (string.IsNullOrWhiteSpace(this.ChannelUri.ToString()) || !this.ChannelUri.IsAbsoluteUri)

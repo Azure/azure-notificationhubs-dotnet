@@ -269,17 +269,17 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3003)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
-            this.ValidateWnsHeaders(version);
+            base.OnValidate();
+            this.ValidateWnsHeaders();
             if (this.IsXmlPayLoad())
             {
-                this.ValidateXmlPayLoad(version);
+                this.ValidateXmlPayLoad();
             }
             else if (this.IsJsonObjectPayLoad())
             {
-                this.ValidateJsonPayLoad(version);
+                this.ValidateJsonPayLoad();
             }
             else
             {
@@ -318,7 +318,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        void ValidateWnsHeaders(ApiVersion version)
+        void ValidateWnsHeaders()
         {
             if (this.WnsHeaders == null)
             {
@@ -342,7 +342,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        void ValidateXmlPayLoad(ApiVersion version)
+        void ValidateXmlPayLoad()
         {
             XDocument payloadDocument = XDocument.Parse(this.BodyTemplate);
             this.ExpressionStartIndices = new List<int>();
@@ -383,7 +383,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        void ValidateJsonPayLoad(ApiVersion version)
+        void ValidateJsonPayLoad()
         {
             try
             {

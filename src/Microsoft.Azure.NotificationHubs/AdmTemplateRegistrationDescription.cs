@@ -112,9 +112,9 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
+            base.OnValidate();
 
             try
             {

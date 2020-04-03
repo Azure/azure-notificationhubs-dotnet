@@ -121,9 +121,9 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3002)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
+            base.OnValidate();
 
             try
             {
@@ -277,9 +277,9 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3002)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
+            base.OnValidate();
 
             try
             {
