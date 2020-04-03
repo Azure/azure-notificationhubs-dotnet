@@ -338,7 +338,7 @@ namespace Microsoft.Azure.NotificationHubs
                     throw new InvalidDataContractException(SRClient.WNSHeaderNullOrEmpty(header));
                 }
 
-                ExpressionEvaluator.Validate(this.WnsHeaders[header], version);
+                ExpressionEvaluator.Validate(this.WnsHeaders[header]);
             }
         }
 
@@ -354,7 +354,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 foreach (XAttribute attribute in element.Attributes())
                 {
-                    if (ExpressionEvaluator.Validate(attribute.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(attribute.Value) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: id="$(id&gt;)" --> $(id&gt;)
@@ -368,7 +368,7 @@ namespace Microsoft.Azure.NotificationHubs
 
                 if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                 {
-                    if (ExpressionEvaluator.Validate(element.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(element.Value) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: <text id="1">$(na&gt;me)</text> --> $(na&gt;me)
@@ -395,12 +395,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value, version);
+                            ExpressionEvaluator.Validate(attribute.Value);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value, version);
+                            ExpressionEvaluator.Validate(element.Value);
                         }
                     }
                 }
