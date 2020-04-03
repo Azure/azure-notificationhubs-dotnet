@@ -234,39 +234,12 @@ namespace Microsoft.Azure.NotificationHubs
             string oauthUser,
             SecureString oauthPassword)
         {
-            if (!string.IsNullOrWhiteSpace(sharedAccessKey))
+            if (string.IsNullOrWhiteSpace(sharedAccessKey))
             {
-                return TokenProvider.CreateSharedAccessSignatureTokenProvider(sharedAccessKeyName, sharedAccessKey);
-            }
-            if (string.IsNullOrWhiteSpace(issuerName))
-            {
-                var hasSts = stsEndpoints != null && stsEndpoints.Any();
-                var hasWindowsPassword = !string.IsNullOrWhiteSpace(windowsUser) && windowsPassword != null && windowsPassword.Length > 0;
-                var hasOAuthPassword = !string.IsNullOrWhiteSpace(oauthUser) && oauthPassword != null && oauthPassword.Length > 0;
-                if (!hasSts)
-                    return null;
-                if (hasOAuthPassword)
-                {
-                    NetworkCredential credential = string.IsNullOrWhiteSpace(oauthDomain)
-                        ? new NetworkCredential(oauthUser, oauthPassword)
-                        : new NetworkCredential(oauthUser, oauthPassword, oauthDomain);
-                    return TokenProvider.CreateOAuthTokenProvider(stsEndpoints, credential);
-                }
-                if (!hasWindowsPassword)
-                {
-                    return TokenProvider.CreateWindowsTokenProvider(stsEndpoints);
-                }
-                NetworkCredential credential1 = string.IsNullOrWhiteSpace(windowsDomain)
-                    ? new NetworkCredential(windowsUser, windowsPassword)
-                    : new NetworkCredential(windowsUser, windowsPassword, windowsDomain);
-                return TokenProvider.CreateWindowsTokenProvider(stsEndpoints, credential1);
-            }
-
-            if (stsEndpoints != null && stsEndpoints.Any<Uri>())
-            {
-                return TokenProvider.CreateSharedSecretTokenProvider(issuerName, issuerKey, stsEndpoints.First<Uri>());
-            }
-            return TokenProvider.CreateSharedSecretTokenProvider(issuerName, issuerKey);
+                throw new ArgumentException(nameof(sharedAccessKey));
+            } 
+            
+            return TokenProvider.CreateSharedAccessSignatureTokenProvider(sharedAccessKeyName, sharedAccessKey);
         }
 
         public static IList<Uri> GetEndpointAddresses(string uriEndpoints, string portString)

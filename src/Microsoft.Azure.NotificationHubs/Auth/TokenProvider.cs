@@ -63,21 +63,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         }
 
         /// <summary>
-        /// Construct a TokenProvider based on the provided issuer name and issuer secret.
-        /// </summary>
-        /// <param name="issuerName">The issuer name to initialize the TokenProvider with.</param>
-        /// <param name="issuerSecret">The issuer name to initialize the TokenProvider with.</param>
-        /// <param name="stsUri">The URI of the STS to use.</param>
-        /// <returns>A TokenProvider initialized with the provided issuer name and secret.</returns>
-        public static TokenProvider CreateSharedSecretTokenProvider(
-            string issuerName,
-            string issuerSecret,
-            Uri stsUri)
-        {
-            return new SharedSecretTokenProvider(issuerName, issuerSecret, stsUri);
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
         /// </summary>
         /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
@@ -98,44 +83,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             _cacheTokens = cacheTokens;
             _isWebTokenSupported = supportHttpAuthToken;
             _retrySleepTime = InitialRetrySleepTime;
-        }
-
-        /// <summary>Creates a windows token provider.</summary>
-        /// <returns>
-        /// The <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> for returning the windows token.
-        /// </returns>
-        /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
-        public static TokenProvider CreateWindowsTokenProvider(IEnumerable<Uri> stsUris)
-        {
-            return new WindowsTokenProvider(stsUris, (NetworkCredential)null);
-        }
-
-        /// <summary>Creates a windows token provider.</summary>
-        /// <returns>
-        /// The <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> for returning the windows token.
-        /// </returns>
-        /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
-        /// <param name="credential">The user credential.</param>
-        public static TokenProvider CreateWindowsTokenProvider(
-            IEnumerable<Uri> stsUris,
-            NetworkCredential credential)
-        {
-            return new WindowsTokenProvider(stsUris, credential);
-        }
-
-        /// <summary>
-        /// Creates an OAuth (open standard for authorization) token provider.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> for returning OAuth token.
-        /// </returns>
-        /// <param name="stsUris">The URIs of the Security Token Service (STS).</param>
-        /// <param name="credential">The user credential.</param>
-        public static TokenProvider CreateOAuthTokenProvider(
-            IEnumerable<Uri> stsUris,
-            NetworkCredential credential)
-        {
-            return new OAuthTokenProvider(stsUris, credential);
         }
 
         /// <summary>
@@ -219,19 +166,6 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             TrySetIntoCache(normalizedAppliesTo, action, bypassCache, token);
 
             return token;
-        }
-
-        /// <summary>
-        /// Construct a TokenProvider based on the provided issuer name, issuer secret, and the default AccessControl namespace.
-        /// </summary>
-        /// <param name="issuerName">The issuer name to initialize the TokenProvider with.</param>
-        /// <param name="issuerSecret">The issuer name to initialize the TokenProvider with.</param>
-        /// <returns>A TokenProvider initialized with the provided issuer name and secret.</returns>
-        public static TokenProvider CreateSharedSecretTokenProvider(
-            string issuerName,
-            string issuerSecret)
-        {
-            return (TokenProvider)new SharedSecretTokenProvider(issuerName, issuerSecret);
         }
 
         private bool TryFetchFromCache(string appliesTo, string action, bool bypassCache, out string token)
