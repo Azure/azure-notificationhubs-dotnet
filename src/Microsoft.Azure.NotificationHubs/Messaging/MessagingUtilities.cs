@@ -7,25 +7,11 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     internal static class MessagingUtilities
     {
-        public static void ThrowIfNullAddressOrPathExists(Uri address)
-        {
-            if (address == null)
-            {
-                throw new ArgumentNullException(nameof(address));
-            }
-
-            if (!string.IsNullOrEmpty(address.AbsolutePath) && address.Segments.Length > 3)
-            {
-                throw new ArgumentException(SRClient.InvalidAddressPath(address.AbsoluteUri), nameof(address));
-            }
-        }
-
         /// <summary>
         /// Create a list of uri addresses from a given list of string addresses
         /// </summary>
@@ -38,29 +24,41 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 throw new ArgumentNullException(nameof(addresses));
             }
 
-            List<Uri> uriAddresses = new List<Uri>();
+            var uriAddresses = new List<Uri>();
 
-            Uri uriAddress = null;
             foreach (string address in addresses)
             {
                 try
                 {
-                    uriAddress = new Uri(address);
+                    var uriAddress = new Uri(address);
+                    ThrowIfNullAddressOrPathExists(uriAddress);
+                    uriAddresses.Add(uriAddress);
                 }
                 catch (UriFormatException ex)
                 {
                     throw new UriFormatException(SRClient.BadUriFormat(address), ex);
                 }
-                ThrowIfNullAddressOrPathExists(uriAddress);
-                uriAddresses.Add(uriAddress);
             }
 
             if (uriAddresses.Count == 0)
             {
-                ThrowIfNullAddressOrPathExists(uriAddress);
+                throw new ArgumentException(SRClient.NoAddressesFound(uriAddresses), nameof(uriAddresses));
             }
 
             return uriAddresses;
+        }
+
+        public static void ThrowIfNullAddressOrPathExists(Uri address)
+        {
+            if (address == null)
+            {
+                throw new ArgumentNullException(nameof(address));
+            }
+
+            if (!string.IsNullOrEmpty(address.AbsolutePath) && address.Segments.Length > 3)
+            {
+                throw new ArgumentException(SRClient.InvalidAddressPath(address.AbsoluteUri), nameof(address));
+            }
         }
 
         public static void ThrowIfNullAddressesOrPathExists(IEnumerable<Uri> addresses)
