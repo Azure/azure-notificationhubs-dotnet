@@ -166,16 +166,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        private SecureString GetWindowsPassword()
-        {
-            return GetSecurePassword(WindowsPasswordConfigName);
-        }
-
-        private SecureString GetOAuthPassword()
-        {
-            return GetSecurePassword(OAuthPasswordConfigName);
-        }
-
         internal TokenProvider CreateTokenProvider()
         {
             var connectionProperty3 = connectionProperties["SharedAccessKeyName"];
@@ -230,25 +220,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             return addresses;
-        }
-
-        SecureString GetSecurePassword(string configName)
-        {
-            SecureString password = null;
-            string passwordString = connectionProperties[configName];
-            if (!string.IsNullOrWhiteSpace(passwordString))
-            {
-                unsafe
-                {
-                    char[] array = passwordString.ToCharArray();
-                    fixed (char* pChars = array)
-                    {
-                        password = new SecureString(pChars, array.Length);
-                    }
-                }
-            }
-
-            return password;
         }
     }
 }
