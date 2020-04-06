@@ -44,17 +44,15 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             None
         }
 
-        public static ExpressionType Validate(string expression, ApiVersion version)
+        public static ExpressionType Validate(string expression)
         {
             ExpressionType expressionType;
             List<Token> tokens = ValidateAndTokenize(expression, out expressionType);
-            if (version > ApiVersion.Three)
+
+            Token bodyToken = tokens.Find((t) => { return t.Type == TokenType.Body; });
+            if (bodyToken != null)
             {
-                Token bodyToken = tokens.Find((t) => { return t.Type == TokenType.Body; });
-                if (bodyToken != null)
-                {
-                    throw new InvalidDataContractException(SRClient.BodyIsNotSupportedExpression);
-                }
+                throw new InvalidDataContractException(SRClient.BodyIsNotSupportedExpression);
             }
 
             return expressionType;

@@ -32,24 +32,5 @@ namespace Microsoft.Azure.NotificationHubs
         public const string OldRuntimeVersion = VersionFive; // Upto this version runtime operations did not include version
         public const string PartitionedEntityMinimumRuntimeApiVersionText = VersionSeven;
         public const string SubscriptionPartitioningMinimumRuntimeApiVersionText = VersionEight;
-
-        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "Assembly links this file but does not use this field. Microsoft.Cloud.ServiceBus.ResourceProvider.ACISClient.dll")]
-        public static readonly string SupportedVersions = string.Join(",",
-            ApiVersionConstants.VersionTwo,
-            ApiVersionConstants.VersionThree,
-            ApiVersionConstants.VersionFour,
-            ApiVersionConstants.VersionFive,
-            ApiVersionConstants.VersionSix,
-            ApiVersionConstants.VersionSeven,
-            ApiVersionConstants.VersionEight,
-            ApiVersionConstants.VersionNine,
-            ApiVersionConstants.VersionTen,
-            ApiVersionConstants.VersionEleven,
-            ApiVersionConstants.VersionTwelve,
-            ApiVersionConstants.VersionThirteen,
-            ApiVersionConstants.VersionFourteen,
-            ApiVersionConstants.VersionFifteen,
-            ApiVersionConstants.VersionSixteen,
-            ApiVersionConstants.VersionSeventeen);
     }
 }
