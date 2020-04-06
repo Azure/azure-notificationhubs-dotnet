@@ -134,21 +134,12 @@ namespace Microsoft.Azure.NotificationHubs
 
             string operationTimeout = connectionProperties[OperationTimeoutConfigName];
             IEnumerable<Uri> endpoints = GetEndpointAddresses(connectionProperties[EndpointConfigName], connectionProperties[ManagementPortConfigName]);
-            IEnumerable<Uri> stsEndpoints = GetEndpointAddresses(connectionProperties[StsEndpointConfigName], null);
-            string issuerName = connectionProperties[SharedSecretIssuerConfigName];
-            string issuerKey = connectionProperties[SharedSecretValueConfigName];
             string sasKeyName = connectionProperties[SharedAccessKeyName];
             string sasKey = connectionProperties[SharedAccessValueName];
-            string windowsDomain = connectionProperties[WindowsDomainConfigName];
-            string windowsUsername = connectionProperties[WindowsUsernameConfigName];
-            SecureString windowsPassword = GetWindowsPassword();
-            string oauthDomain = connectionProperties[OAuthDomainConfigName];
-            string oauthUsername = connectionProperties[OAuthUsernameConfigName];
-            SecureString oauthPassword = GetOAuthPassword();
 
             try
             {
-                TokenProvider provider = CreateTokenProvider(stsEndpoints, issuerName, issuerKey, sasKeyName, sasKey, windowsDomain, windowsUsername, windowsPassword, oauthDomain, oauthUsername, oauthPassword);
+                TokenProvider provider = CreateTokenProvider(sasKeyName, sasKey);
                 if (string.IsNullOrEmpty(operationTimeout))
                 {
                     return new NamespaceManager(endpoints, provider);
@@ -187,52 +178,18 @@ namespace Microsoft.Azure.NotificationHubs
 
         internal TokenProvider CreateTokenProvider()
         {
-            IList<Uri> endpointAddresses = GetEndpointAddresses(connectionProperties["StsEndpoint"], (string)null);
-            var connectionProperty1 = connectionProperties["SharedSecretIssuer"];
-            var connectionProperty2 = connectionProperties["SharedSecretValue"];
             var connectionProperty3 = connectionProperties["SharedAccessKeyName"];
             var connectionProperty4 = connectionProperties["SharedAccessKey"];
-            var connectionProperty5 = connectionProperties["WindowsDomain"];
-            var connectionProperty6 = connectionProperties["WindowsUsername"];
-            var windowsPassword1 = GetWindowsPassword();
-            var connectionProperty7 = connectionProperties["OAuthDomain"];
-            var connectionProperty8 = connectionProperties["OAuthUsername"];
-            var oauthPassword1 = GetOAuthPassword();
-            var issuerName = connectionProperty1;
-            var issuerKey = connectionProperty2;
             var sharedAccessKeyName = connectionProperty3;
             var sharedAccessKey = connectionProperty4;
-            var windowsDomain = connectionProperty5;
-            var windowsUser = connectionProperty6;
-            var windowsPassword2 = windowsPassword1;
-            var oauthDomain = connectionProperty7;
-            string oauthUser = connectionProperty8;
-            var oauthPassword2 = oauthPassword1;
-            return CreateTokenProvider(endpointAddresses,
-                issuerName,
-                issuerKey,
+            return CreateTokenProvider(
                 sharedAccessKeyName,
-                sharedAccessKey,
-                windowsDomain,
-                windowsUser,
-                windowsPassword2,
-                oauthDomain,
-                oauthUser,
-                oauthPassword2);
+                sharedAccessKey);
         }
 
         private static TokenProvider CreateTokenProvider(
-            IEnumerable<Uri> stsEndpoints,
-            string issuerName,
-            string issuerKey,
             string sharedAccessKeyName,
-            string sharedAccessKey,
-            string windowsDomain,
-            string windowsUser,
-            SecureString windowsPassword,
-            string oauthDomain,
-            string oauthUser,
-            SecureString oauthPassword)
+            string sharedAccessKey)
         {
             if (string.IsNullOrWhiteSpace(sharedAccessKey))
             {
