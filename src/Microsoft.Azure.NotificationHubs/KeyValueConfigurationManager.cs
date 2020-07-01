@@ -140,13 +140,13 @@ namespace Microsoft.Azure.NotificationHubs
             }
             catch (ArgumentException e)
             {
-                throw new ConfigurationErrorsException(
+                throw new ArgumentException(
                     string.Format(SRClient.AppSettingsCreateManagerWithInvalidConnectionString, e.Message),
                     e);
             }
             catch (UriFormatException e)
             {
-                throw new ConfigurationErrorsException(
+                throw new ArgumentException(
                     string.Format(SRClient.AppSettingsCreateManagerWithInvalidConnectionString, e.Message),
                     e);
             }
