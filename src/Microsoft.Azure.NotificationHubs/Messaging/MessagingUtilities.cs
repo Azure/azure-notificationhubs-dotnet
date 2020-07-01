@@ -36,13 +36,13 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 }
                 catch (UriFormatException ex)
                 {
-                    throw new UriFormatException(SRClient.BadUriFormat(address), ex);
+                    throw new UriFormatException(string.Format(SRClient.BadUriFormat, address), ex);
                 }
             }
 
             if (uriAddresses.Count == 0)
             {
-                throw new ArgumentException(SRClient.NoAddressesFound(uriAddresses), nameof(uriAddresses));
+                throw new ArgumentException(string.Format(SRClient.NoAddressesFound, uriAddresses), nameof(uriAddresses));
             }
 
             return uriAddresses;
@@ -57,7 +57,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             if (!string.IsNullOrEmpty(address.AbsolutePath) && address.Segments.Length > 3)
             {
-                throw new ArgumentException(SRClient.InvalidAddressPath(address.AbsoluteUri), nameof(address));
+                throw new ArgumentException(string.Format(SRClient.InvalidAddressPath, address.AbsoluteUri), nameof(address));
             }
         }
 
@@ -70,7 +70,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
             if (!addresses.Any())
             {
-                throw new ArgumentException(SRClient.NoAddressesFound(addresses), nameof(addresses));
+                throw new ArgumentException(string.Format(SRClient.NoAddressesFound, addresses), nameof(addresses));
             }
 
             foreach (var address in addresses)

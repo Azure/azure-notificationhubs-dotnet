@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Auth;
+using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
 using Xunit;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Auth;
 
 namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 {
@@ -67,9 +67,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
             bool notificationHubExists = true;
             IEnumerable<NotificationHubDescription> notificationHubDescriptions;
-
-            var protocolVersion = _namespaceManager.GetVersionInfo();
-            Assert.Equal("2017-11", protocolVersion);
 
             // Check that GetNotification returns MessagingEntityNotFoundException than hub is not exist
             Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.GetNotificationHub(_notificationHubName));

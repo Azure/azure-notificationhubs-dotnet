@@ -50,6 +50,12 @@ namespace Microsoft.Azure.NotificationHubs
                     throw new ArgumentException(SRCore.ArgumentNullOrEmpty("Path"));
                 }
 
+                if (value.Length > Constants.NotificationHubNameMaximumLength)
+                {
+                    throw new ArgumentException(
+                        string.Format(SRClient.NotificationHubNameLengthTooLong, Constants.NotificationHubNameMaximumLength));
+                }
+
                 _path = value;
             }
         }
@@ -238,7 +244,7 @@ namespace Microsoft.Azure.NotificationHubs
         [IgnoreDataMember]
         public bool IsDisabled
         {
-            get { return internalStatus ?? Constants.DefaultHubIsDisabled; }
+            get { return internalStatus ?? false; }
             set { internalStatus = value; }
         }
 
@@ -253,7 +259,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             get
             {
-                return Constants.DefaultIsAnonymousAccessible;
+                return false;
             }
         }
 

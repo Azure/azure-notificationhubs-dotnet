@@ -326,7 +326,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace Microsoft.Azure.NotificationHubs
                 string.IsNullOrWhiteSpace(this.MpnsHeaders[MpnsTemplateRegistrationDescription.NotificationClass]))
             {
                 throw new InvalidDataContractException(
-                    SRClient.MissingMpnsHeader(MpnsTemplateRegistrationDescription.NotificationClass));
+                    string.Format(SRClient.MissingMpnsHeader, MpnsTemplateRegistrationDescription.NotificationClass));
             }
 
             // MPNS headers validation
@@ -346,7 +346,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (string.IsNullOrWhiteSpace(this.MpnsHeaders[header]))
                 {
-                    throw new InvalidDataContractException(SRClient.MpnsHeaderIsNullOrEmpty(header));
+                    throw new InvalidDataContractException(string.Format(SRClient.MpnsHeaderIsNullOrEmpty, header));
                 }
 
                 ExpressionEvaluator.Validate(this.MpnsHeaders[header]);

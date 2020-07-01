@@ -7,9 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Security;
 using System.Text.RegularExpressions;
 using Microsoft.Azure.NotificationHubs.Auth;
 
@@ -17,23 +14,13 @@ namespace Microsoft.Azure.NotificationHubs
 {
     internal class KeyValueConfigurationManager
     {
-        public const string ServiceBusConnectionKeyName = @"Microsoft.Azure.NotificationHubs.ConnectionString";
         public const string OperationTimeoutConfigName = @"OperationTimeout";
-        public const string EntityPathConfigName = @"EntityPath";
         public const string EndpointConfigName = @"Endpoint";
         public const string SharedSecretIssuerConfigName = @"SharedSecretIssuer";
         public const string SharedSecretValueConfigName = @"SharedSecretValue";
         public const string SharedAccessKeyName = @"SharedAccessKeyName";
         public const string SharedAccessValueName = @"SharedAccessKey";
-        public const string RuntimePortConfigName = @"RuntimePort";
         public const string ManagementPortConfigName = @"ManagementPort";
-        public const string StsEndpointConfigName = @"StsEndpoint";
-        public const string WindowsDomainConfigName = @"WindowsDomain";
-        public const string WindowsUsernameConfigName = @"WindowsUsername";
-        public const string WindowsPasswordConfigName = @"WindowsPassword";
-        public const string OAuthDomainConfigName = @"OAuthDomain";
-        public const string OAuthUsernameConfigName = @"OAuthUsername";
-        public const string OAuthPasswordConfigName = @"OAuthPassword";
 
         internal const string ValueSeparator = @",";
         internal const string KeyValueSeparator = @"=";
@@ -41,7 +28,6 @@ namespace Microsoft.Azure.NotificationHubs
         const string KeyAttributeEnumRegexString = @"(" +
                                                    EndpointConfigName + @"|" +
                                                    SharedAccessKeyName + @"|" +
-                                                   EntityPathConfigName + @"|" +
                                                    SharedAccessValueName + @")";
         const string KeyDelimiterRegexString = KeyDelimiter + KeyAttributeEnumRegexString + KeyValueSeparator;
 
@@ -84,12 +70,12 @@ namespace Microsoft.Azure.NotificationHubs
                     // We should always get empty string for first element (except if we found no match at all).
                     if (!string.IsNullOrWhiteSpace(keyValues[0]))
                     {
-                        throw new ConfigurationException(SRClient.AppSettingsConfigSettingInvalidKey(connectionString));
+                        throw new ConfigurationException(string.Format(SRClient.AppSettingsConfigSettingInvalidKey, connectionString));
                     }
 
                     if (keyValues.Length % 2 != 1)
                     {
-                        throw new ConfigurationException(SRClient.AppSettingsConfigSettingInvalidKey(connectionString));
+                        throw new ConfigurationException(string.Format(SRClient.AppSettingsConfigSettingInvalidKey, connectionString));
                     }
 
                     for (var i = 1; i < keyValues.Length; i++)
@@ -97,18 +83,18 @@ namespace Microsoft.Azure.NotificationHubs
                         var key = keyValues[i];
                         if (string.IsNullOrWhiteSpace(key) || !KeyRegex.IsMatch(key))
                         {
-                            throw new ConfigurationException(SRClient.AppSettingsConfigSettingInvalidKey(key));
+                            throw new ConfigurationException(string.Format(SRClient.AppSettingsConfigSettingInvalidKey, key));
                         }
 
                         var value = keyValues[i + 1];
                         if (string.IsNullOrWhiteSpace(value) || !ValueRegex.IsMatch(value))
                         {
-                            throw new ConfigurationException(SRClient.AppSettingsConfigSettingInvalidValue(key, value));
+                            throw new ConfigurationException(string.Format(SRClient.AppSettingsConfigSettingInvalidValue, key, value));
                         }
 
                         if (settings[key] != null)
                         {
-                            throw new ConfigurationException(SRClient.AppSettingsConfigDuplicateSetting(key));
+                            throw new ConfigurationException(string.Format(SRClient.AppSettingsConfigDuplicateSetting, key));
                         }
 
                         settings[key] = value;
@@ -124,7 +110,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(connectionProperties[EndpointConfigName]))
             {
-                throw new ConfigurationException(SRClient.AppSettingsConfigMissingSetting(EndpointConfigName, ServiceBusConnectionKeyName));
+                throw new ConfigurationException(string.Format(SRClient.AppSettingsConfigMissingSetting, EndpointConfigName));
             }
         }
 
@@ -154,14 +140,14 @@ namespace Microsoft.Azure.NotificationHubs
             }
             catch (ArgumentException e)
             {
-                throw new ConfigurationErrorsException(
-                    SRClient.AppSettingsCreateManagerWithInvalidConnectionString(e.Message),
+                throw new ArgumentException(
+                    string.Format(SRClient.AppSettingsCreateManagerWithInvalidConnectionString, e.Message),
                     e);
             }
             catch (UriFormatException e)
             {
-                throw new ConfigurationErrorsException(
-                    SRClient.AppSettingsCreateManagerWithInvalidConnectionString(e.Message),
+                throw new ArgumentException(
+                    string.Format(SRClient.AppSettingsCreateManagerWithInvalidConnectionString, e.Message),
                     e);
             }
         }
@@ -184,9 +170,9 @@ namespace Microsoft.Azure.NotificationHubs
             if (string.IsNullOrWhiteSpace(sharedAccessKey))
             {
                 throw new ArgumentException(nameof(sharedAccessKey));
-            } 
-            
-            return TokenProvider.CreateSharedAccessSignatureTokenProvider(sharedAccessKeyName, sharedAccessKey);
+            }
+
+            return new SharedAccessSignatureTokenProvider(sharedAccessKeyName, sharedAccessKey);
         }
 
         public static IList<Uri> GetEndpointAddresses(string uriEndpoints, string portString)

@@ -313,7 +313,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }
@@ -322,12 +322,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (this.WnsHeaders == null)
             {
-                throw new InvalidDataContractException(SRClient.MissingWNSHeader(WindowsTemplateRegistrationDescription.Type));
+                throw new InvalidDataContractException(string.Format(SRClient.MissingWNSHeader, WindowsTemplateRegistrationDescription.Type));
             }
 
             if (!this.WnsHeaders.ContainsKey(WindowsTemplateRegistrationDescription.Type) || string.IsNullOrWhiteSpace(this.WnsHeaders[WindowsTemplateRegistrationDescription.Type]))
             {
-                throw new InvalidDataContractException(SRClient.MissingWNSHeader(WindowsTemplateRegistrationDescription.Type));
+                throw new InvalidDataContractException(string.Format(SRClient.MissingWNSHeader, WindowsTemplateRegistrationDescription.Type));
             }
 
             // WNS headers validation
@@ -335,7 +335,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (string.IsNullOrWhiteSpace(this.WnsHeaders[header]))
                 {
-                    throw new InvalidDataContractException(SRClient.WNSHeaderNullOrEmpty(header));
+                    throw new InvalidDataContractException(string.Format(SRClient.WNSHeaderNullOrEmpty, header));
                 }
 
                 ExpressionEvaluator.Validate(this.WnsHeaders[header]);
@@ -424,7 +424,7 @@ namespace Microsoft.Azure.NotificationHubs
             int newIndex = this.BodyTemplate.Value.IndexOf(escapedExpression, previousIndex + 1, StringComparison.OrdinalIgnoreCase);
             if (newIndex == -1)
             {
-                throw new InvalidDataContractException(SRClient.UnsupportedExpression(expression));
+                throw new InvalidDataContractException(string.Format(SRClient.UnsupportedExpression, expression));
             }
 
             this.ExpressionStartIndices.Add(newIndex);

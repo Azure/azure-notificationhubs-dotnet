@@ -2065,7 +2065,7 @@ namespace Microsoft.Azure.NotificationHubs
             if (!_httpClient.DefaultRequestHeaders.Contains(Constants.HttpUserAgentHeaderName))
             {
                 _httpClient.DefaultRequestHeaders.Add(Constants.HttpUserAgentHeaderName,
-                    $"NHub/{ApiVersionConstants.MaxSupportedApiVersion} (api-origin=DotNetSdk;os={Environment.OSVersion.Platform};os-version={Environment.OSVersion.Version})");
+                    $"NHub/{ManagementStrings.ApiVersion} (api-origin=DotNetSdk;os={Environment.OSVersion.Platform};os-version={Environment.OSVersion.Version})");
             }
         }
 

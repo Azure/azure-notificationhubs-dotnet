@@ -28,16 +28,26 @@ namespace Microsoft.Azure.NotificationHubs
         private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
         private const string Footer = "</content></entry>";
         private const string TrackingIdHeaderKey = "TrackingId";
-        private readonly NamespaceManagerSettings _settings;
         private readonly IEnumerable<Uri> _addresses;
-        
+        private readonly HttpClient _httpClient;
+
         /// <summary> Gets the first namespace base address. </summary>
         /// <value> The namespace base address. </value>
         public Uri Address => _addresses.First();
 
         /// <summary> Gets the namespace manager settings. </summary>
         /// <value> The namespace manager settings. </value>
-        public NamespaceManagerSettings Settings => _settings;
+        public NamespaceManagerSettings Settings { get; }
+
+        /// <summary>
+        /// Gets operation timeout of the HTTP operations.
+        /// </summary>
+        /// <value>
+        ///   <c>Http operation timeout. Defaults to 60 seconds</c>.
+        /// </value>
+        /// <remarks>
+        ///  </remarks>
+        public TimeSpan OperationTimeout { get; private set; }
 
         /// <summary>
         /// Creates an instance of the <see cref="NamespaceManager"/> class based on key-value configuration connection string.
@@ -50,7 +60,7 @@ namespace Microsoft.Azure.NotificationHubs
             return manager.CreateNamespaceManager();
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
         /// <param name="address">The full address of the namespace.</param>
         /// <exception cref="ArgumentNullException">Thrown when address is null. </exception>
         public NamespaceManager(string address)
@@ -58,7 +68,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base addresses to access your namespace. Anonymous credentials are assumed.</summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base addresses to access your namespace. Anonymous credentials are assumed.</summary>
         /// <param name="addresses">The full addresses of the namespace.</param>
         /// <exception cref="ArgumentNullException">Thrown when addresses field is null. </exception>
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
@@ -68,7 +78,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
         /// <param name="address">The full address of the namespace.</param>
         /// <exception cref="ArgumentNullException">Thrown when address is null. </exception>
         public NamespaceManager(Uri address)
@@ -76,7 +86,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
         /// <param name="addresses">The full addresses of the namespace.</param>
         /// <exception cref="ArgumentNullException">Thrown when addresses field is null. </exception>
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
@@ -85,7 +95,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="address">The full address of the namespace.</param>
         /// <param name="tokenProvider"> The namespace access credentials. </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
@@ -96,7 +106,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="addresses">The full addresses of the namespace.</param>
         /// <param name="tokenProvider"> The namespace access credentials. </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
@@ -110,7 +120,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="address">The full address of the namespace. </param>
         /// <param name="tokenProvider">A TokenProvider for the namespace </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
@@ -119,17 +129,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the type is not a supported Credential type. 
         ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
         public NamespaceManager(Uri address, TokenProvider tokenProvider)
+            : this(address, new NamespaceManagerSettings(tokenProvider))
         {
-            MessagingUtilities.ThrowIfNullAddressOrPathExists(address);
-
-            _addresses = new List<Uri> { address };
-            _settings = new NamespaceManagerSettings()
-            {
-                TokenProvider = tokenProvider,
-            };
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="addresses">The full address of the namespace. </param>
         /// <param name="tokenProvider">A TokenProvider for the namespace </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
@@ -139,19 +143,13 @@ namespace Microsoft.Azure.NotificationHubs
         ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
         /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
         public NamespaceManager(IEnumerable<Uri> addresses, TokenProvider tokenProvider)
+             : this(addresses, new NamespaceManagerSettings(tokenProvider))
         {
-            MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses);
-
-            _addresses = addresses.ToList();
-            _settings = new NamespaceManagerSettings()
-            {
-                TokenProvider = tokenProvider,
-            };
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="address"> The full address of the namespace.  </param>
-        /// <param name="settings"> Contains the ServiceBusCredential as well as an OperationTimeout property.</param>
+        /// <param name="settings"> Namespace manager settings. </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
         ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
         /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
@@ -160,9 +158,9 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="addresses"> The full addresses of the namespace.  </param>
-        /// <param name="settings"> Contains the ServiceBusCredential as well as an OperationTimeout property.</param>
+        /// <param name="settings"> Namespace manager settings. </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
         ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
         /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
@@ -173,9 +171,9 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="address"> The full address of the namespace.  </param>
-        /// <param name="settings"> Contains the ServiceBusCredential as well as an OperationTimeout property.</param>
+        /// <param name="settings"> Namespace manager settings. </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
         ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
         /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
@@ -184,9 +182,9 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
-        /// <summary> ServiceBusNamespaceClient Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
+        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
         /// <param name="addresses"> The full address of the namespace.  </param>
-        /// <param name="settings"> Contains the ServiceBusCredential as well as an OperationTimeout property.</param>
+        /// <param name="settings"> Namespace manager settings. </param>
         /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
         ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
         /// <exception cref="ArgumentNullException"> Thrown when addresses or settings is null. </exception>
@@ -196,42 +194,35 @@ namespace Microsoft.Azure.NotificationHubs
             MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses);
 
             _addresses = addresses.ToList();
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-        }
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
-        /// <summary>
-        /// Gets the version information.
-        /// </summary>
-        /// <returns>The version information</returns>
-        public string GetVersionInfo() => 
-            GetVersionInfoAsync().GetAwaiter().GetResult();
-
-        /// <summary>
-        /// Gets the version information asynchronously.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous version information extraction operation</returns>
-        public async Task<string> GetVersionInfoAsync()
-        {
-            var requestUri = new UriBuilder(Address)
-                {
-                    Scheme = Uri.UriSchemeHttps,
-                    Path = "/$protocol-version"
-                };
-
-            using(var response = await SendAsync(() => 
+            if (settings?.MessageHandler != null)
             {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
-                httpRequestMessage.Headers.Add("X-PROCESS-AT", "ServiceBus");
-
-                return httpRequestMessage;
-            }).ConfigureAwait(false))
+                var httpClientHandler = settings?.MessageHandler;
+                _httpClient = new HttpClient(httpClientHandler);
+            }
+            else if (settings?.Proxy != null)
             {
-                if (response.Headers.TryGetValues("MaxProtocolVersion", out var values)) {
-                    return values.FirstOrDefault();
-                }
+                var httpClientHandler = new HttpClientHandler();
+                httpClientHandler.UseProxy = true;
+                httpClientHandler.Proxy = settings.Proxy;
+                _httpClient = new HttpClient(httpClientHandler);
+            }
+            else
+            {
+                _httpClient = new HttpClient();
+            }
 
-                return string.Empty;    
-            };
+            if (settings?.OperationTimeout == null)
+            {
+                OperationTimeout = TimeSpan.FromSeconds(60);
+            }
+            else
+            {
+                OperationTimeout = settings.OperationTimeout.Value;
+            }
+
+            _httpClient.Timeout = OperationTimeout;
         }
 
         /// <summary>
@@ -239,7 +230,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="hubName">The notification hub description name.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public NotificationHubDescription CreateNotificationHub(string hubName) => 
+        public NotificationHubDescription CreateNotificationHub(string hubName) =>
             CreateNotificationHubAsync(hubName).GetAwaiter().GetResult();
 
         /// <summary>
@@ -247,7 +238,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description) => 
+        public NotificationHubDescription CreateNotificationHub(NotificationHubDescription description) =>
             CreateNotificationHubAsync(description).GetAwaiter().GetResult();
 
         /// <summary>
@@ -255,7 +246,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="hubName">The notification hub description name.</param>
         /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
-        public Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName) => 
+        public Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName) =>
             CreateNotificationHubAsync(new NotificationHubDescription(hubName));
 
         /// <summary>
@@ -273,7 +264,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>A notification hub description object.</returns>
-        public NotificationHubDescription GetNotificationHub(string path) => 
+        public NotificationHubDescription GetNotificationHub(string path) =>
             GetNotificationHubAsync(path).GetAwaiter().GetResult();
 
         /// <summary>
@@ -289,18 +280,18 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             var requestUri = new UriBuilder(Address)
-                {
-                    Scheme = Uri.UriSchemeHttps,
-                    Path = path,  
-                    Query = $"api-version={ApiVersion}"
-                };
-
-            using(var response = await SendAsync(() => 
             {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+                Scheme = Uri.UriSchemeHttps,
+                Path = path,
+                Query = $"api-version={ApiVersion}"
+            };
 
-                return httpRequestMessage;
-            }).ConfigureAwait(false))
+            using (var response = await SendAsync(() =>
+             {
+                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+
+                 return httpRequestMessage;
+             }).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
                 if (xmlResponse.NodeType != XmlNodeType.None)
@@ -312,7 +303,7 @@ namespace Microsoft.Azure.NotificationHubs
                 else
                 {
                     throw new MessagingEntityNotFoundException("Notification Hub not found");
-                }    
+                }
             };
         }
 
@@ -320,7 +311,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// Gets the notification hubs.
         /// </summary>
         /// <returns>A collection of notification hubs</returns>
-        public IEnumerable<NotificationHubDescription> GetNotificationHubs() => 
+        public IEnumerable<NotificationHubDescription> GetNotificationHubs() =>
             GetNotificationHubsAsync().GetAwaiter().GetResult();
 
         /// <summary>
@@ -334,12 +325,12 @@ namespace Microsoft.Azure.NotificationHubs
                 Scheme = Uri.UriSchemeHttps
             };
 
-            using(var response = await SendAsync(() => 
-            {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+            using (var response = await SendAsync(() =>
+             {
+                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
-                return httpRequestMessage;
-            }).ConfigureAwait(false))
+                 return httpRequestMessage;
+             }).ConfigureAwait(false))
             {
                 var result = new List<NotificationHubDescription>();
 
@@ -358,14 +349,14 @@ namespace Microsoft.Azure.NotificationHubs
                         if (xmlReader.ReadToDescendant("title"))
                         {
                             xmlReader.ReadStartElement();
-                            var hubName = xmlReader.Value;  
-                            
+                            var hubName = xmlReader.Value;
+
                             result.Add(await GetNotificationHubAsync(hubName).ConfigureAwait(false));
                         }
                     }
                 }
 
-                return result;    
+                return result;
             };
         }
 
@@ -394,11 +385,11 @@ namespace Microsoft.Azure.NotificationHubs
                 Query = $"api-version={ApiVersion}"
             };
 
-            await SendAsync(() => 
+            await SendAsync(() =>
             {
                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri);
 
-                return httpRequestMessage; 
+                return httpRequestMessage;
             }).ConfigureAwait(false);
         }
 
@@ -407,7 +398,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>The updated hub object</returns>
-        public NotificationHubDescription UpdateNotificationHub(NotificationHubDescription description) => 
+        public NotificationHubDescription UpdateNotificationHub(NotificationHubDescription description) =>
             UpdateNotificationHubAsync(description).GetAwaiter().GetResult();
 
         /// <summary>
@@ -423,7 +414,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>Checks whether a notifications hub exists.</summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>True if the hub exists</returns>
-        public bool NotificationHubExists(string path) => 
+        public bool NotificationHubExists(string path) =>
             NotificationHubExistsAsync(path).GetAwaiter().GetResult();
 
         /// <summary>
@@ -449,7 +440,7 @@ namespace Microsoft.Azure.NotificationHubs
             if (description == null)
             {
                 throw new ArgumentNullException(nameof(description));
-            }       
+            }
 
             var requestUri = new UriBuilder(Address)
             {
@@ -459,23 +450,23 @@ namespace Microsoft.Azure.NotificationHubs
             };
             var xmlBody = CreateRequestBody(description);
 
-            using(var response = await SendAsync(() => 
-            {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Put, requestUri.Uri);
-                httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+            using (var response = await SendAsync(() =>
+             {
+                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Put, requestUri.Uri);
+                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
 
-                if (update) 
-                {
-                    httpRequestMessage.Headers.Add("If-Match", "*");        
-                }
+                 if (update)
+                 {
+                     httpRequestMessage.Headers.Add("If-Match", "*");
+                 }
 
-                return httpRequestMessage;
-            }).ConfigureAwait(false))
+                 return httpRequestMessage;
+             }).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
                 var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
                 model.Path = description.Path;
-                return model;    
+                return model;
             };
         }
 
@@ -500,16 +491,16 @@ namespace Microsoft.Azure.NotificationHubs
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
                 Query = $"api-version={ApiVersion}"
-            };  
+            };
             var xmlBody = CreateRequestBody(job);
 
-            using(var response = await SendAsync(() => 
-            {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Post, requestUri.Uri);                                            
-                httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+            using (var response = await SendAsync(() =>
+             {
+                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Post, requestUri.Uri);
+                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
 
-                return httpRequestMessage;      
-            }).ConfigureAwait(false))
+                 return httpRequestMessage;
+             }).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
                 return GetModelFromResponse<NotificationHubJob>(xmlResponse);
@@ -529,15 +520,15 @@ namespace Microsoft.Azure.NotificationHubs
                 Query = $"api-version={ApiVersion}"
             };
 
-            using(var response = await SendAsync(() => 
-            {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+            using (var response = await SendAsync(() =>
+             {
+                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
-                return httpRequestMessage;
-            }).ConfigureAwait(false))
+                 return httpRequestMessage;
+             }).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                return GetModelFromResponse<NotificationHubJob>(xmlResponse);    
+                return GetModelFromResponse<NotificationHubJob>(xmlResponse);
             };
         }
 
@@ -596,7 +587,7 @@ namespace Microsoft.Azure.NotificationHubs
 
         private static string CreateRequestBody<T>(T model)
         {
-            return AddHeaderAndFooterToXml(SerializeObject(model));    
+            return AddHeaderAndFooterToXml(SerializeObject(model));
         }
 
         private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response)
@@ -613,7 +604,7 @@ namespace Microsoft.Azure.NotificationHubs
             return xmlReader;
         }
 
-        private static async Task<XmlReader> GetXmlError(HttpResponseMessage response) => 
+        private static async Task<XmlReader> GetXmlError(HttpResponseMessage response) =>
             XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
 
         private static T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
@@ -628,7 +619,7 @@ namespace Microsoft.Azure.NotificationHubs
 
         private string CreateToken(Uri uri)
         {
-            return _settings.TokenProvider.GetToken(uri.ToString());
+            return Settings.TokenProvider.GetToken(uri.ToString());
         }
 
         private HttpRequestMessage CreateHttpRequest(HttpMethod method, Uri uri)
@@ -640,57 +631,47 @@ namespace Microsoft.Azure.NotificationHubs
 
             return httpRequestMessage;
         }
-        private async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> generateHttpRequestMessage) 
+        private async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> generateHttpRequestMessage)
         {
-            using (var client = new HttpClient())
+            var trackingId = Guid.NewGuid().ToString();
+
+            var httpRequestMessage = generateHttpRequestMessage();
+            httpRequestMessage.Headers.Add(TrackingIdHeaderKey, trackingId);
+
+            var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            response.Headers.Add(TrackingIdHeaderKey, trackingId);
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = await _settings.RetryPolicy
-                    .ExecuteAsync(async () => 
-                    {
-                        var trackingId = Guid.NewGuid().ToString();
+                return response;
+            }
+            else
+            {
+                var xmlError = await GetXmlError(response).ConfigureAwait(false);
+                var error = GetModelFromResponse<ErrorResponse>(xmlError);
+                trackingId = string.Empty;
 
-                        var httpRequestMessage = generateHttpRequestMessage(); 
-                        httpRequestMessage.Headers.Add(TrackingIdHeaderKey, trackingId);   
-
-                        var httpResponseMessage = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
-                        httpResponseMessage.Headers.Add(TrackingIdHeaderKey, trackingId);
-
-                        return httpResponseMessage;
-                    })
-                    .ConfigureAwait(false);
-
-                if (response.IsSuccessStatusCode)
+                if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
                 {
-                    return response;
+                    trackingId = values.FirstOrDefault();
                 }
-                else
+
+                var innerException = new WebException($"The remote server returned an error: {error.Code}\nTrackingId: {trackingId}");
+
+                switch (response.StatusCode)
                 {
-                    var xmlError = await GetXmlError(response).ConfigureAwait(false);
-                    var error = GetModelFromResponse<ErrorResponse>(xmlError);
-                    var trackingId = string.Empty;
-
-                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
-                    {
-                        trackingId = values.FirstOrDefault();
-                    }
-                    
-                    var innerException = new WebException($"The remote server returned an error: {error.Code}\nTrackingId: {trackingId}");
-
-                    switch (response.StatusCode)
-                    {
-                        case HttpStatusCode.NotFound:
-                            throw new MessagingEntityNotFoundException(error.Detail, innerException);
-                        case HttpStatusCode.Unauthorized:
-                            throw new UnauthorizedAccessException(error.Detail, innerException);
-                        case HttpStatusCode.BadRequest:
-                            throw new MessagingCommunicationException(error.Detail, innerException);
-                        case HttpStatusCode.Conflict:
-                            throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
-                        default:
-                            throw new Exception(error.Detail, innerException);
-                    }
+                    case HttpStatusCode.NotFound:
+                        throw new MessagingEntityNotFoundException(error.Detail, innerException);
+                    case HttpStatusCode.Unauthorized:
+                        throw new UnauthorizedAccessException(error.Detail, innerException);
+                    case HttpStatusCode.BadRequest:
+                        throw new MessagingCommunicationException(error.Detail, innerException);
+                    case HttpStatusCode.Conflict:
+                        throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
+                    default:
+                        throw new Exception(error.Detail, innerException);
                 }
-            }    
+            }
         }
     }
 }

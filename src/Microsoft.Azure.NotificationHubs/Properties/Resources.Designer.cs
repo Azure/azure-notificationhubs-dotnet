@@ -214,42 +214,6 @@ namespace Microsoft.Azure.NotificationHubs.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BeginRead method cannot be called when there is an asynchronous read operation already pending..
-        /// </summary>
-        internal static string ClientWebSocketConnectionReadPending {
-            get {
-                return ResourceManager.GetString("ClientWebSocketConnectionReadPending", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ServiceBusClientWebSocket not in Initial State during Connect..
-        /// </summary>
-        internal static string ClientWebSocketNotInInitialState {
-            get {
-                return ResourceManager.GetString("ClientWebSocketNotInInitialState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ServiceBusClientWebSocket not in Open State during Receive..
-        /// </summary>
-        internal static string ClientWebSocketNotInOpenStateDuringReceive {
-            get {
-                return ResourceManager.GetString("ClientWebSocketNotInOpenStateDuringReceive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ServiceBusClientWebSocket not in Open State during Send..
-        /// </summary>
-        internal static string ClientWebSocketNotInOpenStateDuringSend {
-            get {
-                return ResourceManager.GetString("ClientWebSocketNotInOpenStateDuringSend", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Client WebSocket Transport is closed..
         /// </summary>
         internal static string ClientWebSocketTransportClosed {
@@ -781,7 +745,7 @@ namespace Microsoft.Azure.NotificationHubs.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The path &apos;{0}&apos; contains character(s) that are not allowed by Service Bus. Entity segments can contain only letters, numbers, periods (.), hyphens (-), and underscores (_)..
+        ///   Looks up a localized string similar to The path &apos;{0}&apos; contains character(s) that are not allowed by Notification Hubs. Entity segments can contain only letters, numbers, periods (.), hyphens (-), and underscores (_)..
         /// </summary>
         internal static string InvalidUriPathCharacter {
             get {
