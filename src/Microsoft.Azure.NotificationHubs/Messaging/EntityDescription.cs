@@ -45,14 +45,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             get { return false; }
         }
 
-        internal virtual void OverrideEntityStatus(EntityStatus status)
-        {
-        }
-
-        internal virtual void OverrideEntityAvailabilityStatus(EntityAvailabilityStatus status)
-        {
-        }
-
         /// <summary>
         /// Throw if the read only bool is set.
         /// </summary>

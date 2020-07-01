@@ -43,30 +43,11 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
         /// </summary>
         /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
-        protected TokenProvider(bool cacheTokens)
-            : this(cacheTokens, TokenScope.Entity)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
-        /// </summary>
-        /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
-        /// <param name="tokenScope">The token scope.</param>
         /// <exception cref="T:System.ArgumentOutOfRangeException">cacheSize</exception>
-        protected TokenProvider(
-            bool cacheTokens,
-            TokenScope tokenScope)
+        protected TokenProvider(bool cacheTokens)
         {
-            TokenScope = tokenScope;
             _cacheTokens = cacheTokens;
         }
-
-        /// <summary>
-        /// Gets or sets the token scope associated with the provider.
-        /// </summary>
-        /// <value>The token scope.</value>
-        public TokenScope TokenScope { get; private set; }
 
         protected abstract string GenerateToken(string appliesTo);
 

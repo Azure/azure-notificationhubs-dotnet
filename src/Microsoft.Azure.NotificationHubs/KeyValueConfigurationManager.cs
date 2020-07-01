@@ -15,21 +15,12 @@ namespace Microsoft.Azure.NotificationHubs
     internal class KeyValueConfigurationManager
     {
         public const string OperationTimeoutConfigName = @"OperationTimeout";
-        public const string EntityPathConfigName = @"EntityPath";
         public const string EndpointConfigName = @"Endpoint";
         public const string SharedSecretIssuerConfigName = @"SharedSecretIssuer";
         public const string SharedSecretValueConfigName = @"SharedSecretValue";
         public const string SharedAccessKeyName = @"SharedAccessKeyName";
         public const string SharedAccessValueName = @"SharedAccessKey";
-        public const string RuntimePortConfigName = @"RuntimePort";
         public const string ManagementPortConfigName = @"ManagementPort";
-        public const string StsEndpointConfigName = @"StsEndpoint";
-        public const string WindowsDomainConfigName = @"WindowsDomain";
-        public const string WindowsUsernameConfigName = @"WindowsUsername";
-        public const string WindowsPasswordConfigName = @"WindowsPassword";
-        public const string OAuthDomainConfigName = @"OAuthDomain";
-        public const string OAuthUsernameConfigName = @"OAuthUsername";
-        public const string OAuthPasswordConfigName = @"OAuthPassword";
 
         internal const string ValueSeparator = @",";
         internal const string KeyValueSeparator = @"=";
@@ -37,7 +28,6 @@ namespace Microsoft.Azure.NotificationHubs
         const string KeyAttributeEnumRegexString = @"(" +
                                                    EndpointConfigName + @"|" +
                                                    SharedAccessKeyName + @"|" +
-                                                   EntityPathConfigName + @"|" +
                                                    SharedAccessValueName + @")";
         const string KeyDelimiterRegexString = KeyDelimiter + KeyAttributeEnumRegexString + KeyValueSeparator;
 
