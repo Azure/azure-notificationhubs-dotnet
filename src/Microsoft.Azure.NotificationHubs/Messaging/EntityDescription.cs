@@ -53,15 +53,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
         }
 
-        internal virtual void UpdateForVersion(ApiVersion version, EntityDescription existingDescription = null)
-        {
-        }
-
-        internal virtual bool IsValidForVersion(ApiVersion version)
-        {
-            return true;
-        }
-
         /// <summary>
         /// Throw if the read only bool is set.
         /// </summary>
