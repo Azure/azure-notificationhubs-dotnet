@@ -5,8 +5,6 @@
 //------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Net;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Internal;
 
@@ -17,14 +15,9 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     /// </summary>
     public abstract class TokenProvider : IDisposable
     {
-        private static readonly TimeSpan DefaultTokenTimeout = TimeSpan.FromMinutes(20.0);
-        private static readonly TimeSpan InitialRetrySleepTime = TimeSpan.FromMilliseconds(50.0);
         private readonly IMemoryCache _tokenCache;
         private readonly bool _cacheTokens;
         private readonly TimeSpan _cacheExpirationTime;
-        private readonly bool _isWebTokenSupported;
-        private readonly TimeSpan _retrySleepTime;
-        private readonly int _cacheSize;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenProvider"/> class.
@@ -50,15 +43,8 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
         /// </summary>
         /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
-        /// <param name="supportHttpAuthToken">if set to <c>true</c> [support HTTP authentication token].</param>
-        /// <param name="tokenScope">The token scope.</param>
-        protected TokenProvider(bool cacheTokens, bool supportHttpAuthToken, TokenScope tokenScope)
-            : this(cacheTokens, supportHttpAuthToken, 1000, tokenScope)
-        {
-        }
-
-        protected TokenProvider(bool cacheTokens, bool supportHttpAuthToken)
-            : this(cacheTokens, supportHttpAuthToken, 1000, TokenScope.Entity)
+        protected TokenProvider(bool cacheTokens)
+            : this(cacheTokens, TokenScope.Entity)
         {
         }
 
@@ -66,51 +52,14 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
         /// </summary>
         /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
-        /// <param name="supportHttpAuthToken">if set to <c>true</c> [support HTTP authentication token].</param>
-        /// <param name="cacheSize">Size of the cache.</param>
         /// <param name="tokenScope">The token scope.</param>
         /// <exception cref="T:System.ArgumentOutOfRangeException">cacheSize</exception>
         protected TokenProvider(
             bool cacheTokens,
-            bool supportHttpAuthToken,
-            int cacheSize,
             TokenScope tokenScope)
         {
-            if (cacheSize < 1)
-                throw new ArgumentOutOfRangeException(nameof(cacheSize), SRClient.ArgumentOutOfRangeLessThanOne);
             TokenScope = tokenScope;
-            _cacheSize = cacheSize;
             _cacheTokens = cacheTokens;
-            _isWebTokenSupported = supportHttpAuthToken;
-            _retrySleepTime = InitialRetrySleepTime;
-        }
-
-        /// <summary>
-        /// Construct a TokenProvider based on the provided Key Name and Shared Access Key.
-        /// </summary>
-        /// <param name="keyName">The key name of the corresponding SharedAccessKeyAuthorizationRule.</param>
-        /// <param name="sharedAccessKey">The key associated with the SharedAccessKeyAuthorizationRule</param>
-        /// <returns>A TokenProvider initialized with the provided RuleId and Password</returns>
-        public static TokenProvider CreateSharedAccessSignatureTokenProvider(
-            string keyName,
-            string sharedAccessKey)
-        {
-            return new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, DefaultTokenTimeout);
-        }
-
-        /// <summary>
-        /// Construct a TokenProvider based on the provided Key Name and Shared Access Key.
-        /// </summary>
-        /// <param name="keyName">The key name of the corresponding SharedAccessKeyAuthorizationRule.</param>
-        /// <param name="sharedAccessKey">The key associated with the SharedAccessKeyAuthorizationRule</param>
-        /// <param name="tokenTimeToLive">The token time to live</param>
-        /// <returns>A TokenProvider initialized with the provided RuleId and Password</returns>
-        public static TokenProvider CreateSharedAccessSignatureTokenProvider(
-            string keyName,
-            string sharedAccessKey,
-            TimeSpan tokenTimeToLive)
-        {
-            return new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, tokenTimeToLive);
         }
 
         /// <summary>

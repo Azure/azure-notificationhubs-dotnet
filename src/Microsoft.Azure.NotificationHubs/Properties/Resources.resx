@@ -604,7 +604,7 @@
     <value>More data was expected, but EOF was reached.</value>
   </data>
   <data name="InvalidUriPathCharacter" xml:space="preserve">
-    <value>The path '{0}' contains character(s) that are not allowed by Service Bus. Entity segments can contain only letters, numbers, periods (.), hyphens (-), and underscores (_).</value>
+    <value>The path '{0}' contains character(s) that are not allowed by Notification Hubs. Entity segments can contain only letters, numbers, periods (.), hyphens (-), and underscores (_).</value>
   </data>
   <data name="CharacterReservedForUriScheme" xml:space="preserve">
     <value>'{0}' contained character '{1}' which is not allowed because it is reserved in the Uri scheme.</value>

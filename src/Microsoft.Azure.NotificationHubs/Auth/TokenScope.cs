@@ -6,7 +6,7 @@
 
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
-    /// <summary>Enumerates the token scope for the service bus.</summary>
+    /// <summary>Enumerates the token scope for the Notification Hubs.</summary>
     public enum TokenScope
     {
         /// <summary>The namespace</summary>

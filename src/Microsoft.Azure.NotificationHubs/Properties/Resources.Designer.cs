@@ -781,7 +781,7 @@ namespace Microsoft.Azure.NotificationHubs.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The path &apos;{0}&apos; contains character(s) that are not allowed by Service Bus. Entity segments can contain only letters, numbers, periods (.), hyphens (-), and underscores (_)..
+        ///   Looks up a localized string similar to The path &apos;{0}&apos; contains character(s) that are not allowed by Notification Hubs. Entity segments can contain only letters, numbers, periods (.), hyphens (-), and underscores (_)..
         /// </summary>
         internal static string InvalidUriPathCharacter {
             get {

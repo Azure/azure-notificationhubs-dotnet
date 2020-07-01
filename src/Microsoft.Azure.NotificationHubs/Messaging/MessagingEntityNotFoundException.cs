@@ -20,7 +20,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </summary>
         /// <param name="entityName">Name of the entity.</param>
         public MessagingEntityNotFoundException(string entityName)
-            : this(MessagingExceptionDetail.EntityNotFound(SRClient.MessagingEntityCouldNotBeFound(entityName)), null)
+            : this(MessagingExceptionDetail.EntityNotFound(string.Format(SRClient.MessagingEntityCouldNotBeFound, entityName)), null)
         {
             this.IsTransient = false;
         }

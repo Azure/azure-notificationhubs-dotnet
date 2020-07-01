@@ -238,7 +238,7 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     if (!header.Key.StartsWith(AppleRegistrationDescription.ApnsHeaderPrefix, StringComparison.OrdinalIgnoreCase))
                     {
-                        throw new InvalidDataContractException(SRClient.ApnsHeaderDeserializationError(header.Key));
+                        throw new InvalidDataContractException(string.Format(SRClient.ApnsHeaderDeserializationError, header.Key));
                     }
 
                     ExpressionEvaluator.Validate(header.Value);
@@ -281,7 +281,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }

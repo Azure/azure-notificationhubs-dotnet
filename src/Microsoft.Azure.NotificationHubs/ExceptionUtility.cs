@@ -133,7 +133,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             if (string.IsNullOrEmpty(exceptionMessage))
             {
-                exceptionMessage = SRClient.TrackableHttpExceptionMessageFormat((int)code, code.ToString(), reasonPhrase, CreateClientTrackingExceptionInfo(trackingId));
+                exceptionMessage = string.Format(SRClient.TrackableHttpExceptionMessageFormat, (int)code, code.ToString(), reasonPhrase, CreateClientTrackingExceptionInfo(trackingId));
             }
 
             return exceptionMessage;
@@ -151,12 +151,12 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     case WebExceptionStatus.RequestCanceled:
                     case WebExceptionStatus.Timeout:
-                        exceptionMessage = SRClient.TrackableExceptionMessageFormat(SRClient.OperationRequestTimedOut(timeoutInMilliseconds), CreateClientTrackingExceptionInfo(trackingId));
+                        exceptionMessage = string.Format(SRClient.TrackableExceptionMessageFormat, string.Format(SRClient.OperationRequestTimedOut, timeoutInMilliseconds), CreateClientTrackingExceptionInfo(trackingId));
                         return new TimeoutException(exceptionMessage, webException);
 
                     case WebExceptionStatus.ConnectFailure:
                     case WebExceptionStatus.NameResolutionFailure:
-                        exceptionMessage = SRClient.TrackableExceptionMessageFormat(exceptionMessage, CreateClientTrackingExceptionInfo(trackingId));
+                        exceptionMessage = string.Format(SRClient.TrackableExceptionMessageFormat, exceptionMessage, CreateClientTrackingExceptionInfo(trackingId));
                         return new MessagingCommunicationException(exceptionMessage, webException);
                 }
             }
