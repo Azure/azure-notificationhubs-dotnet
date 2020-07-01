@@ -62,11 +62,11 @@ namespace Microsoft.Azure.NotificationHubs
             }
             else if (code == HttpStatusCode.Conflict)
             {
-                if (method.Equals(ManagementStrings.DeleteMethod))
+                if (method.Equals(HttpMethod.Delete.ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     return new MessagingException(exceptionMessage);
                 }
-                if (method.Equals(ManagementStrings.PutMethod))
+                if (method.Equals(HttpMethod.Put.ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     return new MessagingException(exceptionMessage);
                 }

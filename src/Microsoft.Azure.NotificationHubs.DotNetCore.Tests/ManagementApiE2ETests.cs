@@ -68,9 +68,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             bool notificationHubExists = true;
             IEnumerable<NotificationHubDescription> notificationHubDescriptions;
 
-            var protocolVersion = _namespaceManager.GetVersionInfo();
-            Assert.Equal("2017-11", protocolVersion);
-
             // Check that GetNotification returns MessagingEntityNotFoundException than hub is not exist
             Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.GetNotificationHub(_notificationHubName));
 
