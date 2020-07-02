@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
+using Microsoft.Azure.NotificationHubs.Tests;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Auth;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
@@ -33,7 +36,8 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private readonly string _storagePassword;
         private readonly string _storageEndpointAddress;
         private readonly string _containerName;
-        
+
+        private readonly TestServerProxy _testServer;
         private string _namespaceUriString;
         private string _notificationHubConnectionString;
 
@@ -53,116 +57,136 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpperInvariant()) ?? configuration[StorageEndpointString];
             _containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpperInvariant()) ?? configuration[ContainerName];
 
+
+            _testServer = new TestServerProxy();
+            if (_notificationHubConnectionString != "<insert value here before running tests>")
+            {
+                _testServer.RecordingMode = true;
+            }
+            else
+            {
+                _notificationHubConnectionString = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
+                _notificationHubName = "test";
+            }
+
             _namespaceManagerSettings = new NamespaceManagerSettings();
             _namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(_notificationHubConnectionString);
+            _namespaceManagerSettings.MessageHandler = _testServer;
             _namespaceManager = new NamespaceManager(new Uri(_namespaceUriString), _namespaceManagerSettings);
 
             _storageEndpoint = new StorageUri(new Uri(_storageEndpointAddress));
+            CleanUp();
         }
 
         [Fact]
         public void ExecuteCreateGetAndDeleteNotificationHubMethods_ShouldCreateGetOrDeleteHubOrRecieveConflictException()
         {
-            CleanUp();
+            LoadMockData();
+            try
+            {
+                bool notificationHubExists = true;
+                IEnumerable<NotificationHubDescription> notificationHubDescriptions;
 
-            bool notificationHubExists = true;
-            IEnumerable<NotificationHubDescription> notificationHubDescriptions;
+                // Check that GetNotification returns MessagingEntityNotFoundException than hub does not exist
+                Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.GetNotificationHub(_notificationHubName));
 
-            // Check that GetNotification returns MessagingEntityNotFoundException than hub is not exist
-            Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.GetNotificationHub(_notificationHubName));
+                // Check that NotificationHubExists returns false when notification hub does not exist
+                notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
+                Assert.False(notificationHubExists);
 
-            // Check that NotificationHubExists return false when notification hub is not exist
-            notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
-            Assert.False(notificationHubExists);
+                // Check that GetNotificationHubs returns collection without hub
+                notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
+                Assert.DoesNotContain(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
 
-            // Check that GetNotificationHubs returns collection without not existed hub
-            notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-            Assert.DoesNotContain(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
+                // Check that CreateNotificationHub method create hub with correct Path
+                var createNotificationHubDescription = _namespaceManager.CreateNotificationHub(_notificationHubName);
+                Assert.Equal(_notificationHubName, createNotificationHubDescription.Path);
 
-            // Check that CreateNotificationHub method create hub with correct Path
-            var createNotificationHubDescription = _namespaceManager.CreateNotificationHub(_notificationHubName);
-            Assert.Equal(_notificationHubName, createNotificationHubDescription.Path);
+                // Check that NotificationHubExists return true when notification hub exist
+                notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
+                Assert.True(notificationHubExists);
 
-            // Check that NotificationHubExists return true when notification hub exist
-            notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
-            Assert.True(notificationHubExists);
+                // Check that GetNotificationHubs returns collection with existed hub
+                notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
+                Assert.Contains(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
 
-            // Check that GetNotificationHubs returns collection with existed hub
-            notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-            Assert.Contains(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
+                // Check that CreateNotificationHub returns MessagingEntityAlreadyExistsException than hub is alredy exist
+                Assert.Throws<MessagingEntityAlreadyExistsException>(() => _namespaceManager.CreateNotificationHub(_notificationHubName));
 
-            // Check that CreateNotificationHub returns MessagingEntityAlreadyExistsException than hub is alredy exist
-            Assert.Throws<MessagingEntityAlreadyExistsException>(() => _namespaceManager.CreateNotificationHub(_notificationHubName));
+                // Check that GetNotificationHub returns correct hub
+                var getNotificationHubDescription = _namespaceManager.GetNotificationHub(_notificationHubName);
+                Assert.Equal(_notificationHubName, getNotificationHubDescription.Path);
 
-            // Check that GetNotificationHub returns correct hub
-            var getNotificationHubDescription = _namespaceManager.GetNotificationHub(_notificationHubName);
-            Assert.Equal(_notificationHubName, getNotificationHubDescription.Path);
+                // Check that UpdateNotificationHub correctly update hub
+                createNotificationHubDescription.IsDisabled = true;
+                var updatedNotificationHubDescription = _namespaceManager.UpdateNotificationHub(createNotificationHubDescription);
+                Assert.True(updatedNotificationHubDescription.IsDisabled);
 
-            // Check that UpdateNotificationHub correctly update hub
-            createNotificationHubDescription.IsDisabled = true;
-            var updatedNotificationHubDescription = _namespaceManager.UpdateNotificationHub(createNotificationHubDescription);
-            Assert.True(updatedNotificationHubDescription.IsDisabled);
+                // Check that DeleteNotificationHub correctly remove hub
+                _namespaceManager.DeleteNotificationHub(_notificationHubName);
 
-            // Check that DeleteNotificationHub correctly remove hub
-            _namespaceManager.DeleteNotificationHub(_notificationHubName);
+                // Check that NotificationHubExists return false when notification hub is not exist
+                notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
+                Assert.False(notificationHubExists);
 
-            // Check that NotificationHubExists return false when notification hub is not exist
-            notificationHubExists = _namespaceManager.NotificationHubExists(_notificationHubName);
-            Assert.False(notificationHubExists);
+                // Check that GetNotificationHubs returns collection without not existed hub
+                notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
+                Assert.DoesNotContain(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
 
-            // Check that GetNotificationHubs returns collection without not existed hub
-            notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-            Assert.DoesNotContain(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
-
-            // Check that DeleteNotificationHub returns MessagingEntityNotFoundException than hub is not exist
-            Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.DeleteNotificationHub(_notificationHubName));
-
-            CleanUp();
+                // Check that DeleteNotificationHub returns MessagingEntityNotFoundException than hub is not exist
+                Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.DeleteNotificationHub(_notificationHubName));
+            }
+            finally
+            {
+                RecordTestResults();
+            }
         }
 
         [Fact]
         public async void SubmitAndGetNotificationHubJob_ShouldReceiveCorrectJobs()
         {
-            CleanUp();
-
-            _namespaceManager.CreateNotificationHub(_notificationHubName);
-
-            var blobClient = new CloudBlobClient(
-                _storageEndpoint,
-                new StorageCredentials(_storageAccount, _storagePassword));
-
-            var container = blobClient.GetContainerReference(_containerName);
-
-            var outputContainerSasUri = GetOutputDirectoryUrl(container);
-            var inputFileSasUri = GetInputFileUrl(container, InputFileName);
-
-            var notificationHubJob = new NotificationHubJob
+            LoadMockData();
+            try
             {
-                JobType = NotificationHubJobType.ImportCreateRegistrations,
-                OutputContainerUri = outputContainerSasUri,
-                ImportFileUri = inputFileSasUri
-            };
+                _namespaceManager.CreateNotificationHub(_notificationHubName);
 
-            var submitedNotificationHubJob 
-                = await _namespaceManager.SubmitNotificationHubJobAsync(notificationHubJob, _notificationHubName);
-            Assert.NotNull(submitedNotificationHubJob);
-            Assert.NotEmpty(submitedNotificationHubJob.JobId);
+                var blobClient = new CloudBlobClient(
+                    _storageEndpoint,
+                    new StorageCredentials(_storageAccount, _storagePassword));
 
-            var recievedNotificationHubJob
-                = await _namespaceManager.GetNotificationHubJobAsync(submitedNotificationHubJob.JobId, _notificationHubName);
+                var container = blobClient.GetContainerReference(_containerName);
 
-            Assert.Equal(submitedNotificationHubJob.JobId, recievedNotificationHubJob.JobId);
+                var outputContainerSasUri = GetOutputDirectoryUrl(container);
+                var inputFileSasUri = GetInputFileUrl(container, InputFileName);
 
-            CleanUp();
+                var notificationHubJob = new NotificationHubJob
+                {
+                    JobType = NotificationHubJobType.ImportCreateRegistrations,
+                    OutputContainerUri = outputContainerSasUri,
+                    ImportFileUri = inputFileSasUri
+                };
+
+                var submitedNotificationHubJob
+                    = await _namespaceManager.SubmitNotificationHubJobAsync(notificationHubJob, _notificationHubName);
+                Assert.NotNull(submitedNotificationHubJob);
+                Assert.NotEmpty(submitedNotificationHubJob.JobId);
+
+                var recievedNotificationHubJob
+                    = await _namespaceManager.GetNotificationHubJobAsync(submitedNotificationHubJob.JobId, _notificationHubName);
+
+                Assert.Equal(submitedNotificationHubJob.JobId, recievedNotificationHubJob.JobId);
+            }
+            finally
+            {
+                RecordTestResults();
+            }
         }
 
         [Fact]
         public void ExecuteCreateGetAndDeleteNotificationHubMethodsWithIncorrectConnectionString_ShouldRecieveUnauthorizedAccessException()
         {
-            CleanUp();
-
             var namespaceManagerSettings = new NamespaceManagerSettings();
-            namespaceManagerSettings.TokenProvider 
+            namespaceManagerSettings.TokenProvider
                 = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(IncorrectConnectionString);
 
             var namespaceManager = new NamespaceManager(new Uri(_namespaceUriString), namespaceManagerSettings);
@@ -185,9 +209,8 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             // Check that DeleteNotificationHub returns UnauthorizedAccessException when connection string is incorrect
             Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
 
-            CleanUp();
         }
-        
+
         private void CleanUp()
         {
             try
@@ -219,9 +242,52 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 SharedAccessExpiryTime = DateTime.UtcNow.AddHours(4),
                 Permissions = SharedAccessBlobPermissions.Write | SharedAccessBlobPermissions.List | SharedAccessBlobPermissions.Read
             };
-            
+
             string sasContainerToken = container.GetSharedAccessSignature(sasConstraints);
             return new Uri(container.Uri + sasContainerToken);
+        }
+
+        private string GetMockDataFilePath(string methodName)
+        {
+            string[] dataFilePaths = new string[]
+            {
+                $"{methodName}.http",
+                Path.Combine("MockData", $"{methodName}.http"),
+            };
+
+            foreach (var dataFilePath in dataFilePaths)
+            {
+                if (File.Exists(dataFilePath))
+                {
+                    return dataFilePath;
+                }
+            }
+            return null;
+        }
+
+        private void LoadMockData([CallerMemberName] string methodName = "")
+        {
+            if (!_testServer.RecordingMode)
+            {
+                string filePath = GetMockDataFilePath(methodName);
+                if (filePath == null)
+                {
+                    throw new Exception($"Cannot find data file for method '{methodName}'. Test data must be recorded first.");
+                }
+
+                var payloads = JsonConvert.DeserializeObject<TestServerSession>(File.ReadAllText(filePath));
+
+                _testServer.LoadResponses(payloads);
+                _testServer.BaseUri = "http://test";
+            }
+        }
+
+        private void RecordTestResults([CallerMemberName] string methodName = "")
+        {
+            if (_testServer.RecordingMode)
+            {
+                File.WriteAllText($"{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
+            }
         }
     }
 }
