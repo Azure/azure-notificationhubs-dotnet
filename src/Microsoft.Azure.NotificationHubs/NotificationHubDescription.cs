@@ -299,14 +299,14 @@ namespace Microsoft.Azure.NotificationHubs
         internal AuthorizationRules InternalAuthorization { get; set; }
 
         /// <summary>
-        /// Gets or sets the GCM credential.
+        /// Gets or sets the FCM legacy credential.
         /// </summary>
         /// 
         /// <returns>
-        /// The GCM credential.
+        /// The FCM legacy credential.
         /// </returns>
         [DataMember(Name = ManagementStrings.GcmCredential, IsRequired = false, EmitDefaultValue = false, Order = 1005)]
-        public GcmCredential GcmCredential
+        public FcmCredential FcmCredential
         {
             get;
             set;
