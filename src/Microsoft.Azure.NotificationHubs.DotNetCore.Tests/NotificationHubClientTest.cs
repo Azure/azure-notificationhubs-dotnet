@@ -39,17 +39,18 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             if (_configuration["NotificationHubConnectionString"] != "<insert value here before running tests>")
             {
-                _testServer.RecordingMode = true;
+                _testServer.RecordingMode = RecordingMode.Recording;
             }
             else
             {
+                _testServer.RecordingMode = RecordingMode.Playback;
                 _configuration["NotificationHubConnectionString"] = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
                 _configuration["NotificationHubName"] = "test";
             }
             _hubClient = new NotificationHubClient(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"], settings);
         }
 
-        Task Sleep(TimeSpan delay) => _testServer.RecordingMode ? Task.Delay(delay) : Task.FromResult(false);
+        Task Sleep(TimeSpan delay) => _testServer.RecordingMode == RecordingMode.Recording ? Task.Delay(delay) : Task.FromResult(false);
 
         async Task DeleteAllRegistrationsAndInstallations()
         {
@@ -1289,7 +1290,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
         private void LoadMockData([CallerMemberName] string methodName = "")
         {
-            if (!_testServer.RecordingMode)
+            if (_testServer.RecordingMode == RecordingMode.Playback)
             {
                 string filePath = GetMockDataFilePath(methodName);
                 if (filePath == null)
@@ -1306,7 +1307,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
         private void RecordTestResults([CallerMemberName] string methodName = "")
         {
-            if (_testServer.RecordingMode)
+            if (_testServer.RecordingMode == RecordingMode.Recording)
             {
                 File.WriteAllText($"{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
             }

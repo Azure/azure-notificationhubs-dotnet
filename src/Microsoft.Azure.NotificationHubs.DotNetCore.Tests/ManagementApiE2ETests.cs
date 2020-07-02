@@ -29,15 +29,11 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
         private NamespaceManager _namespaceManager;
         private NamespaceManagerSettings _namespaceManagerSettings;
-        private static StorageUri _storageEndpoint;
-        private readonly string _notificationHubName;
-
-        private readonly string _storageAccount;
-        private readonly string _storagePassword;
-        private readonly string _storageEndpointAddress;
-        private readonly string _containerName;
-
+        private string _notificationHubName;
+        private readonly Uri _inputFileSasUri;
+        private readonly Uri _outputContainerSasUri;
         private readonly TestServerProxy _testServer;
+
         private string _namespaceUriString;
         private string _notificationHubConnectionString;
 
@@ -52,34 +48,46 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpperInvariant()) ?? configuration[NotificationHubConnectionString];
             _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpperInvariant()) ?? configuration[NotificationHubName];
 
-            _storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpperInvariant()) ?? configuration[StorageAccount];
-            _storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpperInvariant()) ?? configuration[StoragePassword];
-            _storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpperInvariant()) ?? configuration[StorageEndpointString];
-            _containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpperInvariant()) ?? configuration[ContainerName];
+            var storageAccount = Environment.GetEnvironmentVariable(StorageAccount.ToUpperInvariant()) ?? configuration[StorageAccount];
+            var storagePassword = Environment.GetEnvironmentVariable(StoragePassword.ToUpperInvariant()) ?? configuration[StoragePassword];
+            var storageEndpointAddress = Environment.GetEnvironmentVariable(StorageEndpointString.ToUpperInvariant()) ?? configuration[StorageEndpointString];
+            var containerName = Environment.GetEnvironmentVariable(ContainerName.ToUpperInvariant()) ?? configuration[ContainerName];
 
 
             _testServer = new TestServerProxy();
-            if (_notificationHubConnectionString != "<insert value here before running tests>")
+            if (_notificationHubConnectionString == "<insert value here before running tests>")
             {
-                _testServer.RecordingMode = true;
+                _notificationHubConnectionString = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
+                _namespaceManager = CreateNamespaceManager(RecordingMode.Playback, _notificationHubConnectionString);
             }
             else
             {
-                _notificationHubConnectionString = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
-                _notificationHubName = "test";
+                _namespaceManager = CreateNamespaceManager(RecordingMode.Recording, _notificationHubConnectionString);
             }
+            if (storageAccount != "<insert value here before running tests>")
+            {
+                CleanUp();
+                _testServer.RecordingMode = RecordingMode.Recording;
+                var storageEndpoint = new StorageUri(new Uri(storageEndpointAddress));
+                var blobClient = new CloudBlobClient(
+                   storageEndpoint,
+                   new StorageCredentials(storageAccount, storagePassword));
 
-            _namespaceManagerSettings = new NamespaceManagerSettings();
-            _namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(_notificationHubConnectionString);
-            _namespaceManagerSettings.MessageHandler = _testServer;
-            _namespaceManager = new NamespaceManager(new Uri(_namespaceUriString), _namespaceManagerSettings);
+                var container = blobClient.GetContainerReference(containerName);
 
-            _storageEndpoint = new StorageUri(new Uri(_storageEndpointAddress));
-            CleanUp();
+                _outputContainerSasUri = GetOutputDirectoryUrl(container);
+                _inputFileSasUri = GetInputFileUrl(container, InputFileName);
+            }
+            else
+            {
+                _testServer.RecordingMode = RecordingMode.Playback;
+                _outputContainerSasUri = new Uri("https://test.blob.core.windows.net/");
+                _inputFileSasUri = new Uri("https://test.blob.core.windows.net/");
+            }
         }
 
         [Fact]
-        public void ExecuteCreateGetAndDeleteNotificationHubMethods_ShouldCreateGetOrDeleteHubOrRecieveConflictException()
+        public void ManagementApi_ShouldCreateGetOrDeleteHubOrRecieveConflictException()
         {
             LoadMockData();
             try
@@ -108,14 +116,14 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
                 // Check that GetNotificationHubs returns collection with existed hub
                 notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-                Assert.Contains(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
+                Assert.Single(notificationHubDescriptions);
 
                 // Check that CreateNotificationHub returns MessagingEntityAlreadyExistsException than hub is alredy exist
                 Assert.Throws<MessagingEntityAlreadyExistsException>(() => _namespaceManager.CreateNotificationHub(_notificationHubName));
 
                 // Check that GetNotificationHub returns correct hub
                 var getNotificationHubDescription = _namespaceManager.GetNotificationHub(_notificationHubName);
-                Assert.Equal(_notificationHubName, getNotificationHubDescription.Path);
+                Assert.NotNull(getNotificationHubDescription);
 
                 // Check that UpdateNotificationHub correctly update hub
                 createNotificationHubDescription.IsDisabled = true;
@@ -131,7 +139,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
                 // Check that GetNotificationHubs returns collection without not existed hub
                 notificationHubDescriptions = _namespaceManager.GetNotificationHubs();
-                Assert.DoesNotContain(notificationHubDescriptions, nhd => nhd.Path == _notificationHubName);
+                Assert.Empty(notificationHubDescriptions);
 
                 // Check that DeleteNotificationHub returns MessagingEntityNotFoundException than hub is not exist
                 Assert.Throws<MessagingEntityNotFoundException>(() => _namespaceManager.DeleteNotificationHub(_notificationHubName));
@@ -143,27 +151,18 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         }
 
         [Fact]
-        public async void SubmitAndGetNotificationHubJob_ShouldReceiveCorrectJobs()
+        public async void ManagementApi_ShouldReceiveCorrectJobs()
         {
             LoadMockData();
             try
             {
                 _namespaceManager.CreateNotificationHub(_notificationHubName);
 
-                var blobClient = new CloudBlobClient(
-                    _storageEndpoint,
-                    new StorageCredentials(_storageAccount, _storagePassword));
-
-                var container = blobClient.GetContainerReference(_containerName);
-
-                var outputContainerSasUri = GetOutputDirectoryUrl(container);
-                var inputFileSasUri = GetInputFileUrl(container, InputFileName);
-
                 var notificationHubJob = new NotificationHubJob
                 {
                     JobType = NotificationHubJobType.ImportCreateRegistrations,
-                    OutputContainerUri = outputContainerSasUri,
-                    ImportFileUri = inputFileSasUri
+                    OutputContainerUri = _outputContainerSasUri,
+                    ImportFileUri = _inputFileSasUri
                 };
 
                 var submitedNotificationHubJob
@@ -183,32 +182,35 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         }
 
         [Fact]
-        public void ExecuteCreateGetAndDeleteNotificationHubMethodsWithIncorrectConnectionString_ShouldRecieveUnauthorizedAccessException()
+        public void ManagementApi_FailsWithAuthorizationException()
         {
-            var namespaceManagerSettings = new NamespaceManagerSettings();
-            namespaceManagerSettings.TokenProvider
-                = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(IncorrectConnectionString);
+            LoadMockData();
+            try
+            {
+                var namespaceManager = CreateNamespaceManager(_testServer.RecordingMode, IncorrectConnectionString);
 
-            var namespaceManager = new NamespaceManager(new Uri(_namespaceUriString), namespaceManagerSettings);
+                // Check that CreateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
+                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.CreateNotificationHub(_notificationHubName));
 
-            // Check that CreateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.CreateNotificationHub(_notificationHubName));
+                // We must create hub to recieve UnauthorizedAccessException when GetNotificationHub and DeleteNotificationHub execute
+                var notificationHubDescription = _namespaceManager.CreateNotificationHub(_notificationHubName);
 
-            // We must create hub to recieve UnauthorizedAccessException when GetNotificationHub and DeleteNotificationHub execute
-            var notificationHubDescription = _namespaceManager.CreateNotificationHub(_notificationHubName);
+                // Check that GetNotificationHub returns UnauthorizedAccessException when connection string is incorrect
+                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.GetNotificationHub(_notificationHubName));
 
-            // Check that GetNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.GetNotificationHub(_notificationHubName));
+                // Check that NotificationHubExists returns UnauthorizedAccessException when connection string is incorrect
+                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.NotificationHubExists(_notificationHubName));
 
-            // Check that NotificationHubExists returns UnauthorizedAccessException when connection string is incorrect
-            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.NotificationHubExists(_notificationHubName));
+                // Check that UpdateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
+                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.UpdateNotificationHub(notificationHubDescription));
 
-            // Check that UpdateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.UpdateNotificationHub(notificationHubDescription));
-
-            // Check that DeleteNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-            Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
-
+                // Check that DeleteNotificationHub returns UnauthorizedAccessException when connection string is incorrect
+                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
+            }
+            finally
+            {
+                RecordTestResults();
+            }
         }
 
         private void CleanUp()
@@ -251,8 +253,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         {
             string[] dataFilePaths = new string[]
             {
-                $"{methodName}.http",
-                Path.Combine("MockData", $"{methodName}.http"),
+                Path.Combine("MockData", $"{methodName}.http")
             };
 
             foreach (var dataFilePath in dataFilePaths)
@@ -267,7 +268,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
         private void LoadMockData([CallerMemberName] string methodName = "")
         {
-            if (!_testServer.RecordingMode)
+            if (_testServer.RecordingMode == RecordingMode.Playback)
             {
                 string filePath = GetMockDataFilePath(methodName);
                 if (filePath == null)
@@ -284,10 +285,24 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 
         private void RecordTestResults([CallerMemberName] string methodName = "")
         {
-            if (_testServer.RecordingMode)
+            if (_testServer.RecordingMode == RecordingMode.Recording)
             {
-                File.WriteAllText($"{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
+                File.WriteAllText($"MockData\\{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
             }
+        }
+
+        private NamespaceManager CreateNamespaceManager(RecordingMode recordingMode, string connectionString)
+        {
+            if (recordingMode == RecordingMode.Playback)
+            {
+                _notificationHubName = "test";
+                _namespaceUriString = "https://sample.servicebus.windows.net/";
+            }
+
+            var namespaceManagerSettings = new NamespaceManagerSettings();
+            namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
+            namespaceManagerSettings.MessageHandler = _testServer;
+            return new NamespaceManager(new Uri(_namespaceUriString), namespaceManagerSettings);
         }
     }
 }
