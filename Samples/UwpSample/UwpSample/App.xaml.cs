@@ -1,12 +1,12 @@
 ﻿using System;
+using Microsoft.Azure.NotificationHubs;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Networking.PushNotifications;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Windows.Networking.PushNotifications;
-using Microsoft.WindowsAzure.Messaging;
-using Windows.UI.Popups;
 
 namespace UwpSample
 {
@@ -96,17 +96,17 @@ namespace UwpSample
         {
             var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
 
-            var hub = new NotificationHub(Secrets.HubName, Secrets.HubConnectionString);
-            var result = await hub.RegisterNativeAsync(channel.Uri);
-
-            // Displays the registration ID so you know it was successful
-            if (result.RegistrationId != null)
+            var hub = new NotificationHubClient(Secrets.HubName, Secrets.HubConnectionString);
+            await hub.CreateOrUpdateInstallationAsync(new Installation
             {
-                var dialog = new MessageDialog("Registration successful: " + result.RegistrationId);
-                dialog.Commands.Add(new UICommand("OK"));
-                await dialog.ShowAsync();
-            }
+                Platform = NotificationPlatform.Wns,
+                InstallationId = "myid",
+                PushChannel = channel.Uri
+            });
 
+            var dialog = new MessageDialog("Registration successful");
+            dialog.Commands.Add(new UICommand("OK"));
+            await dialog.ShowAsync();
         }
     }
 }
