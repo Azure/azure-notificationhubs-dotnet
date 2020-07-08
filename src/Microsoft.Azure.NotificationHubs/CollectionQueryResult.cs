@@ -32,7 +32,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// Gets the continuation token.
         /// </summary>
         /// <value>
-        /// The continuation token.
+        /// The continuation token, which is null or empty when there is no additional data available in the query.
         /// </value>
         public string ContinuationToken
         {

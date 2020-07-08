@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\NotificationHubClientTest.cs" Link="NotificationHubClientTest.cs" />
     <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\ManagementApiE2ETests.cs" Link="ManagementApiE2ETests.cs" />
+    <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\NotificationHubConnectionStringBuilderTests.cs" Link="NotificationHubConnectionStringBuilderTests.cs" />
     <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\TestServerProxy.cs" Link="TestServerProxy.cs" />
   </ItemGroup>
   <ItemGroup>

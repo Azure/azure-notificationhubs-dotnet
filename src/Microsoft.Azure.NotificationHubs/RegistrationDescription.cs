@@ -87,7 +87,7 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        /// Gets or sets the ETag associated with this description.
+        /// Gets the ETag associated with this description.
         /// </summary>
         /// 
         /// <returns>
@@ -97,7 +97,7 @@ namespace Microsoft.Azure.NotificationHubs
         public string ETag { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the expiration time of the registration.
+        /// Gets the expiration time of the registration.
         /// </summary>
         /// 
         /// <returns>

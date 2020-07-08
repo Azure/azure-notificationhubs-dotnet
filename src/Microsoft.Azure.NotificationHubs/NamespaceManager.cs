@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Azure.NotificationHubs.Auth;
@@ -250,13 +251,33 @@ namespace Microsoft.Azure.NotificationHubs
             CreateNotificationHubAsync(new NotificationHubDescription(hubName));
 
         /// <summary>
+        /// Creates a notification hub.
+        /// </summary>
+        /// <param name="hubName">The notification hub description name.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>An instance of the <see cref="NotificationHubDescription"/> class</returns>
+        public Task<NotificationHubDescription> CreateNotificationHubAsync(string hubName, CancellationToken cancellationToken) =>
+            CreateNotificationHubAsync(new NotificationHubDescription(hubName), cancellationToken);
+
+        /// <summary>
         /// Creates the notification hub asynchronously.
         /// </summary>
         /// <param name="description">The notification hub description.</param>
         /// <returns>A task that represents the asynchronous create hub operation</returns>
         public Task<NotificationHubDescription> CreateNotificationHubAsync(NotificationHubDescription description)
         {
-            return CreateOrUpdateNotificationHubAsync(description, false);
+            return CreateOrUpdateNotificationHubAsync(description, false, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Creates the notification hub asynchronously.
+        /// </summary>
+        /// <param name="description">The notification hub description.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous create hub operation</returns>
+        public Task<NotificationHubDescription> CreateNotificationHubAsync(NotificationHubDescription description, CancellationToken cancellationToken)
+        {
+            return CreateOrUpdateNotificationHubAsync(description, false, cancellationToken);
         }
 
         /// <summary>
@@ -272,7 +293,18 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>A task that represents the asynchronous get hub operation</returns>
-        public async Task<NotificationHubDescription> GetNotificationHubAsync(string path)
+        public Task<NotificationHubDescription> GetNotificationHubAsync(string path)
+        {
+            return GetNotificationHubAsync(path, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets the notification hub asynchronously.
+        /// </summary>
+        /// <param name="path">The notification hub path.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous get hub operation</returns>
+        public async Task<NotificationHubDescription> GetNotificationHubAsync(string path, CancellationToken cancellationToken)
         {
             if (path == null)
             {
@@ -291,7 +323,7 @@ namespace Microsoft.Azure.NotificationHubs
                  var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
                  return httpRequestMessage;
-             }).ConfigureAwait(false))
+             }, cancellationToken).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
                 if (xmlResponse.NodeType != XmlNodeType.None)
@@ -318,7 +350,17 @@ namespace Microsoft.Azure.NotificationHubs
         /// Gets the notification hubs asynchronously.
         /// </summary>
         /// <returns>A task that represents the asynchronous get hubs operation</returns>
-        public async Task<IEnumerable<NotificationHubDescription>> GetNotificationHubsAsync()
+        public Task<IEnumerable<NotificationHubDescription>> GetNotificationHubsAsync()
+        {
+            return GetNotificationHubsAsync(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets the notification hubs asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous get hubs operation</returns>
+        public async Task<IEnumerable<NotificationHubDescription>> GetNotificationHubsAsync(CancellationToken cancellationToken)
         {
             var requestUri = new UriBuilder(Address)
             {
@@ -330,7 +372,7 @@ namespace Microsoft.Azure.NotificationHubs
                  var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
                  return httpRequestMessage;
-             }).ConfigureAwait(false))
+             }, cancellationToken).ConfigureAwait(false))
             {
                 var result = new List<NotificationHubDescription>();
 
@@ -351,7 +393,7 @@ namespace Microsoft.Azure.NotificationHubs
                             xmlReader.ReadStartElement();
                             var hubName = xmlReader.Value;
 
-                            result.Add(await GetNotificationHubAsync(hubName).ConfigureAwait(false));
+                            result.Add(await GetNotificationHubAsync(hubName, cancellationToken).ConfigureAwait(false));
                         }
                     }
                 }
@@ -371,7 +413,17 @@ namespace Microsoft.Azure.NotificationHubs
         /// Delete the notification hub.
         /// </summary>
         /// <param name="path">The notification hub path.</param>
-        public async Task DeleteNotificationHubAsync(string path)
+        public Task DeleteNotificationHubAsync(string path)
+        {
+            return DeleteNotificationHubAsync(path, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Delete the notification hub.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <param name="path">The notification hub path.</param>
+        public async Task DeleteNotificationHubAsync(string path, CancellationToken cancellationToken)
         {
             if (path == null)
             {
@@ -390,7 +442,7 @@ namespace Microsoft.Azure.NotificationHubs
                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri);
 
                 return httpRequestMessage;
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -408,7 +460,18 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous hub update operation</returns>
         public Task<NotificationHubDescription> UpdateNotificationHubAsync(NotificationHubDescription description)
         {
-            return CreateOrUpdateNotificationHubAsync(description, true);
+            return UpdateNotificationHubAsync(description, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Updates the notification hub asynchronously.
+        /// </summary>
+        /// <param name="description">The description.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous hub update operation</returns>
+        public Task<NotificationHubDescription> UpdateNotificationHubAsync(NotificationHubDescription description, CancellationToken cancellationToken)
+        {
+            return CreateOrUpdateNotificationHubAsync(description, true, cancellationToken);
         }
 
         /// <summary>Checks whether a notifications hub exists.</summary>
@@ -422,11 +485,22 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="path">The notification hub path.</param>
         /// <returns>A task that represents the asynchronous hub check operation</returns>
-        public async Task<bool> NotificationHubExistsAsync(string path)
+        public Task<bool> NotificationHubExistsAsync(string path)
+        {
+            return NotificationHubExistsAsync(path, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Checks whether a notification hub exists asynchronously.
+        /// </summary>
+        /// <param name="path">The notification hub path.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous hub check operation</returns>
+        public async Task<bool> NotificationHubExistsAsync(string path, CancellationToken cancellationToken)
         {
             try
             {
-                var hubDescription = await GetNotificationHubAsync(path).ConfigureAwait(false);
+                var hubDescription = await GetNotificationHubAsync(path, cancellationToken).ConfigureAwait(false);
                 return String.Equals(hubDescription.Path, path, StringComparison.OrdinalIgnoreCase);
             }
             catch (MessagingEntityNotFoundException)
@@ -435,7 +509,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        private async Task<NotificationHubDescription> CreateOrUpdateNotificationHubAsync(NotificationHubDescription description, bool update)
+        private async Task<NotificationHubDescription> CreateOrUpdateNotificationHubAsync(NotificationHubDescription description, bool update, CancellationToken cancellationToken)
         {
             if (description == null)
             {
@@ -461,7 +535,7 @@ namespace Microsoft.Azure.NotificationHubs
                  }
 
                  return httpRequestMessage;
-             }).ConfigureAwait(false))
+             }, cancellationToken).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
                 var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
@@ -474,7 +548,17 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="job">The job to submit.</param>
         /// <param name="notificationHubPath">The notification hub path.</param>
         /// <returns>A task that represents the asynchronous get job operation</returns>
-        public async Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job, string notificationHubPath)
+        public Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job, string notificationHubPath)
+        {
+            return SubmitNotificationHubJobAsync(job, notificationHubPath, CancellationToken.None);
+        }
+
+        /// <summary>Submits the notification hub job asynchronously.</summary>
+        /// <param name="job">The job to submit.</param>
+        /// <param name="notificationHubPath">The notification hub path.</param>\
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous get job operation</returns>
+        public async Task<NotificationHubJob> SubmitNotificationHubJobAsync(NotificationHubJob job, string notificationHubPath, CancellationToken cancellationToken)
         {
             if (job == null)
             {
@@ -500,7 +584,7 @@ namespace Microsoft.Azure.NotificationHubs
                  httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
 
                  return httpRequestMessage;
-             }).ConfigureAwait(false))
+             }, cancellationToken).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
                 return GetModelFromResponse<NotificationHubJob>(xmlResponse);
@@ -511,7 +595,17 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="jobId">The job identifier.</param>
         /// <param name="notificationHubPath">The notification hub path.</param>
         /// <returns>A task that represents the asynchronous get job operation</returns>
-        public async Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId, string notificationHubPath)
+        public Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId, string notificationHubPath)
+        {
+            return GetNotificationHubJobAsync(jobId, notificationHubPath, CancellationToken.None);
+        }
+
+        /// <summary>Gets the notification hub job asynchronously.</summary>
+        /// <param name="jobId">The job identifier.</param>
+        /// <param name="notificationHubPath">The notification hub path.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous get job operation</returns>
+        public async Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId, string notificationHubPath, CancellationToken cancellationToken)
         {
             var requestUri = new UriBuilder(Address)
             {
@@ -525,17 +619,27 @@ namespace Microsoft.Azure.NotificationHubs
                  var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
                  return httpRequestMessage;
-             }).ConfigureAwait(false))
+             }, cancellationToken).ConfigureAwait(false))
             {
                 var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
                 return GetModelFromResponse<NotificationHubJob>(xmlResponse);
             };
         }
 
+
         /// <summary>Gets the notification hub jobs asynchronously.</summary>
         /// <param name="notificationHubPath">The notification hub path.</param>
         /// <returns>A task that represents the asynchronous get jobs operation</returns>
-        public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync(string notificationHubPath)
+        public Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync(string notificationHubPath)
+        {
+            return GetNotificationHubJobsAsync(notificationHubPath, CancellationToken.None);
+        }
+
+        /// <summary>Gets the notification hub jobs asynchronously.</summary>
+        /// <param name="notificationHubPath">The notification hub path.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>A task that represents the asynchronous get jobs operation</returns>
+        public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync(string notificationHubPath, CancellationToken cancellationToken)
         {
             var requestUri = new UriBuilder(Address)
             {
@@ -544,7 +648,7 @@ namespace Microsoft.Azure.NotificationHubs
                 Query = $"api-version={ApiVersion}"
             };
 
-            using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri)).ConfigureAwait(false))
+            using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri), cancellationToken).ConfigureAwait(false))
             {
                 var result = new List<NotificationHubJob>();
                 using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
@@ -631,14 +735,15 @@ namespace Microsoft.Azure.NotificationHubs
 
             return httpRequestMessage;
         }
-        private async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> generateHttpRequestMessage)
+
+        private async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> generateHttpRequestMessage, CancellationToken cancellationToken)
         {
             var trackingId = Guid.NewGuid().ToString();
 
             var httpRequestMessage = generateHttpRequestMessage();
             httpRequestMessage.Headers.Add(TrackingIdHeaderKey, trackingId);
 
-            var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
             response.Headers.Add(TrackingIdHeaderKey, trackingId);
 
             if (response.IsSuccessStatusCode)

@@ -43,7 +43,7 @@ namespace Microsoft.Azure.NotificationHubs
         public NotificationPlatform Platform { get; set; }
 
         /// <summary>
-        /// Gets expiration for the installation
+        /// Gets or sets expiration for the installation
         /// </summary>
         [JsonProperty(PropertyName = "expirationTime")]
         public DateTime? ExpirationTime { get; set; }
