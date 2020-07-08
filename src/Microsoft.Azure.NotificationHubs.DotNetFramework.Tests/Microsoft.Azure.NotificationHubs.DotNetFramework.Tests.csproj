@@ -16,9 +16,10 @@
     <None Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\appsettings.json" Link="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\MockData\*.http">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\MockData\**"
+        CopyToOutputDirectory="PreserveNewest"
+        LinkBase="MockData\"
+    />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.7" />
@@ -29,10 +30,6 @@
     <PackageReference Include="xunit.runner.console" Version="2.3.1" />
     <PackageReference Include="xunit.runner.msbuild" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MockData\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Azure.NotificationHubs\Microsoft.Azure.NotificationHubs.csproj" />
