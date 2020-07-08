@@ -2925,7 +2925,7 @@ namespace Microsoft.Azure.NotificationHubs
 
                 if (!string.IsNullOrWhiteSpace(deviceHandle))
                 {
-                    AddToQuery(requestUri, "&$filter=" + HttpUtility.UrlEncode($"ChannelUri eq '{deviceHandle}'"));
+                    AddToQuery(requestUri, "&$filter=" + SharedAccessSignatureBuilder.UrlEncode($"ChannelUri eq '{deviceHandle}'"));
                 }
             }
             else
