@@ -309,11 +309,11 @@ namespace Microsoft.Azure.NotificationHubs
             }
             catch (CryptographicException ex)
             {
-                throw new InvalidDataContractException(SRClient.ApnsCertificateNotUsable((object)ex.Message));
+                throw new InvalidDataContractException(string.Format(SRClient.ApnsCertificateNotUsable, ex.Message));
             }
             catch (FormatException ex)
             {
-                throw new InvalidDataContractException(SRClient.ApnsCertificateNotUsable((object)ex.Message));
+                throw new InvalidDataContractException(string.Format(SRClient.ApnsCertificateNotUsable, ex.Message));
             }
         }
     }

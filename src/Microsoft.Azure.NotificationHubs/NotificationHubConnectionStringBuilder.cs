@@ -48,7 +48,7 @@ namespace Microsoft.Azure.NotificationHubs
 
         /// <summary>
         /// Gets the collection of service endpoint. Each endpoint 
-        /// must reference the same ServiceBus namespace.
+        /// must reference the same Notification Hubs namespace.
         /// </summary>
         public Uri Endpoint { get; private set; }
 
