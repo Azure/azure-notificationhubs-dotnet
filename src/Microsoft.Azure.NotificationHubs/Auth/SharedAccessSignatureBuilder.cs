@@ -32,7 +32,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             // Normalize the target URI to use the SB scheme.
 
             string expiresOn = BuildExpiresOn(timeToLive);
-            string audienceUri = UrlEncode(targetUri);
+            string audienceUri = UrlEncode(targetUri.ToLowerInvariant());
             List<string> fields = new List<string>();
             fields.Add(audienceUri);
             fields.Add(expiresOn);
@@ -57,9 +57,9 @@ namespace Microsoft.Azure.NotificationHubs.Auth
         internal static string UrlEncode(string url)
         {
 #if NET461
-            return System.Net.WebUtility.UrlEncode(url.ToLowerInvariant());
+            return System.Net.WebUtility.UrlEncode(url);
 #else
-            return HttpUtility.UrlEncode(url.ToLowerInvariant());
+            return HttpUtility.UrlEncode(url);
 #endif
         }
 
