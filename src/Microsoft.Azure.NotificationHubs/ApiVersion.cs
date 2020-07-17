@@ -24,7 +24,8 @@ namespace Microsoft.Azure.NotificationHubs
         Fourteen = 14,
         Fifteen = 15,
         Sixteen = 16,
-        Seventeen = 17
+        Seventeen = 17,
+        Eighteen = 18
     }
 }
 

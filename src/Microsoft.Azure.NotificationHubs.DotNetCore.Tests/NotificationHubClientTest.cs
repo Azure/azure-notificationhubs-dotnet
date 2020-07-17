@@ -631,10 +631,12 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             await DeleteAllRegistrationsAndInstallations();
 
             var installationId = _testServer.NewGuid().ToString();
+            var userId = _testServer.NewGuid().ToString();
 
             var installation = new Installation
             {
                 InstallationId = installationId,
+                UserId = userId,
                 Platform = NotificationPlatform.Apns,
                 PushChannel = _configuration["AppleDeviceToken"],
                 PushVariables = new Dictionary<string, string> { { "var1", "value1" } },
@@ -658,6 +660,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
 
             Assert.Equal(installation.InstallationId, createdInstallation.InstallationId);
+            Assert.Equal(installation.UserId, createdInstallation.UserId);
             Assert.Equal(installation.Platform, createdInstallation.Platform);
             Assert.Equal(installation.PushChannel, createdInstallation.PushChannel);
             Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdInstallation.PushVariables);

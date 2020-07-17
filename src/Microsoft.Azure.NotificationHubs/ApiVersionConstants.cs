@@ -27,7 +27,8 @@ namespace Microsoft.Azure.NotificationHubs
         public const string VersionFifteen = "2016-03";
         public const string VersionSixteen = "2016-07";
         public const string VersionSeventeen = "2017-04";
-        public const string MaxSupportedApiVersion = VersionSeventeen;
+        public const string VersionEighteen = "2020-06";
+        public const string MaxSupportedApiVersion = VersionEighteen;
 
         public const string OldRuntimeVersion = VersionFive; // Upto this version runtime operations did not include version
         public const string PartitionedEntityMinimumRuntimeApiVersionText = VersionSeven;
@@ -50,6 +51,7 @@ namespace Microsoft.Azure.NotificationHubs
             ApiVersionConstants.VersionFourteen,
             ApiVersionConstants.VersionFifteen,
             ApiVersionConstants.VersionSixteen,
-            ApiVersionConstants.VersionSeventeen);
+            ApiVersionConstants.VersionSeventeen,
+            ApiVersionConstants.VersionEighteen);
     }
 }

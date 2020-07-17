@@ -40,8 +40,8 @@ namespace Microsoft.Azure.NotificationHubs
     public abstract class RegistrationDescription : EntityDescription
     {
         internal const string TemplateRegistrationType = "template";
-        internal static Regex SingleTagRegex = new Regex(@"^((\$InstallationId:\{[\w-_@#.:=]+\})|([\w-_@#.:]+))$", RegexOptions.IgnoreCase);
-        internal static Regex TagRegex = new Regex(@"^(((\$InstallationId:\{[\w-_@#.:=]+\})+?(,[\w-_@#.:]+)*)|(([\w-_@#.:]+)(,[\w-_@#.:]+)*((,\$InstallationId:\{[\w-_@#.:=]+\})?(,[\w-_@#.:]+)*)))$", RegexOptions.IgnoreCase);
+        internal static Regex SingleTagRegex = new Regex(@"^(\$(InstallationId|UserId):\{[-_@#.:=\w]+\}|[-_@#.:\w]+)$", RegexOptions.IgnoreCase);
+
         // SQL omits - (hypen)  during comparison
         // Following values are omitted to make array length 32 - 0, 8 , I, O, X. Because work order count is fully divisble by 32  
         internal static string[] RegistrationRange = new string[] { "_", "1", "2", "3", "4", "5", "6", "7", "9",
@@ -234,7 +234,30 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="tags">The tags to validate.</param>
         public static bool ValidateTags(string tags)
         {
-            return RegistrationDescription.TagRegex.IsMatch(tags);
+            if (tags == null)
+            {
+                throw new ArgumentNullException(nameof(tags), "Value cannot be null");
+            }
+
+            if (Regex.Matches(tags, @"\$InstallationId:\{[-_@#.:=\w]+\}", RegexOptions.IgnoreCase).Count > 1)
+            {
+                return false;
+            }
+
+            if (Regex.Matches(tags, @"\$UserId:\{[-_@#.:=\w]+\}", RegexOptions.IgnoreCase).Count > 1)
+            {
+                return false;
+            }
+
+            foreach (var tag in tags.Split(','))
+            {
+                if (!SingleTagRegex.IsMatch(tag))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
