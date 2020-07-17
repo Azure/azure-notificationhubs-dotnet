@@ -12,7 +12,7 @@ using System.Runtime.Serialization;
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     /// <summary>
-    /// Defines the Azure Service Bus authorization rule that is used to determine whether an operation is permissible or not.
+    /// Defines the Azure Notification Hubs authorization rule that is used to determine whether an operation is permissible or not.
     /// </summary>
     [DataContract(Namespace = ManagementStrings.Namespace)]
     [KnownType(typeof(SharedAccessAuthorizationRule))]
@@ -172,7 +172,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (value == null || !value.Any<AccessRights>() || value.Count<AccessRights>() > 3)
             {
-                throw new ArgumentException(SRClient.NullEmptyRights((object) 3));
+                throw new ArgumentException(string.Format(SRClient.NullEmptyRights, 3));
             }
                 
             if (!AuthorizationRule.AreAccessRightsUnique(value))
@@ -191,7 +191,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         {
             if (this.Rights == null || !this.Rights.Any<AccessRights>() || this.Rights.Count<AccessRights>() > 3)
             {
-                throw new InvalidDataContractException(SRClient.NullEmptyRights((object) 3));
+                throw new InvalidDataContractException(string.Format(SRClient.NullEmptyRights, 3));
             }
                 
             if (!AuthorizationRule.AreAccessRightsUnique(this.Rights))

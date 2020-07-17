@@ -14,7 +14,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     sealed class MessagingEntityMovedException : MessagingException
     {
         public MessagingEntityMovedException(string entityName)
-            : base(SRClient.MessagingEntityMoved(entityName), null)
+            : base(string.Format(SRClient.MessagingEntityMoved, entityName), null)
         {
             this.IsTransient = false;
         }

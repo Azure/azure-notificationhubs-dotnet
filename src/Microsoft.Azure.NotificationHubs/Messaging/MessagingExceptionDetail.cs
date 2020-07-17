@@ -177,7 +177,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </returns>
         public static MessagingExceptionDetail EntityUpdateConflict(string entityName)
         {
-            string message = SRClient.MessagingEntityUpdateConflict(entityName);
+            string message = string.Format(SRClient.MessagingEntityUpdateConflict, entityName);
             return new MessagingExceptionDetail((int)ExceptionErrorCodes.UpdateConflict, message);
         }
 
@@ -190,7 +190,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </returns>
         public static MessagingExceptionDetail EntityConflictOperationInProgress(string entityName)
         {
-            string message = SRClient.MessagingEntityRequestConflict(entityName);
+            string message = string.Format(SRClient.MessagingEntityRequestConflict, entityName);
             return new MessagingExceptionDetail((int)ExceptionErrorCodes.ConflictOperationInProgress, message);
         }
 
