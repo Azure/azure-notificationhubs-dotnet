@@ -5,12 +5,13 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
-using System.Text;
+using System.Web;
 using Microsoft.Azure.NotificationHubs.Common;
+using System.Text;
 
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
@@ -74,25 +75,25 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </summary>
         protected override void OnValidate()
         {
-            if (string.IsNullOrEmpty(this.InternalKeyName) || !string.Equals(this.InternalKeyName, Auth.SharedAccessSignatureBuilder.UrlEncode(this.InternalKeyName)))
-            {
+            if (string.IsNullOrEmpty(this.InternalKeyName) || !string.Equals(this.InternalKeyName, HttpUtility.UrlEncode(this.InternalKeyName)))
+            {    
                 throw new InvalidDataContractException(SRCore.SharedAccessAuthorizationRuleKeyContainsInvalidCharacters);
-            }
+            }  
 
             if (this.InternalKeyName.Length > 256)
-            {
-                throw new InvalidDataContractException(SRCore.SharedAccessAuthorizationRuleKeyNameTooBig((object)256));
-            }
+            {    
+                throw new InvalidDataContractException(SRCore.SharedAccessAuthorizationRuleKeyNameTooBig((object) 256));
+            }           
             if (string.IsNullOrEmpty(this.InternalPrimaryKey))
-            {
+            {    
                 throw new InvalidDataContractException(SRCore.SharedAccessAuthorizationRuleRequiresPrimaryKey);
-            }
+            }    
 
             if (Encoding.ASCII.GetByteCount(this.InternalPrimaryKey) != 44)
             {
-                throw new InvalidDataContractException(SRCore.SharedAccessRuleAllowsFixedLengthKeys((object)44));
+                throw new InvalidDataContractException(SRCore.SharedAccessRuleAllowsFixedLengthKeys((object) 44));
             }
-
+            
             if (!SharedAccessAuthorizationRule.CheckBase64(this.InternalPrimaryKey))
             {
                 throw new InvalidDataContractException(SRCore.SharedAccessKeyShouldbeBase64);
@@ -101,9 +102,9 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             if (!string.IsNullOrEmpty(this.InternalSecondaryKey))
             {
                 if (Encoding.ASCII.GetByteCount(this.InternalSecondaryKey) != 44)
-                    throw new InvalidDataContractException(SRCore.SharedAccessRuleAllowsFixedLengthKeys((object)44));
+                throw new InvalidDataContractException(SRCore.SharedAccessRuleAllowsFixedLengthKeys((object) 44));
                 if (!SharedAccessAuthorizationRule.CheckBase64(this.InternalSecondaryKey))
-                    throw new InvalidDataContractException(SRCore.SharedAccessKeyShouldbeBase64);
+                throw new InvalidDataContractException(SRCore.SharedAccessKeyShouldbeBase64);
             }
 
             if (!SharedAccessAuthorizationRule.IsValidCombinationOfRights(this.Rights))
@@ -140,19 +141,19 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentNullException(nameof(KeyName));
+                {    
+                    throw new ArgumentNullException(nameof (KeyName));
                 }
 
-                if (!string.Equals(this.InternalKeyName, Auth.SharedAccessSignatureBuilder.UrlEncode(this.InternalKeyName)))
-                {
+                if (!string.Equals(this.InternalKeyName, HttpUtility.UrlEncode(this.InternalKeyName)))
+                {    
                     throw new ArgumentException(SRCore.SharedAccessAuthorizationRuleKeyContainsInvalidCharacters);
                 }
 
                 if (value.Length > 256)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(KeyName), SRCore.ArgumentStringTooBig((object)nameof(KeyName), (object)256));
-
+                {    
+                    throw new ArgumentOutOfRangeException(nameof (KeyName), SRCore.ArgumentStringTooBig((object) nameof (KeyName), (object) 256));
+                
                 }
                 this.InternalKeyName = value;
             }
@@ -173,13 +174,13 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(nameof(PrimaryKey));
+                    throw new ArgumentNullException(nameof (PrimaryKey));
                 }
 
                 if (value.Length > 256)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(PrimaryKey), SRCore.ArgumentStringTooBig((object)nameof(PrimaryKey), (object)256));
-
+                {   
+                    throw new ArgumentOutOfRangeException(nameof (PrimaryKey), SRCore.ArgumentStringTooBig((object) nameof (PrimaryKey), (object) 256));
+                
                 }
 
                 this.InternalPrimaryKey = value;
@@ -199,12 +200,12 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                {
+                {    
                     this.InternalSecondaryKey = value;
-                }
+                }    
                 else if (value.Length > 256)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(SecondaryKey), SRCore.ArgumentStringTooBig((object)nameof(SecondaryKey), (object)256));
+                {    
+                    throw new ArgumentOutOfRangeException(nameof (SecondaryKey), SRCore.ArgumentStringTooBig((object) nameof (SecondaryKey), (object) 256));
                 }
 
                 this.InternalSecondaryKey = value;
@@ -222,9 +223,9 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             base.ValidateRights(value);
 
             if (!SharedAccessAuthorizationRule.IsValidCombinationOfRights(value))
-            {
+            {    
                 throw new ArgumentException(SRClient.InvalidCombinationOfManageRight);
-            }
+            }    
         }
 
         static bool IsValidCombinationOfRights(IEnumerable<AccessRights> rights)

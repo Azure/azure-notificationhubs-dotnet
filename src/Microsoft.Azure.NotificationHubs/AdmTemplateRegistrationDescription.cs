@@ -112,9 +112,9 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal override void OnValidate()
+        internal override void OnValidate(ApiVersion version)
         {
-            base.OnValidate();
+            base.OnValidate(version);
 
             try
             {
@@ -126,12 +126,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value);
+                            ExpressionEvaluator.Validate(attribute.Value, version);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value);
+                            ExpressionEvaluator.Validate(element.Value, version);
                         }
                     }
                 }
@@ -157,7 +157,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }

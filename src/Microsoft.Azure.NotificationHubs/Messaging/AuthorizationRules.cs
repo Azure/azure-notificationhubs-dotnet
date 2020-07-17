@@ -257,5 +257,41 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 throw new InvalidDataContractException(SRClient.CannotHaveDuplicateSAARule);
             }
         }
+
+        internal void UpdateForVersion(ApiVersion version, AuthorizationRules existingAuthorizationRules = null)
+        {
+            if (version < ApiVersion.Three)
+            {
+                // API V2 does not understand SharedAccessAuthorizationRule, so we explicitly
+                // remove it.
+                foreach (var rule in this.nameToSharedAccessAuthorizationRuleMap.Values)
+                {
+                    this.innerCollection.Remove(rule);
+                }
+
+                this.nameToSharedAccessAuthorizationRuleMap.Clear();
+
+                if (existingAuthorizationRules != null)
+                {
+                    // Given an existing rule set (we get existing ruleset in update scenarios), 
+                    // for version 2 and below we need to merge back the SharedAccess rule that 
+                    // is not understood by these version.
+                    foreach (SharedAccessAuthorizationRule rule in existingAuthorizationRules.nameToSharedAccessAuthorizationRuleMap.Values)
+                    {
+                        this.Add(rule);
+                    }
+                }
+            }
+        }
+
+        internal bool IsValidForVersion(ApiVersion version)
+        {
+            if (version < ApiVersion.Three)
+            {
+                return !this.nameToSharedAccessAuthorizationRuleMap.Any();
+            }
+
+            return true;
+        }
     }
 }

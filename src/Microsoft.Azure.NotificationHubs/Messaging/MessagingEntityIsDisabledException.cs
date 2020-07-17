@@ -20,7 +20,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </summary>
         /// <param name="entityName">Name of the entity.</param>
         public MessagingEntityDisabledException(string entityName)
-            : this(string.Format(SRClient.MessagingEntityIsDisabledException, entityName), null)
+            : this(SRClient.MessagingEntityIsDisabledException(entityName), null)
         {
             this.IsTransient = false;
         }

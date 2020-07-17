@@ -103,7 +103,7 @@ namespace Microsoft.Azure.NotificationHubs
             this.GcmRegistrationId = pnsHandle;
         }
 
-        internal override void OnValidate()
+        internal override void OnValidate(ApiVersion version)
         {
             if (string.IsNullOrWhiteSpace(this.GcmRegistrationId))
             {
@@ -211,7 +211,7 @@ namespace Microsoft.Azure.NotificationHubs
             this.FcmRegistrationId = pnsHandle;
         }
 
-        internal override void OnValidate()
+        internal override void OnValidate(ApiVersion version)
         {
             if (string.IsNullOrWhiteSpace(this.FcmRegistrationId))
             {

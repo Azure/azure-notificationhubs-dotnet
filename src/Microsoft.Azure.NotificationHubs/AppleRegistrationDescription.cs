@@ -105,7 +105,7 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.DeviceToken, Order = 2001, IsRequired = true)]
         public string DeviceToken { get; set; }
 
-        internal override void OnValidate()
+        internal override void OnValidate(ApiVersion version)
         {
             if (string.IsNullOrWhiteSpace(this.DeviceToken))
             {

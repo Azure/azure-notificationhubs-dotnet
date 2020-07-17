@@ -269,17 +269,17 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3003)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate()
+        internal override void OnValidate(ApiVersion version)
         {
-            base.OnValidate();
-            this.ValidateWnsHeaders();
+            base.OnValidate(version);
+            this.ValidateWnsHeaders(version);
             if (this.IsXmlPayLoad())
             {
-                this.ValidateXmlPayLoad();
+                this.ValidateXmlPayLoad(version);
             }
             else if (this.IsJsonObjectPayLoad())
             {
-                this.ValidateJsonPayLoad();
+                this.ValidateJsonPayLoad(version);
             }
             else
             {
@@ -313,21 +313,21 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }
 
-        void ValidateWnsHeaders()
+        void ValidateWnsHeaders(ApiVersion version)
         {
             if (this.WnsHeaders == null)
             {
-                throw new InvalidDataContractException(string.Format(SRClient.MissingWNSHeader, WindowsTemplateRegistrationDescription.Type));
+                throw new InvalidDataContractException(SRClient.MissingWNSHeader(WindowsTemplateRegistrationDescription.Type));
             }
 
             if (!this.WnsHeaders.ContainsKey(WindowsTemplateRegistrationDescription.Type) || string.IsNullOrWhiteSpace(this.WnsHeaders[WindowsTemplateRegistrationDescription.Type]))
             {
-                throw new InvalidDataContractException(string.Format(SRClient.MissingWNSHeader, WindowsTemplateRegistrationDescription.Type));
+                throw new InvalidDataContractException(SRClient.MissingWNSHeader(WindowsTemplateRegistrationDescription.Type));
             }
 
             // WNS headers validation
@@ -335,14 +335,14 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (string.IsNullOrWhiteSpace(this.WnsHeaders[header]))
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.WNSHeaderNullOrEmpty, header));
+                    throw new InvalidDataContractException(SRClient.WNSHeaderNullOrEmpty(header));
                 }
 
-                ExpressionEvaluator.Validate(this.WnsHeaders[header]);
+                ExpressionEvaluator.Validate(this.WnsHeaders[header], version);
             }
         }
 
-        void ValidateXmlPayLoad()
+        void ValidateXmlPayLoad(ApiVersion version)
         {
             XDocument payloadDocument = XDocument.Parse(this.BodyTemplate);
             this.ExpressionStartIndices = new List<int>();
@@ -354,7 +354,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 foreach (XAttribute attribute in element.Attributes())
                 {
-                    if (ExpressionEvaluator.Validate(attribute.Value) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(attribute.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: id="$(id&gt;)" --> $(id&gt;)
@@ -368,7 +368,7 @@ namespace Microsoft.Azure.NotificationHubs
 
                 if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                 {
-                    if (ExpressionEvaluator.Validate(element.Value) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(element.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: <text id="1">$(na&gt;me)</text> --> $(na&gt;me)
@@ -383,7 +383,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        void ValidateJsonPayLoad()
+        void ValidateJsonPayLoad(ApiVersion version)
         {
             try
             {
@@ -395,12 +395,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value);
+                            ExpressionEvaluator.Validate(attribute.Value, version);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value);
+                            ExpressionEvaluator.Validate(element.Value, version);
                         }
                     }
                 }
@@ -424,7 +424,7 @@ namespace Microsoft.Azure.NotificationHubs
             int newIndex = this.BodyTemplate.Value.IndexOf(escapedExpression, previousIndex + 1, StringComparison.OrdinalIgnoreCase);
             if (newIndex == -1)
             {
-                throw new InvalidDataContractException(string.Format(SRClient.UnsupportedExpression, expression));
+                throw new InvalidDataContractException(SRClient.UnsupportedExpression(expression));
             }
 
             this.ExpressionStartIndices.Add(newIndex);

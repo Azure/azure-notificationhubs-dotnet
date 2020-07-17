@@ -170,9 +170,9 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.ApnsHeaders, IsRequired = false, Order = 3005, EmitDefaultValue = false)]
         public ApnsHeaderCollection ApnsHeaders { get; set; }
 
-        internal override void OnValidate()
+        internal override void OnValidate(ApiVersion version)
         {
-            base.OnValidate();
+            base.OnValidate(version);
 
             if (this.Expiry != null)
             {
@@ -181,7 +181,7 @@ namespace Microsoft.Azure.NotificationHubs
                     throw new InvalidDataContractException(SRClient.EmptyExpiryValue);
                 }
 
-                if (ExpressionEvaluator.Validate(this.Expiry) == ExpressionEvaluator.ExpressionType.Literal)
+                if (ExpressionEvaluator.Validate(this.Expiry, version) == ExpressionEvaluator.ExpressionType.Literal)
                 {
                     DateTime returnVal;
                     if (!DateTime.TryParse(this.Expiry, out returnVal) && !string.Equals("0", this.Expiry, StringComparison.OrdinalIgnoreCase))
@@ -198,7 +198,7 @@ namespace Microsoft.Azure.NotificationHubs
                     throw new InvalidDataContractException(SRClient.EmptyPriorityValue);
                 }
 
-                if (ExpressionEvaluator.Validate(this.Priority) == ExpressionEvaluator.ExpressionType.Literal)
+                if (ExpressionEvaluator.Validate(this.Priority, version) == ExpressionEvaluator.ExpressionType.Literal)
                 {
                     byte returnVal;
                     if (!byte.TryParse(this.Priority, out returnVal))
@@ -212,7 +212,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.ApnsHeaders.ContainsKey(AppleRegistrationDescription.ApnsPriorityHeader))
                 {
-                    if (ExpressionEvaluator.Validate(this.ApnsHeaders[AppleRegistrationDescription.ApnsPriorityHeader]) == ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(this.ApnsHeaders[AppleRegistrationDescription.ApnsPriorityHeader], version) == ExpressionEvaluator.ExpressionType.Literal)
                     {
                         byte returnVal;
                         if (!byte.TryParse(this.ApnsHeaders[AppleRegistrationDescription.ApnsPriorityHeader], out returnVal))
@@ -224,7 +224,7 @@ namespace Microsoft.Azure.NotificationHubs
 
                 if (this.ApnsHeaders.ContainsKey(AppleRegistrationDescription.ApnsExpiryHeader))
                 {
-                    if (ExpressionEvaluator.Validate(this.ApnsHeaders[AppleRegistrationDescription.ApnsExpiryHeader]) == ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(this.ApnsHeaders[AppleRegistrationDescription.ApnsExpiryHeader], version) == ExpressionEvaluator.ExpressionType.Literal)
                     {
                         int returnVal;
                         if (!int.TryParse(this.ApnsHeaders[AppleRegistrationDescription.ApnsExpiryHeader], out returnVal))
@@ -238,10 +238,10 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     if (!header.Key.StartsWith(AppleRegistrationDescription.ApnsHeaderPrefix, StringComparison.OrdinalIgnoreCase))
                     {
-                        throw new InvalidDataContractException(string.Format(SRClient.ApnsHeaderDeserializationError, header.Key));
+                        throw new InvalidDataContractException(SRClient.ApnsHeaderDeserializationError(header.Key));
                     }
 
-                    ExpressionEvaluator.Validate(header.Value);
+                    ExpressionEvaluator.Validate(header.Value, version);
                 }
             }
 
@@ -255,12 +255,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value);
+                            ExpressionEvaluator.Validate(attribute.Value, version);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value);
+                            ExpressionEvaluator.Validate(element.Value, version);
                         }
                     }
                 }
@@ -281,7 +281,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }

@@ -12,6 +12,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
     using System.Security.Cryptography;
     using System.Text;
     using System.Web;
+    using Microsoft.IdentityModel.Tokens;
 
     internal static class SharedAccessSignatureBuilder
     {
@@ -32,7 +33,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             // Normalize the target URI to use the SB scheme.
 
             string expiresOn = BuildExpiresOn(timeToLive);
-            string audienceUri = UrlEncode(targetUri);
+            string audienceUri = HttpUtility.UrlEncode(targetUri.ToLowerInvariant());
             List<string> fields = new List<string>();
             fields.Add(audienceUri);
             fields.Add(expiresOn);
@@ -49,18 +50,9 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             return string.Format(CultureInfo.InvariantCulture, "{0} {1}={2}&{3}={4}&{5}={6}&{7}={8}",
                 SharedAccessSignature,
                 SignedResource, audienceUri,
-                Signature, UrlEncode(signature),
-                SignedExpiry, UrlEncode(expiresOn),
-                SignedKeyName, UrlEncode(keyName));
-        }
-
-        internal static string UrlEncode(string url)
-        {
-#if NET461
-            return System.Net.WebUtility.UrlEncode(url.ToLowerInvariant());
-#else
-            return HttpUtility.UrlEncode(url.ToLowerInvariant());
-#endif
+                Signature, HttpUtility.UrlEncode(signature),
+                SignedExpiry, HttpUtility.UrlEncode(expiresOn),
+                SignedKeyName, HttpUtility.UrlEncode(keyName));
         }
 
         private static string BuildExpiresOn(TimeSpan timeToLive)

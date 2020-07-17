@@ -19,7 +19,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </summary>
         /// <param name="entityName">Name of the entity.</param>
         public MessagingEntityAlreadyExistsException(string entityName)
-            : this(MessagingExceptionDetail.EntityConflict(string.Format(SRClient.MessagingEntityAlreadyExists, entityName)))
+            : this(MessagingExceptionDetail.EntityConflict(SRClient.MessagingEntityAlreadyExists(entityName)))
         {
             this.IsTransient = false;
         }

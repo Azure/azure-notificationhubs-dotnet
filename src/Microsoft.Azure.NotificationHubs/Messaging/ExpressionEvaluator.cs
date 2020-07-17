@@ -44,15 +44,17 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             None
         }
 
-        public static ExpressionType Validate(string expression)
+        public static ExpressionType Validate(string expression, ApiVersion version)
         {
             ExpressionType expressionType;
             List<Token> tokens = ValidateAndTokenize(expression, out expressionType);
-
-            Token bodyToken = tokens.Find((t) => { return t.Type == TokenType.Body; });
-            if (bodyToken != null)
+            if (version > ApiVersion.Three)
             {
-                throw new InvalidDataContractException(SRClient.BodyIsNotSupportedExpression);
+                Token bodyToken = tokens.Find((t) => { return t.Type == TokenType.Body; });
+                if (bodyToken != null)
+                {
+                    throw new InvalidDataContractException(SRClient.BodyIsNotSupportedExpression);
+                }
             }
 
             return expressionType;
@@ -76,7 +78,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             {
                 if (expression[expression.Length - 1] != '}')
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.ExpressionMissingClosingParenthesesNoToken, expression));
+                    throw new InvalidDataContractException(SRClient.ExpressionMissingClosingParenthesesNoToken(expression));
                 }
 
                 workingInput = expression.Substring(1, expression.Length - 2).TrimEnd();
@@ -89,7 +91,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
                 if (workingInput.Length < 3)
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.ExpressionInvalidToken, expression, workingInput));
+                    throw new InvalidDataContractException(SRClient.ExpressionInvalidToken(expression, workingInput));
                 }
 
                 switch (workingInput[0])
@@ -128,7 +130,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
                         break;
                     default:
-                        throw new InvalidDataContractException(string.Format(SRClient.ExpressionInvalidTokenType, expression, workingInput));
+                        throw new InvalidDataContractException(SRClient.ExpressionInvalidTokenType(expression, workingInput));
                 }
 
                 if (token.Type != TokenType.SingleLiteral &&
@@ -138,12 +140,12 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 {
                     if (!ExpressionEvaluator.PropertyNameRegEx.IsMatch(token.Property))
                     {
-                        throw new InvalidDataContractException(string.Format(SRClient.PropertyNameIsBad, token.Property));
+                        throw new InvalidDataContractException(SRClient.PropertyNameIsBad(token.Property));
                     }
 
                     if (token.Property.Length > ExpressionEvaluator.MaxLengthOfPropertyName)
                     {
-                        throw new InvalidDataContractException(string.Format(SRClient.PropertyTooLong, token.Property.Length, ExpressionEvaluator.MaxLengthOfPropertyName));
+                        throw new InvalidDataContractException(SRClient.PropertyTooLong(token.Property.Length, ExpressionEvaluator.MaxLengthOfPropertyName));
                     }
                 }
 
@@ -158,7 +160,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
                 if (workingInput[0] != '+')
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.ExpressionInvalidCompositionOperator, expression, workingInput));
+                    throw new InvalidDataContractException(SRClient.ExpressionInvalidCompositionOperator(expression, workingInput));
                 }
 
                 workingInput = workingInput.Substring(1);
@@ -227,7 +229,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
                 if (tokenEndIndex == -1)
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.ExpressionLiteralMissingClosingNotation, fullExpression, tokenBegin));
+                    throw new InvalidDataContractException(SRClient.ExpressionLiteralMissingClosingNotation(fullExpression, tokenBegin));
                 }
 
                 if (tokenEndIndex + 1 < tokenBegin.Length && tokenBegin[tokenEndIndex + 1] == literalSeperator)
@@ -261,7 +263,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             // Cant find opening Parentheses  
             if (tokenBegin[1] != '(')
             {
-                throw new InvalidDataContractException(string.Format(SRClient.ExpressionMissingOpenParentheses, fullExpression, tokenBegin));
+                throw new InvalidDataContractException(SRClient.ExpressionMissingOpenParentheses(fullExpression, tokenBegin));
             }
 
             int indexOfClose = tokenBegin.IndexOf(')');
@@ -276,7 +278,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             {
                 if (indexOfDefaultBegin < 3)
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.ExpressionMissingProperty, fullExpression, tokenBegin));
+                    throw new InvalidDataContractException(SRClient.ExpressionMissingProperty(fullExpression, tokenBegin));
                 }
 
                 var escape = false;
@@ -284,7 +286,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 {
                     if (indexOfDefaultEnd >= tokenBegin.Length)
                     {
-                        throw new InvalidDataContractException(string.Format(SRClient.ExpressionMissingDefaultEnd, fullExpression, tokenBegin));
+                        throw new InvalidDataContractException(SRClient.ExpressionMissingDefaultEnd(fullExpression, tokenBegin));
                     }
 
                     if (tokenBegin[indexOfDefaultEnd] == '}' && !escape)
@@ -307,19 +309,19 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             // Cant find closing Parentheses  
             if (indexOfClose == -1)
             {
-                throw new InvalidDataContractException(string.Format(SRClient.ExpressionMissingClosingParentheses, fullExpression, tokenBegin));
+                throw new InvalidDataContractException(SRClient.ExpressionMissingClosingParentheses(fullExpression, tokenBegin));
             }
 
             // When percentage or hash is used comma is prohibited
             if ((token.Type == TokenType.Percentage || token.Type == TokenType.Hash) && indexOfComma != -1 && indexOfComma < indexOfClose)
             {
-                throw new InvalidDataContractException(string.Format(SRClient.ExpressionErrorParsePercentFormat, fullExpression, tokenBegin));
+                throw new InvalidDataContractException(SRClient.ExpressionErrorParsePercentFormat(fullExpression, tokenBegin));
             }
 
             // When dot is used comma is mandatory
             if (token.Type == TokenType.Dot && indexOfComma == -1)
             {
-                throw new InvalidDataContractException(string.Format(SRClient.ExpressionErrorParseDotFormat, fullExpression, tokenBegin));
+                throw new InvalidDataContractException(SRClient.ExpressionErrorParseDotFormat(fullExpression, tokenBegin));
             }
 
             int shortLength = 0;
@@ -329,7 +331,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
                 if (!int.TryParse(shortLengthString, out shortLength) || shortLength < 0)
                 {
-                    throw new InvalidDataContractException(string.Format(SRClient.ExpressionIsNotPositiveInteger, fullExpression, tokenBegin, shortLengthString));
+                    throw new InvalidDataContractException(SRClient.ExpressionIsNotPositiveInteger(fullExpression, tokenBegin, shortLengthString));
                 }
 
                 if (shortLength == 0)

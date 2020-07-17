@@ -155,24 +155,24 @@ namespace Microsoft.Azure.NotificationHubs
             if (Properties == null ||
                 (string.IsNullOrEmpty(Properties[ClientIdName]) && string.IsNullOrEmpty(Properties[ClientSecretName])))
             {
-                throw new InvalidDataContractException(string.Format(SRClient.RequiredPropertiesNotSpecified, RequiredPropertiesList));
+                throw new InvalidDataContractException(SRClient.RequiredPropertiesNotSpecified(RequiredPropertiesList));
             }
 
             if (string.IsNullOrEmpty(Properties[ClientIdName]))
             {
-                throw new InvalidDataContractException(string.Format(SRClient.RequiredPropertyNotSpecified, ClientIdName));
+                throw new InvalidDataContractException(SRClient.RequiredPropertyNotSpecified(ClientIdName));
             }
 
             if (string.IsNullOrEmpty(Properties[ClientSecretName]))
             {
-                throw new InvalidDataContractException(string.Format(SRClient.RequiredPropertyNotSpecified, ClientSecretName));
+                throw new InvalidDataContractException(SRClient.RequiredPropertyNotSpecified(ClientSecretName));
             }
 
             if (Properties.Count > 2 &&
                 Properties.Count > Properties.Keys.Intersect(
                     new[] { ClientIdName, ClientSecretName, SendUrlTemplateName, AuthTokenUrlName }).Count())
             {
-                throw new InvalidDataContractException(string.Format(SRClient.OnlyNPropertiesRequired, 2, RequiredPropertiesList));
+                throw new InvalidDataContractException(SRClient.OnlyNPropertiesRequired(2, RequiredPropertiesList));
             }
 
             Uri uri;

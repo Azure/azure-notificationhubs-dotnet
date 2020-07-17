@@ -62,11 +62,11 @@ namespace Microsoft.Azure.NotificationHubs
             }
             else if (code == HttpStatusCode.Conflict)
             {
-                if (method.Equals(HttpMethod.Delete.ToString(), StringComparison.OrdinalIgnoreCase))
+                if (method.Equals(ManagementStrings.DeleteMethod))
                 {
                     return new MessagingException(exceptionMessage);
                 }
-                if (method.Equals(HttpMethod.Put.ToString(), StringComparison.OrdinalIgnoreCase))
+                if (method.Equals(ManagementStrings.PutMethod))
                 {
                     return new MessagingException(exceptionMessage);
                 }
@@ -133,7 +133,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             if (string.IsNullOrEmpty(exceptionMessage))
             {
-                exceptionMessage = string.Format(SRClient.TrackableHttpExceptionMessageFormat, (int)code, code.ToString(), reasonPhrase, CreateClientTrackingExceptionInfo(trackingId));
+                exceptionMessage = SRClient.TrackableHttpExceptionMessageFormat((int)code, code.ToString(), reasonPhrase, CreateClientTrackingExceptionInfo(trackingId));
             }
 
             return exceptionMessage;
@@ -151,12 +151,12 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     case WebExceptionStatus.RequestCanceled:
                     case WebExceptionStatus.Timeout:
-                        exceptionMessage = string.Format(SRClient.TrackableExceptionMessageFormat, string.Format(SRClient.OperationRequestTimedOut, timeoutInMilliseconds), CreateClientTrackingExceptionInfo(trackingId));
+                        exceptionMessage = SRClient.TrackableExceptionMessageFormat(SRClient.OperationRequestTimedOut(timeoutInMilliseconds), CreateClientTrackingExceptionInfo(trackingId));
                         return new TimeoutException(exceptionMessage, webException);
 
                     case WebExceptionStatus.ConnectFailure:
                     case WebExceptionStatus.NameResolutionFailure:
-                        exceptionMessage = string.Format(SRClient.TrackableExceptionMessageFormat, exceptionMessage, CreateClientTrackingExceptionInfo(trackingId));
+                        exceptionMessage = SRClient.TrackableExceptionMessageFormat(exceptionMessage, CreateClientTrackingExceptionInfo(trackingId));
                         return new MessagingCommunicationException(exceptionMessage, webException);
                 }
             }

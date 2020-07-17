@@ -392,7 +392,7 @@
     <value>The string ('{0}...') length is {1} and it is longer than allowed. Maximum string length allowed is {2}.</value>
   </data>
   <data name="InvalidCharactersInEntityName" xml:space="preserve">
-    <value>{0} '{1}' contains character(s) that are not allowed by Notification Hubs. Entity names or path can contain only letters, numbers, periods (.), hyphens (-), and underscores (_).</value>
+    <value>{0} '{1}' contains character(s) that are not allowed by Service Bus. Entity names or path can contain only letters, numbers, periods (.), hyphens (-), and underscores (_).</value>
   </data>
   <data name="PropertyIsNullOrEmpty" xml:space="preserve">
     <value>The property '{0}' is null or empty.</value>
@@ -401,7 +401,7 @@
     <value>The operation cannot be performed because the entity has been closed or aborted.</value>
   </data>
   <data name="MessagingCommunicationError" xml:space="preserve">
-    <value>Error during communication with Notification Hubs. Check the connection information, then retry.</value>
+    <value>Error during communication with Service Bus. Check the connection information, then retry.</value>
   </data>
   <data name="BatchManagerAborted" xml:space="preserve">
     <value>This asynchronous operation was aborted because the overall batching operation was aborted.</value>
@@ -584,10 +584,10 @@
     <value>Hostname cannot be null or empty.</value>
   </data>
   <data name="MismatchServiceBusDomain" xml:space="preserve">
-    <value>The Uri provided {0} does not match Notification Hubs domain: {1}.</value>
+    <value>The Uri provided {0} does not match Service Bus domain: {1}.</value>
   </data>
   <data name="UnsupportedServiceBusDomainPrefix" xml:space="preserve">
-    <value>Uri {0} cannot support more than 1 prefix for Notification Hubs domain: {1}.</value>
+    <value>Uri {0} cannot support more than 1 prefix for Service Bus domain: {1}.</value>
   </data>
   <data name="TimeoutExceeded" xml:space="preserve">
     <value>The timeout is too large.</value>
@@ -608,7 +608,7 @@
     <value>Did not receive any bytes from expected read.</value>
   </data>
   <data name="HTTPConnectivityMode" xml:space="preserve">
-    <value>Unable to connect to Notification Hubs using HTTP connectivity mode.</value>
+    <value>Unable to connect to Service Bus using HTTP connectivity mode.</value>
   </data>
   <data name="DownstreamConnection" xml:space="preserve">
     <value>Unable to connect downstream.</value>
@@ -620,7 +620,7 @@
     <value>Unable to connect upstream.</value>
   </data>
   <data name="URIEndpoint" xml:space="preserve">
-    <value>Error creating endpoint Uri for connecting to the Notification Hubs.</value>
+    <value>Error creating endpoint Uri for connecting to the Service Bus.</value>
   </data>
   <data name="FaultyEndpointResponse" xml:space="preserve">
     <value>Faulty response from factory endpoint - locations were not returned.</value>
@@ -806,16 +806,16 @@
     <value>'{0}' is not a supported type.</value>
   </data>
   <data name="AppSettingsConfigDuplicateSetting" xml:space="preserve">
-    <value>A duplicate property '{0}' was found in the Notification Hubs connection string.</value>
+    <value>A duplicate property '{0}' was found in the Service Bus connection string.</value>
   </data>
   <data name="AppSettingsConfigMissingSetting" xml:space="preserve">
-    <value>Configuration is missing required information. Make sure the property '{0}' is defined.</value>
+    <value>Configuration is missing required information. Make sure the property '{0}' is defined as part of '{1}' key within 'appSettings' section, or Windows Azure configuration settings.</value>
   </data>
   <data name="AppSettingsConfigSettingInvalidKey" xml:space="preserve">
-    <value>The Notification Hubs connection string contains invalid property. '{0}' is not a valid property within the connection string.</value>
+    <value>The Service Bus connection string contains invalid property. '{0}' is not a valid property within the connection string.</value>
   </data>
   <data name="AppSettingsConfigSettingInvalidValue" xml:space="preserve">
-    <value>The Notification Hubs connection string contains invalid value. The property '{0}' has invalid value '{1}'.</value>
+    <value>The Service Bus connection string contains invalid value. The property '{0}' has invalid value '{1}'.</value>
   </data>
   <data name="AppSettingsCreateFactoryWithInvalidConnectionString" xml:space="preserve">
     <value>Unable to create MessagingFactory using connection string. {0} See inner exception for details. Check your connection string and then try again. For more information please see http://go.microsoft.com/fwlink/?LinkID=249089</value>
@@ -842,7 +842,7 @@
     <value>The Value of Property '{0}' cannot be less than Value of Property '{1}'.</value>
   </data>
   <data name="InternalServerError" xml:space="preserve">
-    <value>The server was unable to process the request; please retry the operation. If the problem persists, please contact your Notification Hubs administrator and provide the tracking id.</value>
+    <value>The server was unable to process the request; please retry the operation. If the problem persists, please contact your Service Bus administrator and provide the tracking id.</value>
   </data>
   <data name="MessagingEntityIsDisabledForReceiveException" xml:space="preserve">
     <value>Messaging entity '{0}' is currently disabled for Receive operations.</value>
@@ -893,7 +893,7 @@
     <value>Cannot change the MessagingFactory once it has been set.</value>
   </data>
   <data name="BacklogDeadletterDescriptionNoQueuePath" xml:space="preserve">
-    <value>The message appears to have been placed in a backlog queue by an agent that does not use the SendAvailability feature in the Notification Hubs SDK. Please do not use this queue for general scenarios.</value>
+    <value>The message appears to have been placed in a backlog queue by an agent that does not use the SendAvailability feature in the Service Bus SDK. Please do not use this queue for general scenarios.</value>
   </data>
   <data name="BacklogDeadletterDescriptionNotRetryable" xml:space="preserve">
     <value>An exception was received when sending the message to queue '{0}'. Exception: {1}: {2}</value>
@@ -1287,8 +1287,5 @@
   </data>
   <data name="ApnsHeaderDeserializationError" xml:space="preserve">
     <value>APNS Header '{0}' does not conform to Apple's guidelines that headers must begin with "apns-".</value>
-  </data>
-  <data name="NotificationHubNameLengthTooLong" xml:space="preserve">
-    <value>The name of the notification hub cannot be longer than '{0}' characters</value>
   </data>
 </root>

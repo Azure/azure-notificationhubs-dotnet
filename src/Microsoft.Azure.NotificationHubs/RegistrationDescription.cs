@@ -259,7 +259,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public string Serialize()
         {
-            this.Validate(false);
+            this.Validate(ApiVersion.Four, false);
 
             var serializer = new EntityDescriptionSerializer();
             return serializer.Serialize(this);
@@ -283,17 +283,17 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal void Validate(bool checkExpirationTime = true)
+        internal void Validate(ApiVersion version, bool checkExpirationTime = true)
         {
             if (checkExpirationTime && this.ExpirationTime != null)
             {
                 throw new InvalidDataContractException(SRClient.CannotSpecifyExpirationTime);
             }
 
-            this.OnValidate();
+            this.OnValidate(version);
         } 
 
-        internal virtual void OnValidate()
+        internal virtual void OnValidate(ApiVersion version)
         {
         }
 

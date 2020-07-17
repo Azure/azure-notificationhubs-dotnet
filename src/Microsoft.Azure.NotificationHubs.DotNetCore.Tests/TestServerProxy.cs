@@ -9,11 +9,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Extensions.Configuration;
 
     public class TestServerProxy : HttpClientHandler
     {
@@ -21,12 +23,12 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         private ConcurrentQueue<ProxyResponsePayload> _history = new ConcurrentQueue<ProxyResponsePayload>();
         private ConcurrentQueue<Guid> _guids = new ConcurrentQueue<Guid>();
         public TestServerSession Session { get => new TestServerSession { Guids = _guids.ToArray(), HttpCalls = _history.ToArray() }; }
-        public RecordingMode RecordingMode { get; set; } = RecordingMode.Passthrough;
+        public bool RecordingMode { get; set; } = false;
         public string BaseUri { get; set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (RecordingMode == RecordingMode.Recording)
+            if (RecordingMode)
             {
                 var result = await base.SendAsync(request, cancellationToken);
                 if (BaseUri == null)
@@ -55,7 +57,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
                 _history.Enqueue(responsePayload);
                 return result;
             }
-            else if (RecordingMode == RecordingMode.Playback)
+            else
             {
                 var httpResponse = new HttpResponseMessage();
                 if (_history.TryDequeue(out var payload))
@@ -81,30 +83,22 @@ namespace Microsoft.Azure.NotificationHubs.Tests
                 }
                 return httpResponse;
             }
-            else
-            {
-                return await base.SendAsync(request, cancellationToken);
-            }
         }
 
         public Guid NewGuid()
         {
-            if (RecordingMode == RecordingMode.Recording)
+            if (RecordingMode)
             {
                 var g = Guid.NewGuid();
                 _guids.Enqueue(g);
                 return g;
             }
-            else if(RecordingMode == RecordingMode.Playback)
+            else
             {
                 if (_guids.TryDequeue(out var g))
                 {
                     return g;
                 }
-                return Guid.NewGuid();
-            }
-            else
-            {
                 return Guid.NewGuid();
             }
         }
@@ -129,41 +123,34 @@ namespace Microsoft.Azure.NotificationHubs.Tests
     }
 
     public class ProxyResponsePayload
-    {
-        public string RequestUriPath { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
-        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> ContentHeaders { get; set; } = new Dictionary<string, string>();
-        public string Content { get; set; }
-
-        public override string ToString()
         {
-            var sb = new StringBuilder();
+            public string RequestUriPath { get; set; }
+            public HttpStatusCode StatusCode { get; set; }
+            public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
+            public Dictionary<string, string> ContentHeaders { get; set; } = new Dictionary<string, string>();
+            public string Content { get; set; }
 
-            sb.AppendLine($"Status: {StatusCode}");
-            sb.AppendLine($"URI: {RequestUriPath}");
-            foreach (var header in Headers)
+            public override string ToString()
             {
-                sb.AppendLine($"Header '{header.Key}': {string.Join(",", header.Value)}");
-            }
-            if (!string.IsNullOrEmpty(Content))
-            {
-                foreach (var header in ContentHeaders)
+                var sb = new StringBuilder();
+
+                sb.AppendLine($"Status: {StatusCode}");
+                sb.AppendLine($"URI: {RequestUriPath}");
+                foreach (var header in Headers)
                 {
-                    sb.AppendLine($"Content header '{header.Key}': {string.Join(",", header.Value)}");
+                    sb.AppendLine($"Header '{header.Key}': {string.Join(",", header.Value)}");
                 }
-                sb.AppendLine("-----------------------");
-                sb.AppendLine(Content);
+                if (!string.IsNullOrEmpty(Content))
+                {
+                    foreach (var header in ContentHeaders)
+                    {
+                        sb.AppendLine($"Content header '{header.Key}': {string.Join(",", header.Value)}");
+                    }
+                    sb.AppendLine("-----------------------");
+                    sb.AppendLine(Content);
+                }
+
+                return sb.ToString();
             }
-
-            return sb.ToString();
         }
-    }
-
-    public enum RecordingMode
-    {
-        Recording,
-        Playback,
-        Passthrough
-    }
 }

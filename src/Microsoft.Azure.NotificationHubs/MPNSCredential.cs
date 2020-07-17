@@ -217,11 +217,11 @@ namespace Microsoft.Azure.NotificationHubs
                     }
                     catch (CryptographicException ex)
                     {
-                        throw new InvalidDataContractException(string.Format(SRClient.MpnsCertificateError, ex.Message));
+                        throw new InvalidDataContractException(SRClient.MpnsCertificateError((object)ex.Message));
                     }
                     catch (FormatException ex)
                     {
-                        throw new InvalidDataContractException(string.Format(SRClient.MpnsCertificateError, ex.Message));
+                        throw new InvalidDataContractException(SRClient.MpnsCertificateError((object)ex.Message));
                     }
                 }
             }

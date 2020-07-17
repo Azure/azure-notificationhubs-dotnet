@@ -4,52 +4,35 @@
 // license information.
 //------------------------------------------------------------
 
-using System;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Internal;
-
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
-    /// <summary>
-    /// Represents a token provider.
-    /// </summary>
-    public abstract class TokenProvider : IDisposable
+    using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.Extensions.Internal;
+    using Microsoft.IdentityModel.Tokens;
+    using System;
+    using System.Threading.Tasks;
+
+    internal abstract class TokenProvider : IDisposable
     {
         private readonly IMemoryCache _tokenCache;
         private readonly bool _cacheTokens;
         private readonly TimeSpan _cacheExpirationTime;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TokenProvider"/> class.
-        /// </summary>
-        /// /// <param name="cacheExpirationTime">Cache expiration time.</param>
+
         protected TokenProvider(TimeSpan cacheExpirationTime)
             : this(true, cacheExpirationTime)
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TokenProvider"/> class.
-        /// </summary>
-        /// <param name="cacheTokens">Cache tokens.</param><param name="cacheExpirationTime">Cache expiration time.</param>
         protected TokenProvider(bool cacheTokens, TimeSpan cacheExpirationTime)
         {
-            _tokenCache = new MemoryCache(new MemoryCacheOptions() { Clock = new SystemClock() });
-            _cacheTokens = cacheTokens && cacheExpirationTime > TimeSpan.Zero;
-            _cacheExpirationTime = cacheExpirationTime;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.TokenProvider" /> class.
-        /// </summary>
-        /// <param name="cacheTokens">if set to <c>true</c> [cache tokens].</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">cacheSize</exception>
-        protected TokenProvider(bool cacheTokens)
-        {
-            _cacheTokens = cacheTokens;
+            this._tokenCache = new MemoryCache(new MemoryCacheOptions() { Clock = new SystemClock() });
+            this._cacheTokens = cacheTokens && cacheExpirationTime > TimeSpan.Zero;
+            this._cacheExpirationTime = cacheExpirationTime;
         }
 
         protected abstract string GenerateToken(string appliesTo);
+
 
         /// <summary>
         /// Gets whether the token provider strips query parameters.
@@ -82,15 +65,16 @@ namespace Microsoft.Azure.NotificationHubs.Auth
                 throw new ArgumentNullException("action");
             }
 
-            var normalizedAppliesTo = NormalizeAppliesTo(appliesTo);
+            var normalizedAppliesTo = this.NormalizeAppliesTo(appliesTo);
 
-            if(TryFetchFromCache(normalizedAppliesTo, action, bypassCache, out string token))
+            string token = null;
+            if(TryFetchFromCache(normalizedAppliesTo, action, bypassCache, out token))
             {
                 return token;
             }
 
             //If token is not found in cache, build signature and return
-            token = GenerateToken(normalizedAppliesTo);
+            token = this.GenerateToken(normalizedAppliesTo);
 
             //Add generated token to cache
             TrySetIntoCache(normalizedAppliesTo, action, bypassCache, token);
@@ -116,7 +100,7 @@ namespace Microsoft.Azure.NotificationHubs.Auth
 
         private string NormalizeAppliesTo(string appliesTo)
         {
-            return NormalizeUri(appliesTo, "http", StripQueryParameters, stripPath: false, ensureTrailingSlash: true);
+            return NormalizeUri(appliesTo, "http", this.StripQueryParameters, stripPath: false, ensureTrailingSlash: true);
         }
 
         private string BuildKey(string appliesTo, string action)
