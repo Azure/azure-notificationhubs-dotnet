@@ -2968,6 +2968,15 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Server is busy..
+        /// </summary>
+        internal static string ServerIsBusy {
+            get {
+                return ResourceManager.GetString("ServerIsBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A session handler is already registered or being registered..
         /// </summary>
         internal static string SessionHandlerAlreadyRegistered {

@@ -69,16 +69,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with EntityGone error code.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <returns>The exception class instance</returns>
-        public static MessagingExceptionDetail EntityGone(string message)
-        {
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.EntityGone, message);
-        }
-
-        /// <summary>
         /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with EndpointNotFound error code.
         /// </summary>
         /// <param name="message">The exception message.</param>
@@ -106,106 +96,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public static MessagingExceptionDetail ServerBusy(string message)
         {
             return new MessagingExceptionDetail((int)ExceptionErrorCodes.ServerBusy, message, ErrorLevelType.ServerError);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with StoreLockLost error code.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <returns>The exception class instance</returns>
-        public static MessagingExceptionDetail StoreLockLost(string message)
-        {
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.StoreLockLost, message);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with UnspecifiedInternalError error code.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <returns>The exception class instance</returns>
-        public static MessagingExceptionDetail UnspecifiedInternalError(string message)
-        {
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.UnspecifiedInternalError, message, ErrorLevelType.ServerError);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with SqlFiltersExceeded error code.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <returns>The exception class instance</returns>
-        public static MessagingExceptionDetail SqlFiltersExceeded(string message)
-        {
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.SqlFiltersExceeded, message);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with CorrelationFiltersExceeded error code.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <returns>The exception class instance</returns>
-        public static MessagingExceptionDetail CorrelationFiltersExceeded(string message)
-        {
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.CorrelationFiltersExceeded, message);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with SubscriptionsExceeded error code.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <returns>The exception class instance</returns>
-        public static MessagingExceptionDetail SubscriptionsExceeded(string message)
-        {
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.SubscriptionsExceeded, message);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail"/> class with EventHubAtFullCapacity error code.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <returns>The exception class instance</returns>
-        public static MessagingExceptionDetail EventHubAtFullCapacity(string message)
-        {
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.EventHubAtFullCapacity, message, ErrorLevelType.ServerError);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail" /> class with UpdateConflict error code.
-        /// </summary>
-        /// <param name="entityName">Name of the entity.</param>
-        /// <returns>
-        /// The exception class instance
-        /// </returns>
-        public static MessagingExceptionDetail EntityUpdateConflict(string entityName)
-        {
-            string message = string.Format(SRClient.MessagingEntityUpdateConflict, entityName);
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.UpdateConflict, message);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail" /> class with ConflictOperationInProgress error code.
-        /// </summary>
-        /// <param name="entityName">Name of the entity.</param>
-        /// <returns>
-        /// The exception class instance
-        /// </returns>
-        public static MessagingExceptionDetail EntityConflictOperationInProgress(string entityName)
-        {
-            string message = string.Format(SRClient.MessagingEntityRequestConflict, entityName);
-            return new MessagingExceptionDetail((int)ExceptionErrorCodes.ConflictOperationInProgress, message);
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MessagingExceptionDetail" /> class with a custom error code.
-        /// </summary>
-        /// <param name="errorCode">The error code.</param>
-        /// <param name="message">The exception message.</param>
-        /// <param name="errorLevel">The error level.</param>
-        /// <returns>
-        /// The exception class instance
-        /// </returns>
-        public static MessagingExceptionDetail ReconstructExceptionDetail(int errorCode, string message, ErrorLevelType errorLevel)
-        {
-            return new MessagingExceptionDetail(errorCode, message, errorLevel);
         }
     }
 }

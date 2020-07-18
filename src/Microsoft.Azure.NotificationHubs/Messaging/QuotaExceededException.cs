@@ -18,9 +18,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </summary>
         /// <param name="message">The exception message included with the base exception.</param>
         public QuotaExceededException(string message) :
-            base(message)
+            base(message, true)
         {
-            this.IsTransient = false;
         }
 
         /// <summary>
@@ -29,26 +28,18 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// <param name="message">The exception message included with the base exception.</param>
         /// <param name="innerException">The inner exception.</param>
         public QuotaExceededException(string message, Exception innerException) :
-            base(message, innerException)
+            base(message, true, innerException)
         {
-            this.IsTransient = false;
         }
 
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
-        internal QuotaExceededException(MessagingExceptionDetail detail) :
-            base(detail)
-        {
-            this.IsTransient = false;
-        }
-
-        /// <summary> Constructor. </summary>
-        /// <param name="detail"> Detail about the cause of the exception. </param>
+        /// <param name="retryAfter">Retry after value.</param>
         /// <param name="innerException"> The inner exception. </param>
-        internal QuotaExceededException(MessagingExceptionDetail detail, Exception innerException) :
-            base(detail, innerException)
+        internal QuotaExceededException(MessagingExceptionDetail detail, TimeSpan? retryAfter, Exception innerException) :
+            base(detail, true, innerException)
         {
-            this.IsTransient = false;
+            RetryAfter = retryAfter;
         }
 
         /// <summary> Exception Constructor for additional details embedded in a serializable stream. </summary>
@@ -57,7 +48,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         protected QuotaExceededException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {
-            this.IsTransient = false;
         }
     }
 }

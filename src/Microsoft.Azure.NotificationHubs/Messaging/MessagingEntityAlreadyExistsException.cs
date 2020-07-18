@@ -21,7 +21,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public MessagingEntityAlreadyExistsException(string entityName)
             : this(MessagingExceptionDetail.EntityConflict(string.Format(SRClient.MessagingEntityAlreadyExists, entityName)))
         {
-            this.IsTransient = false;
         }
 
         /// <summary>
@@ -30,26 +29,23 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// <param name="message">The string exception message.</param>
         /// <param name="innerException">The inner exception to be propagated with this exception to the caller..</param>
         public MessagingEntityAlreadyExistsException(string message, Exception innerException)
-            : base(MessagingExceptionDetail.EntityConflict(message), innerException)
+            : base(MessagingExceptionDetail.EntityConflict(message), false, innerException)
         {
-            this.IsTransient = false;
         }
 
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
         internal MessagingEntityAlreadyExistsException(MessagingExceptionDetail detail) :
-            base(detail)
+            base(detail, false)
         {
-            this.IsTransient = false;
         }
 
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
         /// <param name="innerException"> The inner exception. </param>
         internal MessagingEntityAlreadyExistsException(MessagingExceptionDetail detail, Exception innerException) :
-            base(detail, innerException)
+            base(detail, false, innerException)
         {
-            this.IsTransient = false;
         }
 
         /// <summary> Constructor. </summary>
@@ -58,7 +54,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         MessagingEntityAlreadyExistsException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.IsTransient = false;
         }
     }
 }

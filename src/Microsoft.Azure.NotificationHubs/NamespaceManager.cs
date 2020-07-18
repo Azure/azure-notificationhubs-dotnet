@@ -30,6 +30,7 @@ namespace Microsoft.Azure.NotificationHubs
         private const string Footer = "</content></entry>";
         private const string TrackingIdHeaderKey = "TrackingId";
         private readonly IEnumerable<Uri> _addresses;
+        private readonly NotificationHubRetryPolicy _retryPolicy;
         private readonly HttpClient _httpClient;
 
         /// <summary> Gets the first namespace base address. </summary>
@@ -197,12 +198,12 @@ namespace Microsoft.Azure.NotificationHubs
             _addresses = addresses.ToList();
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
-            if (settings?.MessageHandler != null)
+            if (settings.MessageHandler != null)
             {
                 var httpClientHandler = settings?.MessageHandler;
                 _httpClient = new HttpClient(httpClientHandler);
             }
-            else if (settings?.Proxy != null)
+            else if (settings.Proxy != null)
             {
                 var httpClientHandler = new HttpClientHandler();
                 httpClientHandler.UseProxy = true;
@@ -214,7 +215,7 @@ namespace Microsoft.Azure.NotificationHubs
                 _httpClient = new HttpClient();
             }
 
-            if (settings?.OperationTimeout == null)
+            if (settings.OperationTimeout == null)
             {
                 OperationTimeout = TimeSpan.FromSeconds(60);
             }
@@ -222,6 +223,8 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 OperationTimeout = settings.OperationTimeout.Value;
             }
+
+            _retryPolicy = settings.RetryOptions.ToRetryPolicy();
 
             _httpClient.Timeout = OperationTimeout;
         }
@@ -770,11 +773,11 @@ namespace Microsoft.Azure.NotificationHubs
                     case HttpStatusCode.Unauthorized:
                         throw new UnauthorizedAccessException(error.Detail, innerException);
                     case HttpStatusCode.BadRequest:
-                        throw new MessagingCommunicationException(error.Detail, innerException);
+                        throw new MessagingException(error.Detail, false, innerException);
                     case HttpStatusCode.Conflict:
                         throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
                     default:
-                        throw new Exception(error.Detail, innerException);
+                        throw new MessagingException(error.Detail, false, innerException);
                 }
             }
         }

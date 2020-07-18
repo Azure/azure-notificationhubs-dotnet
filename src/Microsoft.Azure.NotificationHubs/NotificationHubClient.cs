@@ -38,6 +38,7 @@ namespace Microsoft.Azure.NotificationHubs
         private readonly EntityDescriptionSerializer _entitySerializer = new EntityDescriptionSerializer();
         private readonly string _notificationHubPath;
         private readonly TokenProvider _tokenProvider;
+        private readonly NotificationHubRetryPolicy _retryPolicy;
         private NamespaceManager _namespaceManager;
 
         /// <summary>
@@ -72,13 +73,14 @@ namespace Microsoft.Azure.NotificationHubs
             var configurationManager = new KeyValueConfigurationManager(connectionString);
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
             _baseUri = GetBaseUri(configurationManager);
-
-            if (settings?.MessageHandler != null)
+            settings = settings ?? new NotificationHubClientSettings();
+            
+            if (settings.MessageHandler != null)
             {
                 var httpClientHandler = settings?.MessageHandler;
                 _httpClient = new HttpClient(httpClientHandler);
             }
-            else if (settings?.Proxy != null)
+            else if (settings.Proxy != null)
             {
                 var httpClientHandler = new HttpClientHandler();
                 httpClientHandler.UseProxy = true;
@@ -90,7 +92,7 @@ namespace Microsoft.Azure.NotificationHubs
                 _httpClient = new HttpClient();
             }
 
-            if (settings?.OperationTimeout == null)
+            if (settings.OperationTimeout == null)
             {
                 OperationTimeout = TimeSpan.FromSeconds(60);
             }
@@ -98,6 +100,8 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 OperationTimeout = settings.OperationTimeout.Value;
             }
+
+            _retryPolicy = settings.RetryOptions.ToRetryPolicy();
 
             _httpClient.Timeout = OperationTimeout;
 
