@@ -8,10 +8,8 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Net;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Extensions.Configuration;
@@ -41,17 +39,18 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             if (_configuration["NotificationHubConnectionString"] != "<insert value here before running tests>")
             {
-                _testServer.RecordingMode = true;
+                _testServer.RecordingMode = RecordingMode.Recording;
             }
             else
-            { 
+            {
+                _testServer.RecordingMode = RecordingMode.Playback;
                 _configuration["NotificationHubConnectionString"] = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
                 _configuration["NotificationHubName"] = "test";
             }
             _hubClient = new NotificationHubClient(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"], settings);
         }
 
-        Task Sleep(TimeSpan delay) => _testServer.RecordingMode ? Task.Delay(delay) : Task.FromResult(false);
+        Task Sleep(TimeSpan delay) => _testServer.RecordingMode == RecordingMode.Recording ? Task.Delay(delay) : Task.FromResult(false);
 
         async Task DeleteAllRegistrationsAndInstallations()
         {
@@ -64,7 +63,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
                 foreach (var registrationDescription in registrations)
                 {
-                   await _hubClient.DeleteRegistrationAsync(registrationDescription.RegistrationId);
+                    await _hubClient.DeleteRegistrationAsync(registrationDescription.RegistrationId);
                 }
             } while (continuationToken != null);
         }
@@ -80,14 +79,14 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             {
                 {"var1", "value1"}
             };
-            registration.Tags = new HashSet<string>(){"tag1"};
+            registration.Tags = new HashSet<string>() { "tag1" };
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
 
             Assert.NotNull(createdRegistration.RegistrationId);
             Assert.NotNull(createdRegistration.ETag);
             Assert.NotNull(createdRegistration.ExpirationTime);
-            Assert.Contains(new KeyValuePair<string,string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
             Assert.Contains("tag1", createdRegistration.Tags);
             Assert.Equal(registration.AdmRegistrationId, createdRegistration.AdmRegistrationId);
             RecordTestResults();
@@ -177,7 +176,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
-            var registration = new BaiduRegistrationDescription(_configuration["BaiduUserId"], _configuration["BaiduChannelId"], new []{"tag1"});
+            var registration = new BaiduRegistrationDescription(_configuration["BaiduUserId"], _configuration["BaiduChannelId"], new[] { "tag1" });
             registration.PushVariables = new Dictionary<string, string>()
             {
                 {"var1", "value1"}
@@ -305,7 +304,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
-            var registration = new MpnsTemplateRegistrationDescription(_configuration["MpnsDeviceToken"], "<wp:Notification xmlns:wp=\"WPNotification\" Version=\"2.0\"><wp:Tile Id=\"TileId\" Template=\"IconicTile\"><wp:Title Action=\"Clear\">Title</wp:Title></wp:Tile></wp:Notification>", new []{ "tag1" });
+            var registration = new MpnsTemplateRegistrationDescription(_configuration["MpnsDeviceToken"], "<wp:Notification xmlns:wp=\"WPNotification\" Version=\"2.0\"><wp:Tile Id=\"TileId\" Template=\"IconicTile\"><wp:Title Action=\"Clear\">Title</wp:Title></wp:Tile></wp:Notification>", new[] { "tag1" });
             registration.PushVariables = new Dictionary<string, string>()
             {
                 {"var1", "value1"}
@@ -498,7 +497,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
-            var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new []{ "tag1" });
+            var appleRegistration1 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new[] { "tag1" });
             var appleRegistration2 = new AppleRegistrationDescription(_configuration["AppleDeviceToken"], new[] { "tag1" });
             var fcmRegistration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"]);
 
@@ -557,7 +556,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
 
-            createdRegistration.Tags = new HashSet<string>(){"tag1"};
+            createdRegistration.Tags = new HashSet<string>() { "tag1" };
 
             var updatedRegistration = await _hubClient.UpdateRegistrationAsync(createdRegistration);
 
@@ -670,7 +669,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             RecordTestResults();
         }
-        
+
 
         [Fact]
         private async Task CreateOrUpdateInstallationAsync_CreateInstallationWithHeadersInTemplate_GetCreatedInstallationWithHeadersInTemplateBack()
@@ -923,7 +922,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             notification.Expiry = DateTime.Now.AddDays(1);
             notification.Priority = 5;
 
-            var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, new [] {_configuration["AppleDeviceToken"]});
+            var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, new[] { _configuration["AppleDeviceToken"] });
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
             RecordTestResults();
@@ -996,7 +995,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
             var receivedRegistration = await _hubClient.GetRegistrationAsync<RegistrationDescription>(createdRegistration.RegistrationId);
-            
+
             Assert.IsType<FcmTemplateRegistrationDescription>(receivedRegistration);
             RecordTestResults();
         }
@@ -1175,8 +1174,8 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             await _hubClient.CreateRegistrationAsync(fcmRegistration);
 
             var allRegistrations = await _hubClient.GetAllRegistrationsAsync(100);
-            
-            foreach(var registration in allRegistrations)
+
+            foreach (var registration in allRegistrations)
             {
                 Assert.IsType<FcmRegistrationDescription>(registration);
             }
@@ -1323,9 +1322,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             return null;
         }
 
-        private void LoadMockData([CallerMemberName]string methodName = "")
+        private void LoadMockData([CallerMemberName] string methodName = "")
         {
-            if (!_testServer.RecordingMode)
+            if (_testServer.RecordingMode == RecordingMode.Playback)
             {
                 string filePath = GetMockDataFilePath(methodName);
                 if (filePath == null)
@@ -1340,9 +1339,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             }
         }
 
-        private void RecordTestResults([CallerMemberName]string methodName = "")
+        private void RecordTestResults([CallerMemberName] string methodName = "")
         {
-            if (_testServer.RecordingMode)
+            if (_testServer.RecordingMode == RecordingMode.Recording)
             {
                 File.WriteAllText($"{methodName}.http", JsonConvert.SerializeObject(_testServer.Session));
             }

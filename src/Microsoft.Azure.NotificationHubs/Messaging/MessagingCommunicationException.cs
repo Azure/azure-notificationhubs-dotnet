@@ -22,7 +22,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// </summary>
         /// <param name="communicationPath">Name of the entity.</param>
         public MessagingCommunicationException(string communicationPath)
-            : this(SRClient.MessagingEndpointCommunicationError(communicationPath), null)
+            : this(string.Format(SRClient.MessagingEndpointCommunicationError, communicationPath), null)
         {
         }
 

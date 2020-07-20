@@ -122,7 +122,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
             if (string.IsNullOrWhiteSpace(this.BaiduChannelId))
             {

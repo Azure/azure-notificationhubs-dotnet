@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\NotificationHubClientTest.cs" Link="NotificationHubClientTest.cs" />
+    <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\ManagementApiE2ETests.cs" Link="ManagementApiE2ETests.cs" />
     <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\NotificationHubConnectionStringBuilderTests.cs" Link="NotificationHubConnectionStringBuilderTests.cs" />
     <Compile Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\TestServerProxy.cs" Link="TestServerProxy.cs" />
   </ItemGroup>
@@ -15,11 +16,13 @@
     <None Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\appsettings.json" Link="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\MockData\*.http">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="..\Microsoft.Azure.NotificationHubs.DotNetCore.Tests\MockData\**"
+        CopyToOutputDirectory="PreserveNewest"
+        LinkBase="MockData\"
+    />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
@@ -27,10 +30,6 @@
     <PackageReference Include="xunit.runner.console" Version="2.3.1" />
     <PackageReference Include="xunit.runner.msbuild" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MockData\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Azure.NotificationHubs\Microsoft.Azure.NotificationHubs.csproj" />
