@@ -19,13 +19,10 @@ namespace Microsoft.Azure.NotificationHubs
         private int _maxRetries = 3;
 
         /// <summary>The delay or back-off factor to apply between retry attempts.</summary>
-        private TimeSpan _delay = TimeSpan.FromSeconds(0.8);
+        private TimeSpan _delay = TimeSpan.FromSeconds(1);
 
         /// <summary>The maximum delay to allow between retry attempts.</summary>
         private TimeSpan _maxDelay = TimeSpan.FromMinutes(1);
-
-        /// <summary>The maximum duration to wait for an operation, per attempt.</summary>
-        private TimeSpan _tryTimeout = TimeSpan.FromMinutes(1);
 
         /// <summary>
         ///   The approach to use for calculating retry delays.
@@ -89,31 +86,6 @@ namespace Microsoft.Azure.NotificationHubs
                 }
 
                 _maxDelay = value;
-            }
-        }
-
-        /// <summary>
-        ///   The maximum duration to wait for completion of a single attempt, whether the initial
-        ///   attempt or a retry.
-        /// </summary>
-        ///
-        public TimeSpan TryTimeout
-        {
-            get => _tryTimeout;
-
-            set
-            {
-                if (value < TimeSpan.Zero)
-                {
-                    throw new ArgumentException("The maximum duration to wait for completion can not be negative", nameof(TryTimeout));
-                }
-
-                if (value > TimeSpan.FromHours(1))
-                {
-                    throw new ArgumentException("The maximum duration to wait for completion can not be more than 1 hour", nameof(TryTimeout));
-                }
-
-                _tryTimeout = value;
             }
         }
 

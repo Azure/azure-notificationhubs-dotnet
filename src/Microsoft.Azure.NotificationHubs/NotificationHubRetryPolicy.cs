@@ -27,34 +27,6 @@ namespace Microsoft.Azure.NotificationHubs
     ///
     public abstract class NotificationHubRetryPolicy
     {
-        private static readonly TimeSpan ServerBusyBaseSleepTime = TimeSpan.FromSeconds(10);
-
-        private readonly object serverBusyLock = new object();
-
-        // This is a volatile copy of IsServerBusy. IsServerBusy is synchronized with a lock, whereas encounteredServerBusy is kept volatile for performance reasons.
-        private volatile bool encounteredServerBusy;
-
-        /// <summary>
-        /// Determines whether or not the server returned a busy error.
-        /// </summary>
-        private bool IsServerBusy { get; set; }
-
-        /// <summary>
-        /// Gets the exception message when a server busy error is returned.
-        /// </summary>
-        private string ServerBusyExceptionMessage { get; set; }
-
-        /// <summary>
-        ///   Calculates the amount of time to allow the current attempt for an operation to
-        ///   complete before considering it to be timed out.
-        /// </summary>
-        ///
-        /// <param name="attemptCount">The number of total attempts that have been made, including the initial attempt before any retries.</param>
-        ///
-        /// <returns>The amount of time to allow for an operation to complete.</returns>
-        ///
-        public abstract TimeSpan CalculateTryTimeout(int attemptCount);
-
         /// <summary>
         ///   Calculates the amount of time to wait before another attempt should be made.
         /// </summary>
@@ -103,51 +75,33 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="operation"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        internal async Task RunOperation(
-            Func<TimeSpan, Task> operation,
+        internal async Task<T> RunOperation<T>(
+            Func<CancellationToken, Task<T>> operation,
             CancellationToken cancellationToken)
         {
             var failedAttemptCount = 0;
 
 
-            TimeSpan tryTimeout = CalculateTryTimeout(0);
-            if (IsServerBusy && tryTimeout < ServerBusyBaseSleepTime)
-            {
-                // We are in a server busy state before we start processing.
-                // Since ServerBusyBaseSleepTime > remaining time for the operation, we don't wait for the entire Sleep time.
-                await Task.Delay(tryTimeout, cancellationToken).ConfigureAwait(false);
-                throw new ServerBusyException(SRClient.ServerIsBusy);
-            }
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (IsServerBusy)
-                {
-                    await Task.Delay(ServerBusyBaseSleepTime, cancellationToken).ConfigureAwait(false);
-                }
-
                 try
                 {
-                    await operation(tryTimeout).ConfigureAwait(false);
-                    return;
+                    return await operation(cancellationToken).ConfigureAwait(false);
                 }
-
                 catch (Exception ex)
                 {
-                    Exception activeEx = ExceptionsUtility.TranslateToMessagingException(ex);
-
                     // Determine if there should be a retry for the next attempt; if so enforce the delay but do not quit the loop.
                     // Otherwise, throw the translated exception.
 
                     ++failedAttemptCount;
-                    TimeSpan? retryDelay = CalculateRetryDelay(activeEx, failedAttemptCount);
+                    TimeSpan? retryDelay = CalculateRetryDelay(ex, failedAttemptCount);
                     if (retryDelay.HasValue && !cancellationToken.IsCancellationRequested)
                     {
                         await Task.Delay(retryDelay.Value, cancellationToken).ConfigureAwait(false);
-                        tryTimeout = CalculateTryTimeout(failedAttemptCount);
                     }
                     else
                     {
-                        ExceptionDispatchInfo.Capture(activeEx)
+                        ExceptionDispatchInfo.Capture(ex)
                             .Throw();
                     }
                 }
@@ -155,51 +109,6 @@ namespace Microsoft.Azure.NotificationHubs
             // If no value has been returned nor exception thrown by this point,
             // then cancellation has been requested.
             throw new TaskCanceledException();
-        }
-
-        internal void SetServerBusy(string exceptionMessage)
-        {
-            // multiple call to this method will not prolong the timer.
-            if (encounteredServerBusy)
-            {
-                return;
-            }
-
-            lock (serverBusyLock)
-            {
-                if (!encounteredServerBusy)
-                {
-                    encounteredServerBusy = true;
-                    ServerBusyExceptionMessage = string.IsNullOrWhiteSpace(exceptionMessage) ?
-                        SRClient.ServerIsBusy : exceptionMessage;
-                    IsServerBusy = true;
-                    _ = ScheduleResetServerBusy();
-                }
-            }
-        }
-
-        internal void ResetServerBusy()
-        {
-            if (!encounteredServerBusy)
-            {
-                return;
-            }
-
-            lock (serverBusyLock)
-            {
-                if (encounteredServerBusy)
-                {
-                    encounteredServerBusy = false;
-                    ServerBusyExceptionMessage = SRClient.ServerIsBusy;
-                    IsServerBusy = false;
-                }
-            }
-        }
-
-        private async Task ScheduleResetServerBusy()
-        {
-            await Task.Delay(ServerBusyBaseSleepTime).ConfigureAwait(false);
-            ResetServerBusy();
         }
     }
 }

@@ -15,32 +15,11 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     [Serializable]
     public class MessagingException : Exception
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
-        public MessagingException(string message, bool isTransientError) :
-            this(MessagingExceptionDetail.UnknownDetail(message), isTransientError, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
-        /// <param name="innerException">The inner exception.</param>
-        public MessagingException(string message, bool isTransientError, Exception innerException) :
-            this(MessagingExceptionDetail.UnknownDetail(message), isTransientError, innerException)
-        {
-        }
-
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
         /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
         internal MessagingException(MessagingExceptionDetail detail, bool isTransientError) :
-            this(detail.Message, isTransientError)
+            this(detail, isTransientError, null)
         {
         }
 

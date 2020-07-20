@@ -9,25 +9,21 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     using System;
     using System.Runtime.Serialization;
 
-    /// <summary> Exception for signaling quota exceeded errors. </summary>
+    /// <summary> Exception for signaling authorization errors. </summary>
     [Serializable]
-    public class QuotaExceededException : MessagingException
+    public class UnauthorizedException : MessagingException
     {
-        internal readonly TimeSpan DefaultRetryTimeout = TimeSpan.FromSeconds(10);
-
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
-        /// <param name="retryAfter">Retry after value.</param>
-        internal QuotaExceededException(MessagingExceptionDetail detail, TimeSpan? retryAfter) :
-            base(detail, true)
-        {
-            RetryAfter = retryAfter ?? DefaultRetryTimeout;
+        internal UnauthorizedException(MessagingExceptionDetail detail) :
+            base(detail, false)
+        {            
         }
 
         /// <summary> Exception Constructor for additional details embedded in a serializable stream. </summary>
         /// <param name="info">    The serialization information object. </param>
         /// <param name="context"> The streaming context/source. </param>
-        protected QuotaExceededException(SerializationInfo info, StreamingContext context) :
+        protected UnauthorizedException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {
         }

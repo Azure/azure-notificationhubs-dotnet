@@ -21,6 +21,7 @@ using System.Web;
 using System.Xml;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
+using System.Net.Sockets;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -1034,16 +1035,19 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"messages/{notificationId}";
 
-            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
+                using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
                 {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, ct).ConfigureAwait(false))
                     {
-                        return (NotificationDetails)_notificationDetailsSerializer.ReadObject(responseStream);
+                        using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                        {
+                            return (NotificationDetails)_notificationDetailsSerializer.ReadObject(responseStream);
+                        }
                     }
                 }
-            }
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -1065,13 +1069,16 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += "feedbackcontainer";
 
-            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
+                using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
                 {
-                    return new Uri(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                    using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, ct).ConfigureAwait(false))
+                    {
+                        return new Uri(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -1118,14 +1125,18 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"installations/{installation.InstallationId}";
 
-            using (var request = CreateHttpRequest(HttpMethod.Put, requestUri.Uri, out var trackingId))
+            await _retryPolicy.RunOperation(async (ct) =>
             {
-                request.Content = new StringContent(installation.ToJson(), Encoding.UTF8, "application/json");
-
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
+                using (var request = CreateHttpRequest(HttpMethod.Put, requestUri.Uri, out var trackingId))
                 {
+                    request.Content = new StringContent(installation.ToJson(), Encoding.UTF8, "application/json");
+
+                    using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, ct).ConfigureAwait(false))
+                    {
+                        return true;
+                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -1184,14 +1195,18 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"installations/{installationId}";
 
-            using (var request = CreateHttpRequest(new HttpMethod("PATCH"), requestUri.Uri, out var trackingId))
+            await _retryPolicy.RunOperation(async (ct) =>
             {
-                request.Content = new StringContent(operations.ToJson(), Encoding.UTF8, "application/json-patch+json");
-
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
+                using (var request = CreateHttpRequest(new HttpMethod("PATCH"), requestUri.Uri, out var trackingId))
                 {
+                    request.Content = new StringContent(operations.ToJson(), Encoding.UTF8, "application/json-patch+json");
+
+                    using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, ct).ConfigureAwait(false))
+                    {
+                        return true;
+                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -1231,12 +1246,16 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"installations/{installationId}";
 
-            using (var request = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri, out var trackingId))
+            await _retryPolicy.RunOperation(async (ct) =>
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.NoContent, cancellationToken).ConfigureAwait(false))
+                using (var request = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri, out var trackingId))
                 {
+                    using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.NoContent, ct).ConfigureAwait(false))
+                    {
+                        return true;
+                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -1275,13 +1294,16 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"installations/{installationId}";
 
-            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                using (var response = await SendRequestAsync(request, trackingId, new [] { HttpStatusCode.OK, HttpStatusCode.NotFound }, cancellationToken))
+                using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
                 {
-                    return response.StatusCode == HttpStatusCode.OK;
+                    using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.NotFound }, ct))
+                    {
+                        return response.StatusCode == HttpStatusCode.OK;
+                    }
                 }
-            }
+            }, cancellationToken);            
         }
 
         /// <summary>
@@ -1322,14 +1344,17 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"installations/{installationId}";
 
-            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
+                using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return JsonConvert.DeserializeObject<Installation>(responseContent);
+                    using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, ct).ConfigureAwait(false))
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        return JsonConvert.DeserializeObject<Installation>(responseContent);
+                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -1357,20 +1382,23 @@ namespace Microsoft.Azure.NotificationHubs
 
             string registrationId = null;
 
-            using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                if (response.Headers.Location != null)
+                using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, ct).ConfigureAwait(false))
                 {
-                    var location = response.Headers.Location;
-                    if (location.Segments.Length == 4 && string.Equals(location.Segments[2], "registrationids/", StringComparison.OrdinalIgnoreCase))
+                    if (response.Headers.Location != null)
                     {
-                        registrationId = location.Segments[3];
+                        var location = response.Headers.Location;
+                        if (location.Segments.Length == 4 && string.Equals(location.Segments[2], "registrationids/", StringComparison.OrdinalIgnoreCase))
+                        {
+                            registrationId = location.Segments[3];
+                        }
                     }
                 }
-            }
 
-            return registrationId;
+                return registrationId;
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -2604,10 +2632,14 @@ namespace Microsoft.Azure.NotificationHubs
             var requestUri = GetGenericRequestUriBuilder();
             requestUri.Path += $"schedulednotifications/{scheduledNotificationId}";
 
-            using (var request = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri, out var trackingId))
-            using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, cancellationToken).ConfigureAwait(false))
+            await _retryPolicy.RunOperation(async (ct) =>
             {
-            }
+                using (var request = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri, out var trackingId))
+                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.OK, ct).ConfigureAwait(false))
+                {
+                    return true;
+                }
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -2711,35 +2743,38 @@ namespace Microsoft.Azure.NotificationHubs
 
             notification.ValidateAndPopulateHeaders();
 
-            using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                foreach (var item in notification.Headers)
+                using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
                 {
-                    request.Headers.Add(item.Key, item.Value);
-                }
-
-                var content = new MultipartContent("mixed", "nh-batch-multipart-boundary");
-
-                var notificationContent = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
-                notificationContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { Name = "notification" };
-                content.Add(notificationContent);
-
-                var devicesContent = new StringContent(JsonConvert.SerializeObject(deviceHandles), Encoding.UTF8, "application/json");
-                devicesContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { Name = "devices" };
-                content.Add(devicesContent);
-
-                request.Content = content;
-
-                using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, cancellationToken).ConfigureAwait(false))
-                {
-                    return new NotificationOutcome()
+                    foreach (var item in notification.Headers)
                     {
-                        State = NotificationOutcomeState.Enqueued,
-                        TrackingId = trackingId,
-                        NotificationId = GetNotificationIdFromResponse(response)
-                    };
+                        request.Headers.Add(item.Key, item.Value);
+                    }
+
+                    var content = new MultipartContent("mixed", "nh-batch-multipart-boundary");
+
+                    var notificationContent = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
+                    notificationContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { Name = "notification" };
+                    content.Add(notificationContent);
+
+                    var devicesContent = new StringContent(JsonConvert.SerializeObject(deviceHandles), Encoding.UTF8, "application/json");
+                    devicesContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { Name = "devices" };
+                    content.Add(devicesContent);
+
+                    request.Content = content;
+
+                    using (var response = await SendRequestAsync(request, trackingId, HttpStatusCode.Created, ct).ConfigureAwait(false))
+                    {
+                        return new NotificationOutcome()
+                        {
+                            State = NotificationOutcomeState.Enqueued,
+                            TrackingId = trackingId,
+                            NotificationId = GetNotificationIdFromResponse(response)
+                        };
+                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         private T SyncOp<T>(Func<Task<T>> func)
@@ -2792,52 +2827,55 @@ namespace Microsoft.Azure.NotificationHubs
 
             notification.ValidateAndPopulateHeaders();
 
-            using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                if (!string.IsNullOrWhiteSpace(deviceHandle))
+                using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
                 {
-                    request.Headers.Add("ServiceBusNotification-DeviceHandle", deviceHandle);
-                }
-
-                if (!string.IsNullOrWhiteSpace(tagExpression))
-                {
-                    request.Headers.Add("ServiceBusNotification-Tags", tagExpression);
-                }
-
-                foreach (var item in notification.Headers)
-                {
-                    request.Headers.Add(item.Key, item.Value);
-                }
-
-                request.Content = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue(notification.ContentType);
-
-                using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, cancellationToken).ConfigureAwait(false))
-                {
-                    if (EnableTestSend)
+                    if (!string.IsNullOrWhiteSpace(deviceHandle))
                     {
-                        using (var responseContent = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                        using (var reader = XmlReader.Create(responseContent, new XmlReaderSettings { CloseInput = true }))
+                        request.Headers.Add("ServiceBusNotification-DeviceHandle", deviceHandle);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(tagExpression))
+                    {
+                        request.Headers.Add("ServiceBusNotification-Tags", tagExpression);
+                    }
+
+                    foreach (var item in notification.Headers)
+                    {
+                        request.Headers.Add(item.Key, item.Value);
+                    }
+
+                    request.Content = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(notification.ContentType);
+
+                    using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, ct).ConfigureAwait(false))
+                    {
+                        if (EnableTestSend)
                         {
-                            var result = (NotificationOutcome)_debugResponseSerializer.ReadObject(reader);
-                            result.State = NotificationOutcomeState.DetailedStateAvailable;
-                            result.TrackingId = trackingId;
+                            using (var responseContent = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                            using (var reader = XmlReader.Create(responseContent, new XmlReaderSettings { CloseInput = true }))
+                            {
+                                var result = (NotificationOutcome)_debugResponseSerializer.ReadObject(reader);
+                                result.State = NotificationOutcomeState.DetailedStateAvailable;
+                                result.TrackingId = trackingId;
+                                return result;
+                            }
+                        }
+                        else
+                        {
+                            var result = new NotificationOutcome
+                            {
+                                State = NotificationOutcomeState.Enqueued,
+                                TrackingId = trackingId,
+                                NotificationId = GetNotificationIdFromResponse(response)
+                            };
+
                             return result;
                         }
                     }
-                    else
-                    {
-                        var result = new NotificationOutcome
-                        {
-                            State = NotificationOutcomeState.Enqueued,
-                            TrackingId = trackingId,
-                            NotificationId = GetNotificationIdFromResponse(response)
-                        };
-
-                        return result;
-                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         private async Task<ScheduledNotification> SendScheduledNotificationImplAsync(Notification notification, DateTimeOffset scheduledTime, string tagExpression, CancellationToken cancellationToken)
@@ -2850,43 +2888,46 @@ namespace Microsoft.Azure.NotificationHubs
 
             notification.ValidateAndPopulateHeaders();
 
-            using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                request.Headers.Add("ServiceBusNotification-ScheduleTime", scheduledTime.UtcDateTime.ToString("s", CultureInfo.InvariantCulture));
-
-                if (!string.IsNullOrWhiteSpace(tagExpression))
+                using (var request = CreateHttpRequest(HttpMethod.Post, requestUri.Uri, out var trackingId))
                 {
-                    request.Headers.Add("ServiceBusNotification-Tags", tagExpression);
-                }
+                    request.Headers.Add("ServiceBusNotification-ScheduleTime", scheduledTime.UtcDateTime.ToString("s", CultureInfo.InvariantCulture));
 
-                foreach (var item in notification.Headers)
-                {
-                    request.Headers.Add(item.Key, item.Value);
-                }
-
-                request.Content = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue(notification.ContentType);
-
-                using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, cancellationToken).ConfigureAwait(false))
-                {
-                    string notificationId = null;
-                    if (response.Headers.Location != null)
+                    if (!string.IsNullOrWhiteSpace(tagExpression))
                     {
-                        notificationId = response.Headers.Location.Segments.Last().Trim('/');
+                        request.Headers.Add("ServiceBusNotification-Tags", tagExpression);
                     }
 
-                    var result = new ScheduledNotification()
+                    foreach (var item in notification.Headers)
                     {
-                        ScheduledNotificationId = notificationId,
-                        Tags = tagExpression,
-                        ScheduledTime = scheduledTime,
-                        Payload = notification,
-                        TrackingId = trackingId
-                    };
+                        request.Headers.Add(item.Key, item.Value);
+                    }
 
-                    return result;
+                    request.Content = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(notification.ContentType);
+
+                    using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, ct).ConfigureAwait(false))
+                    {
+                        string notificationId = null;
+                        if (response.Headers.Location != null)
+                        {
+                            notificationId = response.Headers.Location.Segments.Last().Trim('/');
+                        }
+
+                        var result = new ScheduledNotification()
+                        {
+                            ScheduledNotificationId = notificationId,
+                            Tags = tagExpression,
+                            ScheduledTime = scheduledTime,
+                            Payload = notification,
+                            TrackingId = trackingId
+                        };
+
+                        return result;
+                    }
                 }
-            }
+            }, cancellationToken);
         }
 
         private async Task<CollectionQueryResult<TEntity>> GetAllEntitiesImplAsync<TEntity>(UriBuilder requestUri, string continuationToken, int top, CancellationToken cancellationToken) where TEntity : EntityDescription
@@ -2982,24 +3023,26 @@ namespace Microsoft.Azure.NotificationHubs
 
             registration.RegistrationId = null;
 
-
-            using (var request = CreateHttpRequest(operationType == EntityOperatonType.Create ? HttpMethod.Post : HttpMethod.Put, requestUri.Uri, out var trackingId))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                if (operationType == EntityOperatonType.Update)
+                using (var request = CreateHttpRequest(operationType == EntityOperatonType.Create ? HttpMethod.Post : HttpMethod.Put, requestUri.Uri, out var trackingId))
                 {
-                    request.Headers.Add(ManagementStrings.IfMatch, string.IsNullOrEmpty(registration.ETag) ? "*" : $"\"{registration.ETag}\"");
-                }
-
-                AddEntityToRequestContent(request, registration);
-
-                using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, cancellationToken).ConfigureAwait(false))
-                {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                    if (operationType == EntityOperatonType.Update)
                     {
-                        return await ReadEntityAsync<TRegistration>(responseStream).ConfigureAwait(false);
+                        request.Headers.Add(ManagementStrings.IfMatch, string.IsNullOrEmpty(registration.ETag) ? "*" : $"\"{registration.ETag}\"");
+                    }
+
+                    AddEntityToRequestContent(request, registration);
+
+                    using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, ct).ConfigureAwait(false))
+                    {
+                        using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                        {
+                            return await ReadEntityAsync<TRegistration>(responseStream).ConfigureAwait(false);
+                        }
                     }
                 }
-            }
+            }, cancellationToken);
         }
 
         private async Task<TEntity> GetEntityImplAsync<TEntity>(string entityCollection, string entityId, CancellationToken cancellationToken, bool throwIfNotFound = true) where TEntity : EntityDescription
@@ -3009,23 +3052,30 @@ namespace Microsoft.Azure.NotificationHubs
 
             HttpStatusCode[] successfulResponseStatuses;
             if (throwIfNotFound)
-                successfulResponseStatuses = new [] { HttpStatusCode.OK };
-            else
-                successfulResponseStatuses = new [] { HttpStatusCode.OK, HttpStatusCode.NotFound };
-
-            using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
             {
-                using (var response = await SendRequestAsync(request, trackingId, successfulResponseStatuses, cancellationToken).ConfigureAwait(false))
-                {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                        return null;
+                successfulResponseStatuses = new[] { HttpStatusCode.OK };
+            }
+            else
+            {
+                successfulResponseStatuses = new[] { HttpStatusCode.OK, HttpStatusCode.NotFound };
+            }
 
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
+            {
+                using (var request = CreateHttpRequest(HttpMethod.Get, requestUri.Uri, out var trackingId))
+                {
+                    using (var response = await SendRequestAsync(request, trackingId, successfulResponseStatuses, ct).ConfigureAwait(false))
                     {
-                        return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
+                        if (response.StatusCode == HttpStatusCode.NotFound)
+                            return null;
+
+                        using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                        {
+                            return await ReadEntityAsync<TEntity>(responseStream).ConfigureAwait(false);
+                        }
                     }
                 }
-            }
+            }, cancellationToken);
         }
 
         private HttpRequestMessage CreateHttpRequest(HttpMethod method, Uri requestUri, out string trackingId)
@@ -3080,14 +3130,22 @@ namespace Microsoft.Azure.NotificationHubs
                 var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
                 if (!successfulResponseStatuses.Any(s => s.Equals(response.StatusCode)))
                 {
-                    throw await response.TranslateToMessagingExceptionAsync(request.Method.Method, OperationTimeout.Milliseconds, trackingId).ConfigureAwait(false);
+                    throw await response.TranslateToMessagingExceptionAsync(trackingId).ConfigureAwait(false);
                 }
 
                 return response;
             }
-            catch (Exception e) when (!e.IsMessagingException())
+            catch (HttpRequestException ex)
             {
-                throw e.TranslateToMessagingException(OperationTimeout.Milliseconds, trackingId);
+                var innerException = ex.GetBaseException();
+                if (innerException is SocketException socketException)
+                {
+                    throw ExceptionsUtility.HandleSocketException(socketException, OperationTimeout.Milliseconds, trackingId);
+                }
+                else
+                {
+                    throw ExceptionsUtility.HandleUnexpectedException(ex, trackingId);
+                }
             }
         }
 

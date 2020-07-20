@@ -53,17 +53,6 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        ///   Calculates the amount of time to allow the current attempt for an operation to
-        ///   complete before considering it to be timed out.
-        /// </summary>
-        ///
-        /// <param name="attemptCount">The number of total attempts that have been made, including the initial attempt before any retries.</param>
-        ///
-        /// <returns>The amount of time to allow for an operation to complete.</returns>
-        ///
-        public override TimeSpan CalculateTryTimeout(int attemptCount) => Options.TryTimeout;
-
-        /// <summary>
         ///   Calculates the amount of time to wait before another attempt should be made.
         /// </summary>
         ///

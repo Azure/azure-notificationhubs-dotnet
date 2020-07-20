@@ -8,31 +8,11 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     using System;
     using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs;
 
     /// <summary> Exception for signalling messaging entity not found errors. </summary>
     [Serializable]
     public sealed class MessagingEntityNotFoundException : MessagingException
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingEntityNotFoundException"/> class.
-        /// </summary>
-        /// <param name="entityName">Name of the entity.</param>
-        public MessagingEntityNotFoundException(string entityName)
-            : this(MessagingExceptionDetail.EntityNotFound(string.Format(SRClient.MessagingEntityCouldNotBeFound, entityName)), null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingEntityNotFoundException"/> class.
-        /// </summary>
-        /// <param name="message">The string exception message.</param>
-        /// <param name="innerException">The inner exception to be propagated with this exception to the caller..</param>
-        public MessagingEntityNotFoundException(string message, Exception innerException)
-            : base(MessagingExceptionDetail.EntityNotFound(message), false, innerException)
-        {
-        }
-
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
         internal MessagingEntityNotFoundException(MessagingExceptionDetail detail) :

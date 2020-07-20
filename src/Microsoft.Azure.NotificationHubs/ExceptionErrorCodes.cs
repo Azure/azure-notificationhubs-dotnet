@@ -92,6 +92,11 @@ namespace Microsoft.Azure.NotificationHubs
         NamespaceNotFound = 40402,
 
         /// <summary>
+        /// Specifies that resource was not found
+        /// </summary>
+        ResourceNotFound = 40403,
+
+        /// <summary>
         /// Specifies that store lock was lost
         /// </summary>
         StoreLockLost = 40500,
@@ -137,6 +142,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         EntityGone = 41000,
 
+        /// <summary>
+        /// Specifies that request has been throttled
+        /// </summary>
+        Throttled = 42900,
+
 
         /// <summary>
         /// Specifies that unknown internal error ocured
@@ -167,7 +177,6 @@ namespace Microsoft.Azure.NotificationHubs
         /// Specifies that bad gateway error occured
         /// </summary>
         BadGatewayFailure = 50200,
-
 
         /// <summary>
         /// Specifies that gateway timeout error ocured

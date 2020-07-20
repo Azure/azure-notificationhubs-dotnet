@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
+using static Microsoft.Azure.NotificationHubs.Messaging.MessagingExceptionDetail;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -321,25 +323,33 @@ namespace Microsoft.Azure.NotificationHubs
                 Query = $"api-version={ApiVersion}"
             };
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                if (xmlResponse.NodeType != XmlNodeType.None)
+                using (var response = await SendAsync(() =>
                 {
-                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
-                    model.Path = path;
-                    return model;
-                }
-                else
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
                 {
-                    throw new MessagingEntityNotFoundException("Notification Hub not found");
-                }
-            };
+                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
+                    if (xmlResponse.NodeType != XmlNodeType.None)
+                    {
+                        var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                        model.Path = path;
+                        return model;
+                    }
+                    else
+                    {
+                        var trackingId = string.Empty;
+                        if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                        {
+                            trackingId = values.FirstOrDefault();
+                        }
+                        throw new MessagingEntityNotFoundException(new MessagingExceptionDetail(ExceptionErrorCodes.ConflictGeneric, "Notification Hub not found", ErrorLevelType.UserError, response.StatusCode, trackingId));
+                    }
+                };
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -370,39 +380,42 @@ namespace Microsoft.Azure.NotificationHubs
                 Scheme = Uri.UriSchemeHttps
             };
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var result = new List<NotificationHubDescription>();
-
-                using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
+                using (var response = await SendAsync(() =>
                 {
-                    // Advancing to the first element skipping non-content nodes
-                    await xmlReader.MoveToContentAsync().ConfigureAwait(false);
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
-                    if (!xmlReader.IsStartElement("feed"))
-                    {
-                        throw new FormatException("Required 'feed' element is missing");
-                    }
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
+                {
+                    var result = new List<NotificationHubDescription>();
 
-                    while (xmlReader.ReadToFollowing("entry"))
+                    using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
                     {
-                        if (xmlReader.ReadToDescendant("title"))
+                        // Advancing to the first element skipping non-content nodes
+                        await xmlReader.MoveToContentAsync().ConfigureAwait(false);
+
+                        if (!xmlReader.IsStartElement("feed"))
                         {
-                            xmlReader.ReadStartElement();
-                            var hubName = xmlReader.Value;
+                            throw new FormatException("Required 'feed' element is missing");
+                        }
 
-                            result.Add(await GetNotificationHubAsync(hubName, cancellationToken).ConfigureAwait(false));
+                        while (xmlReader.ReadToFollowing("entry"))
+                        {
+                            if (xmlReader.ReadToDescendant("title"))
+                            {
+                                xmlReader.ReadStartElement();
+                                var hubName = xmlReader.Value;
+
+                                result.Add(await GetNotificationHubAsync(hubName, cancellationToken).ConfigureAwait(false));
+                            }
                         }
                     }
-                }
 
-                return result;
-            };
+                    return result;
+                };
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -440,12 +453,15 @@ namespace Microsoft.Azure.NotificationHubs
                 Query = $"api-version={ApiVersion}"
             };
 
-            await SendAsync(() =>
+            await _retryPolicy.RunOperation(async (ct) =>
             {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri);
+                return await SendAsync(() =>
+                {
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri);
 
-                return httpRequestMessage;
-            }, cancellationToken).ConfigureAwait(false);
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false);
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -527,24 +543,27 @@ namespace Microsoft.Azure.NotificationHubs
             };
             var xmlBody = CreateRequestBody(description);
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Put, requestUri.Uri);
-                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-
-                 if (update)
-                 {
-                     httpRequestMessage.Headers.Add("If-Match", "*");
-                 }
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
-                model.Path = description.Path;
-                return model;
-            };
+                using (var response = await SendAsync(() =>
+                {
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Put, requestUri.Uri);
+                    httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+
+                    if (update)
+                    {
+                        httpRequestMessage.Headers.Add("If-Match", "*");
+                    }
+
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
+                {
+                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    model.Path = description.Path;
+                    return model;
+                };
+            }, cancellationToken);
         }
 
         /// <summary>Submits the notification hub job asynchronously.</summary>
@@ -581,17 +600,20 @@ namespace Microsoft.Azure.NotificationHubs
             };
             var xmlBody = CreateRequestBody(job);
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Post, requestUri.Uri);
-                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                return GetModelFromResponse<NotificationHubJob>(xmlResponse);
-            };
+                using (var response = await SendAsync(() =>
+                 {
+                     var httpRequestMessage = CreateHttpRequest(HttpMethod.Post, requestUri.Uri);
+                     httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+
+                     return httpRequestMessage;
+                 }, ct).ConfigureAwait(false))
+                {
+                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
+                    return GetModelFromResponse<NotificationHubJob>(xmlResponse);
+                };
+            }, cancellationToken);
         }
 
         /// <summary>Gets the notification hub job asynchronously.</summary>
@@ -617,16 +639,19 @@ namespace Microsoft.Azure.NotificationHubs
                 Query = $"api-version={ApiVersion}"
             };
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                return GetModelFromResponse<NotificationHubJob>(xmlResponse);
-            };
+                using (var response = await SendAsync(() =>
+                {
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
+                {
+                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
+                    return GetModelFromResponse<NotificationHubJob>(xmlResponse);
+                };
+            }, cancellationToken);
         }
 
 
@@ -651,30 +676,33 @@ namespace Microsoft.Azure.NotificationHubs
                 Query = $"api-version={ApiVersion}"
             };
 
-            using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri), cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var result = new List<NotificationHubJob>();
-                using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
+                using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri), ct).ConfigureAwait(false))
                 {
-                    await xmlReader.MoveToContentAsync().ConfigureAwait(false);
-
-                    if (!xmlReader.IsStartElement("feed"))
+                    var result = new List<NotificationHubJob>();
+                    using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
                     {
-                        throw new FormatException("Required 'feed' element is missing");
-                    }
+                        await xmlReader.MoveToContentAsync().ConfigureAwait(false);
 
-                    while (xmlReader.ReadToFollowing("entry"))
-                    {
-                        if (xmlReader.ReadToDescendant("content"))
+                        if (!xmlReader.IsStartElement("feed"))
                         {
-                            xmlReader.ReadStartElement();
-                            result.Add(GetModelFromResponse<NotificationHubJob>(xmlReader));
+                            throw new FormatException("Required 'feed' element is missing");
+                        }
+
+                        while (xmlReader.ReadToFollowing("entry"))
+                        {
+                            if (xmlReader.ReadToDescendant("content"))
+                            {
+                                xmlReader.ReadStartElement();
+                                result.Add(GetModelFromResponse<NotificationHubJob>(xmlReader));
+                            }
                         }
                     }
-                }
 
-                return result;
-            }
+                    return result;
+                }
+            }, cancellationToken);
         }
 
         private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
@@ -711,9 +739,6 @@ namespace Microsoft.Azure.NotificationHubs
             return xmlReader;
         }
 
-        private static async Task<XmlReader> GetXmlError(HttpResponseMessage response) =>
-            XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
-
         private static T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
         {
             var serializer = new DataContractSerializer(typeof(T));
@@ -746,38 +771,30 @@ namespace Microsoft.Azure.NotificationHubs
             var httpRequestMessage = generateHttpRequestMessage();
             httpRequestMessage.Headers.Add(TrackingIdHeaderKey, trackingId);
 
-            var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
-            response.Headers.Add(TrackingIdHeaderKey, trackingId);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return response;
-            }
-            else
-            {
-                var xmlError = await GetXmlError(response).ConfigureAwait(false);
-                var error = GetModelFromResponse<ErrorResponse>(xmlError);
-                trackingId = string.Empty;
+                var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
+                response.Headers.Add(TrackingIdHeaderKey, trackingId);
 
-                if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                if (response.IsSuccessStatusCode)
                 {
-                    trackingId = values.FirstOrDefault();
+                    return response;
                 }
-
-                var innerException = new WebException($"The remote server returned an error: {error.Code}\nTrackingId: {trackingId}");
-
-                switch (response.StatusCode)
+                else
                 {
-                    case HttpStatusCode.NotFound:
-                        throw new MessagingEntityNotFoundException(error.Detail, innerException);
-                    case HttpStatusCode.Unauthorized:
-                        throw new UnauthorizedAccessException(error.Detail, innerException);
-                    case HttpStatusCode.BadRequest:
-                        throw new MessagingException(error.Detail, false, innerException);
-                    case HttpStatusCode.Conflict:
-                        throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
-                    default:
-                        throw new MessagingException(error.Detail, false, innerException);
+                    throw await response.TranslateToMessagingExceptionAsync(trackingId).ConfigureAwait(false);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                var innerException = ex.GetBaseException();
+                if (innerException is SocketException socketException)
+                {
+                    throw ExceptionsUtility.HandleSocketException(socketException, OperationTimeout.Milliseconds, trackingId);
+                }
+                else
+                {
+                    throw ExceptionsUtility.HandleUnexpectedException(ex, trackingId);
                 }
             }
         }

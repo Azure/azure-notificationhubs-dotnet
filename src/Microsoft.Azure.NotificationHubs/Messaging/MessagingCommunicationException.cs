@@ -8,7 +8,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     using System;
     using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs;
 
     /// <summary>
     /// Exception for signaling general communication errors related to messaging operations.
@@ -19,20 +18,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="MessagingCommunicationException"/> class.
         /// </summary>
-        /// <param name="communicationPath">Name of the entity.</param>
-        /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
-        public MessagingCommunicationException(string communicationPath, bool isTransientError)
-            : this(string.Format(SRClient.MessagingEndpointCommunicationError, communicationPath), isTransientError, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingCommunicationException"/> class.
-        /// </summary>
         /// <param name="message">The string exception message.</param>
         /// <param name="innerException">The inner exception to be propagated with this exception to the caller..</param>
         /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
-        public MessagingCommunicationException(string message, bool isTransientError, Exception innerException)
+        public MessagingCommunicationException(MessagingExceptionDetail message, bool isTransientError, Exception innerException)
             : base(message, isTransientError, innerException)
         {
         }

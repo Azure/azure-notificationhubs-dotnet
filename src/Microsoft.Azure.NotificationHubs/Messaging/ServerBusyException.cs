@@ -15,34 +15,11 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     [Serializable]
     public sealed class ServerBusyException : MessagingException
     {
-        private static readonly TimeSpan ServerBusyBaseSleepTime = TimeSpan.FromSeconds(10);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServerBusyException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        public ServerBusyException(string message)
-            : this(MessagingExceptionDetail.ServerBusy(message), null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServerBusyException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        public ServerBusyException(string message, Exception innerException)
-            : this(MessagingExceptionDetail.ServerBusy(message), innerException)
-        {
-        }
-
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
-        /// <param name="innerException">The inner exception.</param>
-        internal ServerBusyException(MessagingExceptionDetail detail, Exception innerException)
-            : base(detail, true, innerException)
+        internal ServerBusyException(MessagingExceptionDetail detail)
+            : base(detail, true)
         {
-            RetryAfter = ServerBusyBaseSleepTime;
         }
 
         ServerBusyException(SerializationInfo info, StreamingContext context)
