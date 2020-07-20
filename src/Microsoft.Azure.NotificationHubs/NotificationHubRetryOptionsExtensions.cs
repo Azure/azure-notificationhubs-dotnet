@@ -11,7 +11,7 @@ namespace Microsoft.Azure.NotificationHubs
     ///   class.
     /// </summary>
     ///
-    internal static class NotificationHubRetryOptionsExtensions
+    public static class NotificationHubRetryOptionsExtensions
     {
         /// <summary>
         ///   Converts the options into a retry policy for use.

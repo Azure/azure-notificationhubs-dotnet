@@ -70,7 +70,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             _notificationHubPath = notificationHubPath;
-            _tokenProvider = Auth.SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
+            _tokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
             var configurationManager = new KeyValueConfigurationManager(connectionString);
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
             _baseUri = GetBaseUri(configurationManager);
@@ -3146,6 +3146,10 @@ namespace Microsoft.Azure.NotificationHubs
                 {
                     throw ExceptionsUtility.HandleUnexpectedException(ex, trackingId);
                 }
+            }
+            catch (XmlException ex)
+            {
+                throw ExceptionsUtility.HandleXmlException(ex, trackingId);
             }
         }
 

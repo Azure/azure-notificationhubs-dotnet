@@ -34,7 +34,11 @@ namespace Microsoft.Azure.NotificationHubs
 
         public static async Task<Exception> TranslateToMessagingExceptionAsync(this HttpResponseMessage response, string trackingId)
         {
-            var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var responseBody = string.Empty;
+            if (response.Content != null)
+            {
+                responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
             var exceptionMessage = FormatExceptionMessage(responseBody, response.StatusCode, response.ReasonPhrase, trackingId);
             var statusCode = response.StatusCode;
             var retryAfter = response.Headers.RetryAfter?.Delta;
@@ -93,7 +97,7 @@ namespace Microsoft.Azure.NotificationHubs
                 }
                 catch (XmlException ex)
                 {
-                    throw HandleXmlException(ex, trackingId);
+                    // Ignore this exception
                 }
             }
 

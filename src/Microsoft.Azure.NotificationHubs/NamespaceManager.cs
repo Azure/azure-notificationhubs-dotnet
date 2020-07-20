@@ -797,6 +797,10 @@ namespace Microsoft.Azure.NotificationHubs
                     throw ExceptionsUtility.HandleUnexpectedException(ex, trackingId);
                 }
             }
+            catch (XmlException ex)
+            {
+                throw ExceptionsUtility.HandleXmlException(ex, trackingId);
+            }
         }
     }
 }
