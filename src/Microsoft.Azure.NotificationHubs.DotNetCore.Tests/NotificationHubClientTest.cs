@@ -630,12 +630,10 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             await DeleteAllRegistrationsAndInstallations();
 
             var installationId = _testServer.NewGuid().ToString();
-            var userId = _testServer.NewGuid().ToString();
 
             var installation = new Installation
             {
                 InstallationId = installationId,
-                UserId = userId,
                 Platform = NotificationPlatform.Apns,
                 PushChannel = _configuration["AppleDeviceToken"],
                 PushVariables = new Dictionary<string, string> { { "var1", "value1" } },
@@ -659,7 +657,6 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
 
             Assert.Equal(installation.InstallationId, createdInstallation.InstallationId);
-            Assert.Equal(installation.UserId, createdInstallation.UserId);
             Assert.Equal(installation.Platform, createdInstallation.Platform);
             Assert.Equal(installation.PushChannel, createdInstallation.PushChannel);
             Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdInstallation.PushVariables);
@@ -711,6 +708,37 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        private async Task CreateOrUpdateInstallationAsync_CreateInstallationWithUserId_GetCreatedInstallationWithUserIdBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = _testServer.NewGuid().ToString();
+            var userId = _testServer.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                UserId = userId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"]
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await Sleep(TimeSpan.FromSeconds(1));
+
+            var createdInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            Assert.Equal(installation.InstallationId, createdInstallation.InstallationId);
+            Assert.Equal(installation.UserId, createdInstallation.UserId);
+            Assert.Equal(installation.Platform, createdInstallation.Platform);
+            Assert.Equal(installation.PushChannel, createdInstallation.PushChannel);
+
+            RecordTestResults();
+        }
+
+        [Fact]
         private async Task PatchInstallationAsync_CreateInstallationWithoutTagsAndAddTagThroughPatch_GetInstallationWithAddedTagBack()
         {
             LoadMockData();
@@ -742,6 +770,42 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
 
             Assert.Contains("tag1", updatedInstallation.Tags);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task PatchInstallationAsync_CreateInstallationWithoutUserIdAndAddUserIdThroughPatch_GetInstallationWithAddedUserIdBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+            var userId = _testServer.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"]
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await _hubClient.PatchInstallationAsync(installationId, new List<PartialUpdateOperation>
+            {
+                new PartialUpdateOperation()
+                {
+                    Operation = UpdateOperationType.Add,
+                    Path = "/userId",
+                    Value = userId,
+                }
+            });
+
+            await Sleep(TimeSpan.FromSeconds(1));
+
+            var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            Assert.Equal(userId, updatedInstallation.UserId);
             RecordTestResults();
         }
 
@@ -823,7 +887,36 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             notification.Expiry = DateTime.Now.AddDays(1);
             notification.Priority = 5;
 
-            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 &&u someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendAppleNativeNotification_ByUserId_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
+            notification.Expiry = DateTime.Now.AddDays(1);
+            notification.Priority = 5;
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, $"$UserId:{{{Guid.NewGuid()}}}");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+
+        [Fact]
+        private async Task SendNotificationAsync_SendAppleNativeNotification_ByInstallationId_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new AppleNotification("{\"aps\":{\"alert\":\"alert!\"}}");
+            notification.Expiry = DateTime.Now.AddDays(1);
+            notification.Priority = 5;
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, $"$InstallationId:{{{Guid.NewGuid()}}}");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
             RecordTestResults();
@@ -849,6 +942,30 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendGcmNativeNotification_ByUserId_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, $"$UserId:{{{Guid.NewGuid()}}}");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendGcmNativeNotification_ByInstallationId_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, $"$InstallationId:{{{Guid.NewGuid()}}}");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
             RecordTestResults();
@@ -885,6 +1002,30 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var notification = new WindowsNotification("<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>");
 
             var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendWindowsNativeNotification_ByUserId_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new WindowsNotification("<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, $"$UserId:{{{Guid.NewGuid()}}}");
+
+            Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task SendNotificationAsync_SendWindowsNativeNotification_ByInstallationId_GetSuccessfulResultBack()
+        {
+            LoadMockData();
+            var notification = new WindowsNotification("<toast><visual><binding template=\"ToastText01\"><text id=\"1\">bodyText</text></binding>  </visual></toast>");
+
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, $"$InstallationId:{{{Guid.NewGuid()}}}");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
             RecordTestResults();
