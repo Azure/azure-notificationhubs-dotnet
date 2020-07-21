@@ -37,7 +37,8 @@ namespace Microsoft.Azure.NotificationHubs
         ///   The factor to apply to the base delay for use as a base jitter value.
         /// </summary>
         ///
-        /// <value>This factor is used as the basis for random jitter to apply to the calculated retry duration.</value>
+        /// <value>This factor is used as the basis for random jitter to apply to the calculated retry duration. 
+        /// It defines the magnitude of a random offset for retry backoff intervals, to amortize request spikes from this client.</value>
         ///
         public double JitterFactor { get; } = 0.08;
 
