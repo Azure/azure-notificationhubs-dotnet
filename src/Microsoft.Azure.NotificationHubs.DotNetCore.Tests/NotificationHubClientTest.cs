@@ -887,7 +887,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             notification.Expiry = DateTime.Now.AddDays(1);
             notification.Priority = 5;
 
-            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 &&u someRandomTag2");
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
 
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
             RecordTestResults();
