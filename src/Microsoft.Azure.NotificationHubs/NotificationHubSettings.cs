@@ -14,7 +14,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// Notification Hubs client settings
     /// <seealso cref="NotificationHubClient" />
     /// </summary>
-    public class NotificationHubClientSettings
+    public class NotificationHubSettings
     {
         private NotificationHubRetryOptions _retryOptions = new NotificationHubRetryOptions();
 

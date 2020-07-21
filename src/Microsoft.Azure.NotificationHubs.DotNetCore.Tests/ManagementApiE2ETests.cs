@@ -28,7 +28,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string ContainerName = "ContainerName";
 
         private NamespaceManager _namespaceManager;
-        private NamespaceManagerSettings _namespaceManagerSettings;
+        private NotificationHubSettings _notificationHubSettings;
         private string _notificationHubName;
         private readonly Uri _inputFileSasUri;
         private readonly Uri _outputContainerSasUri;
@@ -299,10 +299,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 _namespaceUriString = "https://sample.servicebus.windows.net/";
             }
 
-            var namespaceManagerSettings = new NamespaceManagerSettings();
-            namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
+            var namespaceManagerSettings = new NotificationHubSettings();
             namespaceManagerSettings.MessageHandler = _testServer;
-            return new NamespaceManager(new Uri(_namespaceUriString), namespaceManagerSettings);
+            return new NamespaceManager(connectionString, namespaceManagerSettings);
         }
     }
 }

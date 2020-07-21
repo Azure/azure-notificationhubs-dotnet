@@ -31,17 +31,10 @@ namespace Microsoft.Azure.NotificationHubs
         private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
         private const string Footer = "</content></entry>";
         private const string TrackingIdHeaderKey = "TrackingId";
-        private readonly IEnumerable<Uri> _addresses;
-        private readonly NotificationHubRetryPolicy _retryPolicy;
         private readonly HttpClient _httpClient;
-
-        /// <summary> Gets the first namespace base address. </summary>
-        /// <value> The namespace base address. </value>
-        public Uri Address => _addresses.First();
-
-        /// <summary> Gets the namespace manager settings. </summary>
-        /// <value> The namespace manager settings. </value>
-        public NamespaceManagerSettings Settings { get; }
+        private readonly Uri _baseUri;
+        private readonly TokenProvider _tokenProvider;
+        private readonly NotificationHubRetryPolicy _retryPolicy;
 
         /// <summary>
         /// Gets operation timeout of the HTTP operations.
@@ -60,145 +53,31 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>An instance of the <see cref="NamespaceManager"/> class</returns>
         public static NamespaceManager CreateFromConnectionString(string connectionString)
         {
-            KeyValueConfigurationManager manager = new KeyValueConfigurationManager(connectionString);
-            return manager.CreateNamespaceManager();
+            return new NamespaceManager(connectionString);
         }
 
-        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="address">The full address of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when address is null. </exception>
-        public NamespaceManager(string address)
-            : this(new Uri(address), (TokenProvider)null)
+        /// <summary>
+        /// Initializes a new instance of <see cref="NamespaceManager"/>
+        /// </summary>
+        /// <param name="connectionString">Namespace connection string</param>
+        public NamespaceManager(string connectionString) : this(connectionString, null)
         {
         }
 
-        /// <summary> NamespaceManager Constructor. You must supply your base addresses to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="addresses">The full addresses of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when addresses field is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-        public NamespaceManager(IList<string> addresses)
-            : this(addresses, (TokenProvider)null)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="address">The full address of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when address is null. </exception>
-        public NamespaceManager(Uri address)
-            : this(address, (TokenProvider)null)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="addresses">The full addresses of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when addresses field is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        public NamespaceManager(IEnumerable<Uri> addresses)
-            : this(addresses, (TokenProvider)null)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address">The full address of the namespace.</param>
-        /// <param name="tokenProvider"> The namespace access credentials. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address.</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address is null. </exception>
-        public NamespaceManager(string address, TokenProvider tokenProvider)
-            : this(new Uri(address), tokenProvider)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses">The full addresses of the namespace.</param>
-        /// <param name="tokenProvider"> The namespace access credentials. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses.</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when addresses field is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-
-        public NamespaceManager(IList<string> addresses, TokenProvider tokenProvider)
-            : this(MessagingUtilities.GetUriList(addresses), tokenProvider)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address">The full address of the namespace. </param>
-        /// <param name="tokenProvider">A TokenProvider for the namespace </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown if address is null.  </exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when the type is not a supported Credential type. 
-        ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
-        public NamespaceManager(Uri address, TokenProvider tokenProvider)
-            : this(address, new NamespaceManagerSettings(tokenProvider))
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses">The full address of the namespace. </param>
-        /// <param name="tokenProvider">A TokenProvider for the namespace </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown if addresses is null.  </exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when the type is not a supported Credential type. 
-        ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        public NamespaceManager(IEnumerable<Uri> addresses, TokenProvider tokenProvider)
-             : this(addresses, new NamespaceManagerSettings(tokenProvider))
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address"> The full address of the namespace.  </param>
+        /// Initializes a new instance of <see cref="NamespaceManager"/> with settings
+        /// <param name="connectionString">Namespace connection string</param>
         /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
-        public NamespaceManager(string address, NamespaceManagerSettings settings)
-            : this(new Uri(address), settings)
+        public NamespaceManager(string connectionString, NotificationHubSettings settings)
         {
-        }
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
 
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses"> The full addresses of the namespace.  </param>
-        /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-        public NamespaceManager(IList<string> addresses, NamespaceManagerSettings settings)
-            : this(MessagingUtilities.GetUriList(addresses), settings)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address"> The full address of the namespace.  </param>
-        /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
-        public NamespaceManager(Uri address, NamespaceManagerSettings settings)
-            : this(new List<Uri>() { address }, settings)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses"> The full address of the namespace.  </param>
-        /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when addresses or settings is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        public NamespaceManager(IEnumerable<Uri> addresses, NamespaceManagerSettings settings)
-        {
-            MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses);
-
-            _addresses = addresses.ToList();
-            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _tokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
+            var configurationManager = new KeyValueConfigurationManager(connectionString);
+            _baseUri = GetBaseUri(configurationManager);
+            settings = settings ?? new NotificationHubSettings();
 
             if (settings.MessageHandler != null)
             {
@@ -229,6 +108,7 @@ namespace Microsoft.Azure.NotificationHubs
             _retryPolicy = settings.RetryOptions.ToRetryPolicy();
 
             _httpClient.Timeout = OperationTimeout;
+            SetUserAgent();
         }
 
         /// <summary>
@@ -316,7 +196,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(path));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = path,
@@ -332,20 +212,20 @@ namespace Microsoft.Azure.NotificationHubs
                     return httpRequestMessage;
                 }, ct).ConfigureAwait(false))
                 {
-                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
                     if (xmlResponse.NodeType != XmlNodeType.None)
                     {
-                        var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                        var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse, trackingId);
                         model.Path = path;
                         return model;
                     }
                     else
                     {
-                        var trackingId = string.Empty;
-                        if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
-                        {
-                            trackingId = values.FirstOrDefault();
-                        }
                         throw new MessagingEntityNotFoundException(new MessagingExceptionDetail(ExceptionErrorCodes.ConflictGeneric, "Notification Hub not found", ErrorLevelType.UserError, response.StatusCode, trackingId));
                     }
                 };
@@ -375,7 +255,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous get hubs operation</returns>
         public async Task<IEnumerable<NotificationHubDescription>> GetNotificationHubsAsync(CancellationToken cancellationToken)
         {
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps
             };
@@ -446,7 +326,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(path));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = path,
@@ -535,7 +415,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(description));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = description.Path,
@@ -558,8 +438,13 @@ namespace Microsoft.Azure.NotificationHubs
                     return httpRequestMessage;
                 }, ct).ConfigureAwait(false))
                 {
-                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse, trackingId);
                     model.Path = description.Path;
                     return model;
                 };
@@ -592,7 +477,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(job.OutputContainerUri));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
@@ -610,8 +495,13 @@ namespace Microsoft.Azure.NotificationHubs
                      return httpRequestMessage;
                  }, ct).ConfigureAwait(false))
                 {
-                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                    return GetModelFromResponse<NotificationHubJob>(xmlResponse);
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
+                    return GetModelFromResponse<NotificationHubJob>(xmlResponse, trackingId);
                 };
             }, cancellationToken);
         }
@@ -632,7 +522,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous get job operation</returns>
         public async Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId, string notificationHubPath, CancellationToken cancellationToken)
         {
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs/{jobId}",
@@ -648,8 +538,13 @@ namespace Microsoft.Azure.NotificationHubs
                     return httpRequestMessage;
                 }, ct).ConfigureAwait(false))
                 {
-                    var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                    return GetModelFromResponse<NotificationHubJob>(xmlResponse);
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
+                    return GetModelFromResponse<NotificationHubJob>(xmlResponse, trackingId);
                 };
             }, cancellationToken);
         }
@@ -669,7 +564,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous get jobs operation</returns>
         public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync(string notificationHubPath, CancellationToken cancellationToken)
         {
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
@@ -680,6 +575,11 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri), ct).ConfigureAwait(false))
                 {
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
                     var result = new List<NotificationHubJob>();
                     using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
                     {
@@ -695,7 +595,7 @@ namespace Microsoft.Azure.NotificationHubs
                             if (xmlReader.ReadToDescendant("content"))
                             {
                                 xmlReader.ReadStartElement();
-                                result.Add(GetModelFromResponse<NotificationHubJob>(xmlReader));
+                                result.Add(GetModelFromResponse<NotificationHubJob>(xmlReader, trackingId));
                             }
                         }
                     }
@@ -703,6 +603,21 @@ namespace Microsoft.Azure.NotificationHubs
                     return result;
                 }
             }, cancellationToken);
+        }
+
+        private static Uri GetBaseUri(KeyValueConfigurationManager manager)
+        {
+            var endpointString = manager.connectionProperties[KeyValueConfigurationManager.EndpointConfigName];
+            return new Uri(endpointString);
+        }
+
+        private void SetUserAgent()
+        {
+            if (!_httpClient.DefaultRequestHeaders.Contains(Constants.HttpUserAgentHeaderName))
+            {
+                _httpClient.DefaultRequestHeaders.Add(Constants.HttpUserAgentHeaderName,
+                    $"NHub/{ManagementStrings.ApiVersion} (api-origin=DotNetSdk;os={Environment.OSVersion.Platform};os-version={Environment.OSVersion.Version})");
+            }
         }
 
         private static string AddHeaderAndFooterToXml(string content) => $"{Header}{content}{Footer}";
@@ -725,33 +640,51 @@ namespace Microsoft.Azure.NotificationHubs
             return AddHeaderAndFooterToXml(SerializeObject(model));
         }
 
-        private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response)
+        private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response, string trackingId)
         {
-            var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
-            if (xmlReader.ReadToFollowing("entry"))
+            try
             {
-                if (xmlReader.ReadToDescendant("content"))
+                if (response.Content == null)
                 {
-                    xmlReader.ReadStartElement();
+                    return XmlReader.Create(new StringReader(string.Empty));
                 }
-            }
 
-            return xmlReader;
+                var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
+                if (xmlReader.ReadToFollowing("entry"))
+                {
+                    if (xmlReader.ReadToDescendant("content"))
+                    {
+                        xmlReader.ReadStartElement();
+                    }
+                }
+
+                return xmlReader;
+            }
+            catch (XmlException ex)
+            {
+                throw ExceptionsUtility.HandleXmlException(ex, trackingId);
+            }
         }
 
-        private static T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
+        private static T GetModelFromResponse<T>(XmlReader xmlReader, string trackingId) where T : class
         {
             var serializer = new DataContractSerializer(typeof(T));
-
-            using (xmlReader)
+            try
             {
-                return (T)serializer.ReadObject(xmlReader);
+                using (xmlReader)
+                {
+                    return (T)serializer.ReadObject(xmlReader);
+                }
+            } 
+            catch (SerializationException ex) when (ex.InnerException is XmlException xmlException)
+            {
+                throw ExceptionsUtility.HandleXmlException(xmlException, trackingId);
             }
         }
 
         private string CreateToken(Uri uri)
         {
-            return Settings.TokenProvider.GetToken(uri.ToString());
+            return _tokenProvider.GetToken(uri.ToString());
         }
 
         private HttpRequestMessage CreateHttpRequest(HttpMethod method, Uri uri)

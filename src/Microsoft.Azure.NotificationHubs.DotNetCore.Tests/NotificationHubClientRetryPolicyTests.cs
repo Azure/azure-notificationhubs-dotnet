@@ -28,7 +28,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _connectionString = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
             _hubName = "hub-name";
             _mockHttp = new MockHttpMessageHandler();
-            _nhClient = new NotificationHubClient(_connectionString, _hubName, new NotificationHubClientSettings
+            _nhClient = new NotificationHubClient(_connectionString, _hubName, new NotificationHubSettings
             {
                 MessageHandler = _mockHttp,
                 RetryOptions = new NotificationHubRetryOptions
@@ -117,7 +117,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         [Fact]
         public async Task RetryPolicyGivesUpAfterTimeout()
         {
-            _nhClient = new NotificationHubClient(_connectionString, _hubName, new NotificationHubClientSettings
+            _nhClient = new NotificationHubClient(_connectionString, _hubName, new NotificationHubSettings
             {
                 MessageHandler = _mockHttp,
                 RetryOptions = new NotificationHubRetryOptions

@@ -33,7 +33,7 @@ namespace Microsoft.Azure.NotificationHubs
         ///   Gets the full path of the notificationHub.
         /// </summary>
         /// <remarks>
-        ///   This is a relative path to the <see cref = "NamespaceManager.Address" />.
+        ///   This is a relative path to the <see cref = "NamespaceManager._baseUri" />.
         /// </remarks>
         public string Path
         {

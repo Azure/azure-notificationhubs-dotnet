@@ -20,15 +20,16 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
     {
         private readonly string _connectionString;
         private readonly string _hubName;
-        private NamespaceManager _nhClient;
+        private NamespaceManager _namespaceClient;
         private MockHttpMessageHandler _mockHttp;
+        private const string _hubResponse = "<entry xmlns=\"http://www.w3.org/2005/Atom\"><id>https://sample.servicebus.windows.net/sample?api-version=2017-04</id><title type=\"text\">sample</title><published>2020-07-02T18:03:10Z</published><updated>2020-07-02T18:03:11Z</updated><author><name>sample</name></author><link rel=\"self\" href=\"https://sample.servicebus.windows.net/sample?api-version=2017-04\"/><content type=\"application/xml\"><NotificationHubDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><RegistrationTtl>P10675199DT2H48M5.4775807S</RegistrationTtl><AuthorizationRules><AuthorizationRule i:type=\"SharedAccessAuthorizationRule\"><ClaimType>SharedAccessKey</ClaimType><ClaimValue>None</ClaimValue><Rights><AccessRights>Listen</AccessRights></Rights><CreatedTime>2020-07-02T18:03:10.772227Z</CreatedTime><ModifiedTime>2020-07-02T18:03:10.772227Z</ModifiedTime><KeyName>DefaultListenSharedAccessSignature</KeyName><PrimaryKey>xxxx</PrimaryKey><SecondaryKey>xxxx</SecondaryKey></AuthorizationRule><AuthorizationRule i:type=\"SharedAccessAuthorizationRule\"><ClaimType>SharedAccessKey</ClaimType><ClaimValue>None</ClaimValue><Rights><AccessRights>Listen</AccessRights><AccessRights>Manage</AccessRights><AccessRights>Send</AccessRights></Rights><CreatedTime>2020-07-02T18:03:10.772227Z</CreatedTime><ModifiedTime>2020-07-02T18:03:10.772227Z</ModifiedTime><KeyName>DefaultFullSharedAccessSignature</KeyName><PrimaryKey>xxxx</PrimaryKey><SecondaryKey>xxxx</SecondaryKey></AuthorizationRule></AuthorizationRules></NotificationHubDescription></content></entry>";
 
         public NamespaceManagerRetryPolicyTests()
         {
             _connectionString = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
             _hubName = "hub-name";
             _mockHttp = new MockHttpMessageHandler();
-            _nhClient = new NamespaceManager(_connectionString, _hubName, new NotificationHubClientSettings
+            _namespaceClient = new NamespaceManager(_connectionString, new NotificationHubSettings
             {
                 MessageHandler = _mockHttp,
                 RetryOptions = new NotificationHubRetryOptions
@@ -43,32 +44,14 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         [InlineData(HttpStatusCode.ServiceUnavailable)]
         [InlineData(HttpStatusCode.GatewayTimeout)]
         [InlineData(HttpStatusCode.RequestTimeout)]
-        public async Task RetryPolicyRetriesOnTransientErrorInSend(HttpStatusCode errorCode)
+        public async Task RetryPolicyRetriesOnTransientErrorInPut(HttpStatusCode errorCode)
         {
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Respond(errorCode);
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
-                    .Respond(HttpStatusCode.OK);
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
+                    .Respond(HttpStatusCode.OK, "application/xml", _hubResponse);
 
-            await _nhClient.SendDirectNotificationAsync(new FcmNotification("{}"), "123");
-
-            _mockHttp.VerifyNoOutstandingExpectation();
-        }
-
-        [Theory]
-        [InlineData(HttpStatusCode.InternalServerError)]
-        [InlineData(HttpStatusCode.ServiceUnavailable)]
-        [InlineData(HttpStatusCode.GatewayTimeout)]
-        [InlineData(HttpStatusCode.RequestTimeout)]
-        public async Task RetryPolicyRetriesOnTransientErrorInRegister(HttpStatusCode errorCode)
-        {
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/registrations")
-                    .Respond(errorCode);
-            var registrationXml = "<entry xmlns=\"http://www.w3.org/2005/Atom\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sample.servicebus.windows.net/hub-name/registrations/123456?api-version=2017-04</id><title type=\"text\">4757098718499783238-6462592605842469809-1</title><published>2019-05-13T17:12:18Z</published><updated>2019-05-13T17:12:18Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.servicebus.windows.net/sdk-sample-nh/registrations/4757098718499783238-6462592605842469809-1?api-version=2017-04\"/><content type=\"application/xml\"><GcmRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>2</ETag><ExpirationTime>9999-12-31T23:59:59.999</ExpirationTime><RegistrationId>4757098718499783238-6462592605842469809-1</RegistrationId><Tags>tag2</Tags><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId></GcmRegistrationDescription></content></entry>";
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/registrations")
-                    .Respond("application/atom+xml", registrationXml);
-
-            var registration = await _nhClient.CreateFcmNativeRegistrationAsync("123456");
+            await _namespaceClient.CreateNotificationHubAsync(_hubName);
 
             _mockHttp.VerifyNoOutstandingExpectation();
         }
@@ -76,14 +59,14 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         [Fact]
         public async Task RetryPolicyRetriesConnectionErrors()
         {
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Throw(new TimeoutException());
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Throw(new HttpRequestException("", new SocketException((int)SocketError.TimedOut)));
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
-                    .Respond(HttpStatusCode.OK);
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
+                    .Respond(HttpStatusCode.OK, "application/xml", _hubResponse);
 
-            await _nhClient.SendDirectNotificationAsync(new FcmNotification("{}"), "123");
+            await _namespaceClient.CreateNotificationHubAsync(_hubName);
 
             _mockHttp.VerifyNoOutstandingExpectation();
         }
@@ -91,14 +74,14 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         [Fact]
         public async Task RetryPolicyRetriesOnThrottling()
         {
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Respond((HttpStatusCode)403, new Dictionary<string, string> { { "Retry-After", "1" }}, new StringContent(""));
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Respond((HttpStatusCode)429, new Dictionary<string, string> { { "Retry-After", "1" } }, new StringContent(""));
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
-                    .Respond(HttpStatusCode.OK);
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
+                    .Respond(HttpStatusCode.OK, "application/xml", _hubResponse);
 
-            await _nhClient.SendDirectNotificationAsync(new FcmNotification("{}"), "123");
+            await _namespaceClient.CreateNotificationHubAsync(_hubName);
 
             _mockHttp.VerifyNoOutstandingExpectation();
         }
@@ -106,18 +89,18 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         [Fact]
         public async Task RetryPolicyRethrowsNonTransientErrors()
         {
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Respond(HttpStatusCode.NotFound);
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
-                    .Respond(HttpStatusCode.OK);
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
+                    .Respond(HttpStatusCode.OK, "application/xml", _hubResponse);
 
-            await Assert.ThrowsAsync<MessagingEntityNotFoundException>(() => _nhClient.SendDirectNotificationAsync(new FcmNotification("{}"), "123"));
+            await Assert.ThrowsAsync<MessagingEntityNotFoundException>(() => _namespaceClient.CreateNotificationHubAsync(_hubName));
         }
 
         [Fact]
         public async Task RetryPolicyGivesUpAfterTimeout()
         {
-            _nhClient = new NotificationHubClient(_connectionString, _hubName, new NotificationHubClientSettings
+            _namespaceClient = new NamespaceManager(_connectionString, new NotificationHubSettings
             {
                 MessageHandler = _mockHttp,
                 RetryOptions = new NotificationHubRetryOptions
@@ -127,14 +110,14 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 }
             });
 
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Throw(new TimeoutException());
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Throw(new TimeoutException());
-            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name/messages")
-                    .Respond(HttpStatusCode.OK);
+            _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
+                    .Respond(HttpStatusCode.OK, "application/xml", _hubResponse);
 
-            await Assert.ThrowsAsync<TimeoutException>(() => _nhClient.SendDirectNotificationAsync(new FcmNotification("{}"), "123"));
+            await Assert.ThrowsAsync<TimeoutException>(() => _namespaceClient.CreateNotificationHubAsync(_hubName));
         }
     }
 }

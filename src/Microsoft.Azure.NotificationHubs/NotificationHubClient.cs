@@ -57,7 +57,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="connectionString">Namespace connection string</param>
         /// <param name="notificationHubPath">Hub name</param>
         /// <param name="settings">Settings</param>
-        public NotificationHubClient(string connectionString, string notificationHubPath, NotificationHubClientSettings settings)
+        public NotificationHubClient(string connectionString, string notificationHubPath, NotificationHubSettings settings)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -74,7 +74,7 @@ namespace Microsoft.Azure.NotificationHubs
             var configurationManager = new KeyValueConfigurationManager(connectionString);
             _namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
             _baseUri = GetBaseUri(configurationManager);
-            settings = settings ?? new NotificationHubClientSettings();
+            settings = settings ?? new NotificationHubSettings();
             
             if (settings.MessageHandler != null)
             {
