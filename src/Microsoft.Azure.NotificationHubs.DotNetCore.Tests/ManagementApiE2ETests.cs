@@ -28,7 +28,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string ContainerName = "ContainerName";
 
         private NamespaceManager _namespaceManager;
-        private NamespaceManagerSettings _namespaceManagerSettings;
+        private NotificationHubSettings _notificationHubSettings;
         private string _notificationHubName;
         private readonly Uri _inputFileSasUri;
         private readonly Uri _outputContainerSasUri;
@@ -190,22 +190,22 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 var namespaceManager = CreateNamespaceManager(_testServer.RecordingMode, IncorrectConnectionString);
 
                 // Check that CreateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.CreateNotificationHub(_notificationHubName));
+                Assert.Throws<UnauthorizedException>(() => namespaceManager.CreateNotificationHub(_notificationHubName));
 
                 // We must create hub to recieve UnauthorizedAccessException when GetNotificationHub and DeleteNotificationHub execute
                 var notificationHubDescription = _namespaceManager.CreateNotificationHub(_notificationHubName);
 
                 // Check that GetNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.GetNotificationHub(_notificationHubName));
+                Assert.Throws<UnauthorizedException>(() => namespaceManager.GetNotificationHub(_notificationHubName));
 
                 // Check that NotificationHubExists returns UnauthorizedAccessException when connection string is incorrect
-                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.NotificationHubExists(_notificationHubName));
+                Assert.Throws<UnauthorizedException>(() => namespaceManager.NotificationHubExists(_notificationHubName));
 
                 // Check that UpdateNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.UpdateNotificationHub(notificationHubDescription));
+                Assert.Throws<UnauthorizedException>(() => namespaceManager.UpdateNotificationHub(notificationHubDescription));
 
                 // Check that DeleteNotificationHub returns UnauthorizedAccessException when connection string is incorrect
-                Assert.Throws<UnauthorizedAccessException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
+                Assert.Throws<UnauthorizedException>(() => namespaceManager.DeleteNotificationHub(_notificationHubName));
             }
             finally
             {
@@ -299,10 +299,9 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 _namespaceUriString = "https://sample.servicebus.windows.net/";
             }
 
-            var namespaceManagerSettings = new NamespaceManagerSettings();
-            namespaceManagerSettings.TokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
+            var namespaceManagerSettings = new NotificationHubSettings();
             namespaceManagerSettings.MessageHandler = _testServer;
-            return new NamespaceManager(new Uri(_namespaceUriString), namespaceManagerSettings);
+            return new NamespaceManager(connectionString, namespaceManagerSettings);
         }
     }
 }

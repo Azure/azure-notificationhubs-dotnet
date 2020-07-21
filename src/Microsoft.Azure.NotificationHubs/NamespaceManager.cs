@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
+using static Microsoft.Azure.NotificationHubs.Messaging.MessagingExceptionDetail;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -29,16 +31,10 @@ namespace Microsoft.Azure.NotificationHubs
         private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
         private const string Footer = "</content></entry>";
         private const string TrackingIdHeaderKey = "TrackingId";
-        private readonly IEnumerable<Uri> _addresses;
         private readonly HttpClient _httpClient;
-
-        /// <summary> Gets the first namespace base address. </summary>
-        /// <value> The namespace base address. </value>
-        public Uri Address => _addresses.First();
-
-        /// <summary> Gets the namespace manager settings. </summary>
-        /// <value> The namespace manager settings. </value>
-        public NamespaceManagerSettings Settings { get; }
+        private readonly Uri _baseUri;
+        private readonly TokenProvider _tokenProvider;
+        private readonly NotificationHubRetryPolicy _retryPolicy;
 
         /// <summary>
         /// Gets operation timeout of the HTTP operations.
@@ -57,152 +53,42 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>An instance of the <see cref="NamespaceManager"/> class</returns>
         public static NamespaceManager CreateFromConnectionString(string connectionString)
         {
-            KeyValueConfigurationManager manager = new KeyValueConfigurationManager(connectionString);
-            return manager.CreateNamespaceManager();
+            return new NamespaceManager(connectionString);
         }
 
-        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="address">The full address of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when address is null. </exception>
-        public NamespaceManager(string address)
-            : this(new Uri(address), (TokenProvider)null)
+        /// <summary>
+        /// Initializes a new instance of <see cref="NamespaceManager"/>
+        /// </summary>
+        /// <param name="connectionString">Namespace connection string</param>
+        public NamespaceManager(string connectionString) : this(connectionString, null)
         {
         }
 
-        /// <summary> NamespaceManager Constructor. You must supply your base addresses to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="addresses">The full addresses of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when addresses field is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-        public NamespaceManager(IList<string> addresses)
-            : this(addresses, (TokenProvider)null)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="address">The full address of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when address is null. </exception>
-        public NamespaceManager(Uri address)
-            : this(address, (TokenProvider)null)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address to access your namespace. Anonymous credentials are assumed.</summary>
-        /// <param name="addresses">The full addresses of the namespace.</param>
-        /// <exception cref="ArgumentNullException">Thrown when addresses field is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        public NamespaceManager(IEnumerable<Uri> addresses)
-            : this(addresses, (TokenProvider)null)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address">The full address of the namespace.</param>
-        /// <param name="tokenProvider"> The namespace access credentials. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address.</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address is null. </exception>
-        public NamespaceManager(string address, TokenProvider tokenProvider)
-            : this(new Uri(address), tokenProvider)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses">The full addresses of the namespace.</param>
-        /// <param name="tokenProvider"> The namespace access credentials. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses.</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when addresses field is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-
-        public NamespaceManager(IList<string> addresses, TokenProvider tokenProvider)
-            : this(MessagingUtilities.GetUriList(addresses), tokenProvider)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address">The full address of the namespace. </param>
-        /// <param name="tokenProvider">A TokenProvider for the namespace </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown if address is null.  </exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when the type is not a supported Credential type. 
-        ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
-        public NamespaceManager(Uri address, TokenProvider tokenProvider)
-            : this(address, new NamespaceManagerSettings(tokenProvider))
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses">The full address of the namespace. </param>
-        /// <param name="tokenProvider">A TokenProvider for the namespace </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown if addresses is null.  </exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when the type is not a supported Credential type. 
-        ///                                      See <see cref="NamespaceManagerSettings.TokenProvider "/> to know more about the supported types.</exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        public NamespaceManager(IEnumerable<Uri> addresses, TokenProvider tokenProvider)
-             : this(addresses, new NamespaceManagerSettings(tokenProvider))
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address"> The full address of the namespace.  </param>
+        /// Initializes a new instance of <see cref="NamespaceManager"/> with settings
+        /// <param name="connectionString">Namespace connection string</param>
         /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
-        public NamespaceManager(string address, NamespaceManagerSettings settings)
-            : this(new Uri(address), settings)
+        public NamespaceManager(string connectionString, NotificationHubSettings settings)
         {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses"> The full addresses of the namespace.  </param>
-        /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        /// <exception cref="UriFormatException"> Thrown when address is not correctly formed. </exception>
-        public NamespaceManager(IList<string> addresses, NamespaceManagerSettings settings)
-            : this(MessagingUtilities.GetUriList(addresses), settings)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="address"> The full address of the namespace.  </param>
-        /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace address, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base address, i.e. it is not a must that the credentials you specify be to the base adress itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when address or settings is null. </exception>
-        public NamespaceManager(Uri address, NamespaceManagerSettings settings)
-            : this(new List<Uri>() { address }, settings)
-        {
-        }
-
-        /// <summary> NamespaceManager Constructor. You must supply your base address and proper credentials to access your namespace. </summary>
-        /// <param name="addresses"> The full address of the namespace.  </param>
-        /// <param name="settings"> Namespace manager settings. </param>
-        /// <remarks>Even though it is not allowed to include paths in the namespace addresses, you can specify a credential that authorizes you to perform actions only on
-        ///           some sublevels off of the base addresses, i.e. it is not a must that the credentials you specify be to the base adresses itself</remarks>
-        /// <exception cref="ArgumentNullException"> Thrown when addresses or settings is null. </exception>
-        /// <exception cref="ArgumentException"> Thrown when addresses list is null or empty. </exception>
-        public NamespaceManager(IEnumerable<Uri> addresses, NamespaceManagerSettings settings)
-        {
-            MessagingUtilities.ThrowIfNullAddressesOrPathExists(addresses);
-
-            _addresses = addresses.ToList();
-            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
-
-            if (settings?.MessageHandler != null)
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
-                var httpClientHandler = settings?.MessageHandler;
+                throw new ArgumentNullException(nameof(connectionString));
+            }
+
+            _tokenProvider = SharedAccessSignatureTokenProvider.CreateSharedAccessSignatureTokenProvider(connectionString);
+            var configurationManager = new KeyValueConfigurationManager(connectionString);
+            _baseUri = GetBaseUri(configurationManager);
+            settings = settings ?? new NotificationHubSettings();
+
+            if (settings.HttpClient != null)
+            {
+                _httpClient = settings.HttpClient;
+            }
+            else if (settings.MessageHandler != null)
+            {
+                var httpClientHandler = settings.MessageHandler;
                 _httpClient = new HttpClient(httpClientHandler);
             }
-            else if (settings?.Proxy != null)
+            else if (settings.Proxy != null)
             {
                 var httpClientHandler = new HttpClientHandler();
                 httpClientHandler.UseProxy = true;
@@ -214,7 +100,7 @@ namespace Microsoft.Azure.NotificationHubs
                 _httpClient = new HttpClient();
             }
 
-            if (settings?.OperationTimeout == null)
+            if (settings.OperationTimeout == null)
             {
                 OperationTimeout = TimeSpan.FromSeconds(60);
             }
@@ -223,7 +109,10 @@ namespace Microsoft.Azure.NotificationHubs
                 OperationTimeout = settings.OperationTimeout.Value;
             }
 
+            _retryPolicy = settings.RetryOptions.ToRetryPolicy();
+
             _httpClient.Timeout = OperationTimeout;
+            SetUserAgent();
         }
 
         /// <summary>
@@ -311,32 +200,40 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(path));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = path,
                 Query = $"api-version={ApiVersion}"
             };
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                if (xmlResponse.NodeType != XmlNodeType.None)
+                using (var response = await SendAsync(() =>
                 {
-                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
-                    model.Path = path;
-                    return model;
-                }
-                else
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
                 {
-                    throw new MessagingEntityNotFoundException("Notification Hub not found");
-                }
-            };
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
+                    if (xmlResponse.NodeType != XmlNodeType.None)
+                    {
+                        var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse, trackingId);
+                        model.Path = path;
+                        return model;
+                    }
+                    else
+                    {
+                        throw new MessagingEntityNotFoundException(new MessagingExceptionDetail(ExceptionErrorCodes.ConflictGeneric, "Notification Hub not found", ErrorLevelType.UserError, response.StatusCode, trackingId));
+                    }
+                };
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -362,44 +259,47 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous get hubs operation</returns>
         public async Task<IEnumerable<NotificationHubDescription>> GetNotificationHubsAsync(CancellationToken cancellationToken)
         {
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps
             };
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var result = new List<NotificationHubDescription>();
-
-                using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
+                using (var response = await SendAsync(() =>
                 {
-                    // Advancing to the first element skipping non-content nodes
-                    await xmlReader.MoveToContentAsync().ConfigureAwait(false);
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
 
-                    if (!xmlReader.IsStartElement("feed"))
-                    {
-                        throw new FormatException("Required 'feed' element is missing");
-                    }
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
+                {
+                    var result = new List<NotificationHubDescription>();
 
-                    while (xmlReader.ReadToFollowing("entry"))
+                    using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
                     {
-                        if (xmlReader.ReadToDescendant("title"))
+                        // Advancing to the first element skipping non-content nodes
+                        await xmlReader.MoveToContentAsync().ConfigureAwait(false);
+
+                        if (!xmlReader.IsStartElement("feed"))
                         {
-                            xmlReader.ReadStartElement();
-                            var hubName = xmlReader.Value;
+                            throw new FormatException("Required 'feed' element is missing");
+                        }
 
-                            result.Add(await GetNotificationHubAsync(hubName, cancellationToken).ConfigureAwait(false));
+                        while (xmlReader.ReadToFollowing("entry"))
+                        {
+                            if (xmlReader.ReadToDescendant("title"))
+                            {
+                                xmlReader.ReadStartElement();
+                                var hubName = xmlReader.Value;
+
+                                result.Add(await GetNotificationHubAsync(hubName, cancellationToken).ConfigureAwait(false));
+                            }
                         }
                     }
-                }
 
-                return result;
-            };
+                    return result;
+                };
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -430,19 +330,22 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(path));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = path,
                 Query = $"api-version={ApiVersion}"
             };
 
-            await SendAsync(() =>
+            await _retryPolicy.RunOperation(async (ct) =>
             {
-                var httpRequestMessage = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri);
+                return await SendAsync(() =>
+                {
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Delete, requestUri.Uri);
 
-                return httpRequestMessage;
-            }, cancellationToken).ConfigureAwait(false);
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false);
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -516,7 +419,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(description));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = description.Path,
@@ -524,24 +427,32 @@ namespace Microsoft.Azure.NotificationHubs
             };
             var xmlBody = CreateRequestBody(description);
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Put, requestUri.Uri);
-                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-
-                 if (update)
-                 {
-                     httpRequestMessage.Headers.Add("If-Match", "*");
-                 }
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse);
-                model.Path = description.Path;
-                return model;
-            };
+                using (var response = await SendAsync(() =>
+                {
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Put, requestUri.Uri);
+                    httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+
+                    if (update)
+                    {
+                        httpRequestMessage.Headers.Add("If-Match", "*");
+                    }
+
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
+                {
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
+                    var model = GetModelFromResponse<NotificationHubDescription>(xmlResponse, trackingId);
+                    model.Path = description.Path;
+                    return model;
+                };
+            }, cancellationToken);
         }
 
         /// <summary>Submits the notification hub job asynchronously.</summary>
@@ -570,7 +481,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(job.OutputContainerUri));
             }
 
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
@@ -578,17 +489,25 @@ namespace Microsoft.Azure.NotificationHubs
             };
             var xmlBody = CreateRequestBody(job);
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Post, requestUri.Uri);
-                 httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                return GetModelFromResponse<NotificationHubJob>(xmlResponse);
-            };
+                using (var response = await SendAsync(() =>
+                 {
+                     var httpRequestMessage = CreateHttpRequest(HttpMethod.Post, requestUri.Uri);
+                     httpRequestMessage.Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(xmlBody)));
+
+                     return httpRequestMessage;
+                 }, ct).ConfigureAwait(false))
+                {
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
+                    return GetModelFromResponse<NotificationHubJob>(xmlResponse, trackingId);
+                };
+            }, cancellationToken);
         }
 
         /// <summary>Gets the notification hub job asynchronously.</summary>
@@ -607,23 +526,31 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous get job operation</returns>
         public async Task<NotificationHubJob> GetNotificationHubJobAsync(string jobId, string notificationHubPath, CancellationToken cancellationToken)
         {
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs/{jobId}",
                 Query = $"api-version={ApiVersion}"
             };
 
-            using (var response = await SendAsync(() =>
-             {
-                 var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
-
-                 return httpRequestMessage;
-             }, cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var xmlResponse = await GetXmlContent(response).ConfigureAwait(false);
-                return GetModelFromResponse<NotificationHubJob>(xmlResponse);
-            };
+                using (var response = await SendAsync(() =>
+                {
+                    var httpRequestMessage = CreateHttpRequest(HttpMethod.Get, requestUri.Uri);
+
+                    return httpRequestMessage;
+                }, ct).ConfigureAwait(false))
+                {
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                    {
+                        trackingId = values.FirstOrDefault();
+                    }
+                    var xmlResponse = await GetXmlContent(response, trackingId).ConfigureAwait(false);
+                    return GetModelFromResponse<NotificationHubJob>(xmlResponse, trackingId);
+                };
+            }, cancellationToken);
         }
 
 
@@ -641,36 +568,59 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>A task that represents the asynchronous get jobs operation</returns>
         public async Task<IEnumerable<NotificationHubJob>> GetNotificationHubJobsAsync(string notificationHubPath, CancellationToken cancellationToken)
         {
-            var requestUri = new UriBuilder(Address)
+            var requestUri = new UriBuilder(_baseUri)
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
                 Query = $"api-version={ApiVersion}"
             };
 
-            using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri), cancellationToken).ConfigureAwait(false))
+            return await _retryPolicy.RunOperation(async (ct) =>
             {
-                var result = new List<NotificationHubJob>();
-                using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
+                using (var response = await SendAsync(() => CreateHttpRequest(HttpMethod.Get, requestUri.Uri), ct).ConfigureAwait(false))
                 {
-                    await xmlReader.MoveToContentAsync().ConfigureAwait(false);
-
-                    if (!xmlReader.IsStartElement("feed"))
+                    var trackingId = string.Empty;
+                    if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
                     {
-                        throw new FormatException("Required 'feed' element is missing");
+                        trackingId = values.FirstOrDefault();
                     }
-
-                    while (xmlReader.ReadToFollowing("entry"))
+                    var result = new List<NotificationHubJob>();
+                    using (var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), new XmlReaderSettings { Async = true }))
                     {
-                        if (xmlReader.ReadToDescendant("content"))
+                        await xmlReader.MoveToContentAsync().ConfigureAwait(false);
+
+                        if (!xmlReader.IsStartElement("feed"))
                         {
-                            xmlReader.ReadStartElement();
-                            result.Add(GetModelFromResponse<NotificationHubJob>(xmlReader));
+                            throw new FormatException("Required 'feed' element is missing");
+                        }
+
+                        while (xmlReader.ReadToFollowing("entry"))
+                        {
+                            if (xmlReader.ReadToDescendant("content"))
+                            {
+                                xmlReader.ReadStartElement();
+                                result.Add(GetModelFromResponse<NotificationHubJob>(xmlReader, trackingId));
+                            }
                         }
                     }
-                }
 
-                return result;
+                    return result;
+                }
+            }, cancellationToken);
+        }
+
+        private static Uri GetBaseUri(KeyValueConfigurationManager manager)
+        {
+            var endpointString = manager.connectionProperties[KeyValueConfigurationManager.EndpointConfigName];
+            return new Uri(endpointString);
+        }
+
+        private void SetUserAgent()
+        {
+            if (!_httpClient.DefaultRequestHeaders.Contains(Constants.HttpUserAgentHeaderName))
+            {
+                _httpClient.DefaultRequestHeaders.Add(Constants.HttpUserAgentHeaderName,
+                    $"NHub/{ManagementStrings.ApiVersion} (api-origin=DotNetSdk;os={Environment.OSVersion.Platform};os-version={Environment.OSVersion.Version})");
             }
         }
 
@@ -694,36 +644,51 @@ namespace Microsoft.Azure.NotificationHubs
             return AddHeaderAndFooterToXml(SerializeObject(model));
         }
 
-        private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response)
+        private static async Task<XmlReader> GetXmlContent(HttpResponseMessage response, string trackingId)
         {
-            var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
-            if (xmlReader.ReadToFollowing("entry"))
+            try
             {
-                if (xmlReader.ReadToDescendant("content"))
+                if (response.Content == null)
                 {
-                    xmlReader.ReadStartElement();
+                    return XmlReader.Create(new StringReader(string.Empty));
                 }
-            }
 
-            return xmlReader;
+                var xmlReader = XmlReader.Create(await response.Content.ReadAsStreamAsync());
+                if (xmlReader.ReadToFollowing("entry"))
+                {
+                    if (xmlReader.ReadToDescendant("content"))
+                    {
+                        xmlReader.ReadStartElement();
+                    }
+                }
+
+                return xmlReader;
+            }
+            catch (XmlException ex)
+            {
+                throw ExceptionsUtility.HandleXmlException(ex, trackingId);
+            }
         }
 
-        private static async Task<XmlReader> GetXmlError(HttpResponseMessage response) =>
-            XmlReader.Create(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
-
-        private static T GetModelFromResponse<T>(XmlReader xmlReader) where T : class
+        private static T GetModelFromResponse<T>(XmlReader xmlReader, string trackingId) where T : class
         {
             var serializer = new DataContractSerializer(typeof(T));
-
-            using (xmlReader)
+            try
             {
-                return (T)serializer.ReadObject(xmlReader);
+                using (xmlReader)
+                {
+                    return (T)serializer.ReadObject(xmlReader);
+                }
+            } 
+            catch (SerializationException ex) when (ex.InnerException is XmlException xmlException)
+            {
+                throw ExceptionsUtility.HandleXmlException(xmlException, trackingId);
             }
         }
 
         private string CreateToken(Uri uri)
         {
-            return Settings.TokenProvider.GetToken(uri.ToString());
+            return _tokenProvider.GetToken(uri.ToString());
         }
 
         private HttpRequestMessage CreateHttpRequest(HttpMethod method, Uri uri)
@@ -743,39 +708,35 @@ namespace Microsoft.Azure.NotificationHubs
             var httpRequestMessage = generateHttpRequestMessage();
             httpRequestMessage.Headers.Add(TrackingIdHeaderKey, trackingId);
 
-            var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
-            response.Headers.Add(TrackingIdHeaderKey, trackingId);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return response;
+                var response = await _httpClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
+                response.Headers.Add(TrackingIdHeaderKey, trackingId);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return response;
+                }
+                else
+                {
+                    throw await response.TranslateToMessagingExceptionAsync(trackingId).ConfigureAwait(false);
+                }
             }
-            else
+            catch (HttpRequestException ex)
             {
-                var xmlError = await GetXmlError(response).ConfigureAwait(false);
-                var error = GetModelFromResponse<ErrorResponse>(xmlError);
-                trackingId = string.Empty;
-
-                if (response.Headers.TryGetValues(TrackingIdHeaderKey, out var values))
+                var innerException = ex.GetBaseException();
+                if (innerException is SocketException socketException)
                 {
-                    trackingId = values.FirstOrDefault();
+                    throw ExceptionsUtility.HandleSocketException(socketException, OperationTimeout.Milliseconds, trackingId);
                 }
-
-                var innerException = new WebException($"The remote server returned an error: {error.Code}\nTrackingId: {trackingId}");
-
-                switch (response.StatusCode)
+                else
                 {
-                    case HttpStatusCode.NotFound:
-                        throw new MessagingEntityNotFoundException(error.Detail, innerException);
-                    case HttpStatusCode.Unauthorized:
-                        throw new UnauthorizedAccessException(error.Detail, innerException);
-                    case HttpStatusCode.BadRequest:
-                        throw new MessagingCommunicationException(error.Detail, innerException);
-                    case HttpStatusCode.Conflict:
-                        throw new MessagingEntityAlreadyExistsException(error.Detail, innerException);
-                    default:
-                        throw new Exception(error.Detail, innerException);
+                    throw ExceptionsUtility.HandleUnexpectedException(ex, trackingId);
                 }
+            }
+            catch (XmlException ex)
+            {
+                throw ExceptionsUtility.HandleXmlException(ex, trackingId);
             }
         }
     }

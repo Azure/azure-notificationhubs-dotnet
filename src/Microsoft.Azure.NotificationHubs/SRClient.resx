@@ -1291,4 +1291,7 @@
   <data name="NotificationHubNameLengthTooLong" xml:space="preserve">
     <value>The name of the notification hub cannot be longer than '{0}' characters</value>
   </data>
+  <data name="ServerIsBusy" xml:space="preserve">
+    <value>Server is busy.</value>
+  </data>
 </root>

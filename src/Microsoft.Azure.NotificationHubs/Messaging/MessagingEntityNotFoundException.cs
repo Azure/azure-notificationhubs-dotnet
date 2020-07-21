@@ -8,51 +8,24 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 {
     using System;
     using System.Runtime.Serialization;
-    using System.Security;
-    using Microsoft.Azure.NotificationHubs;
 
     /// <summary> Exception for signalling messaging entity not found errors. </summary>
     [Serializable]
     public sealed class MessagingEntityNotFoundException : MessagingException
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingEntityNotFoundException"/> class.
-        /// </summary>
-        /// <param name="entityName">Name of the entity.</param>
-        public MessagingEntityNotFoundException(string entityName)
-            : this(MessagingExceptionDetail.EntityNotFound(string.Format(SRClient.MessagingEntityCouldNotBeFound, entityName)), null)
-        {
-            this.IsTransient = false;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingEntityNotFoundException"/> class.
-        /// </summary>
-        /// <param name="message">The string exception message.</param>
-        /// <param name="innerException">The inner exception to be propagated with this exception to the caller..</param>
-        public MessagingEntityNotFoundException(string message, Exception innerException)
-            : base(MessagingExceptionDetail.EntityNotFound(message), innerException)
-        {
-            this.IsTransient = false;
-        }
-
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
-        /// <param name="trackingContext"> The TrackingContext. </param>
         internal MessagingEntityNotFoundException(MessagingExceptionDetail detail) :
-            base(detail)
+            base(detail, false)
         {
-            this.IsTransient = false;
         }
 
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
-        /// <param name="trackingContext"> The TrackingContext. </param>
         /// <param name="innerException"> The inner exception. </param>
         internal MessagingEntityNotFoundException(MessagingExceptionDetail detail, Exception innerException) :
-            base(detail, innerException)
+            base(detail, false, innerException)
         {
-            this.IsTransient = false;
         }
 
         /// <summary> Constructor. </summary>
@@ -61,7 +34,6 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         MessagingEntityNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.IsTransient = false;
         }
 
         /// <summary>

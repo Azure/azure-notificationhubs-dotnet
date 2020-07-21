@@ -15,61 +15,23 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
     [Serializable]
     public class MessagingException : Exception
     {
-        // TODO 228780 Remove MessagingException constructor that does not take an exception detail and context information
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        public MessagingException(string message) :
-            base(message)
-        {
-            MessagingExceptionDetail detail = MessagingExceptionDetail.UnknownDetail(message);
-            this.Initialize(detail, DateTime.UtcNow);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        public MessagingException(string message, Exception innerException) :
-            base(message, innerException)
-        {
-            MessagingExceptionDetail detail = MessagingExceptionDetail.UnknownDetail(message);
-            this.Initialize(detail, DateTime.UtcNow);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
-        /// <param name="innerException">The inner exception.</param>
-        public MessagingException(string message, bool isTransientError, Exception innerException) :
-            base(message, innerException)
-        {
-            MessagingExceptionDetail detail = MessagingExceptionDetail.UnknownDetail(message);
-            this.Initialize(detail, DateTime.UtcNow);
-            this.IsTransient = isTransientError;
-        }
-
         /// <summary> Constructor. </summary>
-        /// <param name="detail"> </param>
-        internal MessagingException(MessagingExceptionDetail detail) :
-            base(detail.Message)
+        /// <param name="detail"> Detail about the cause of the exception. </param>
+        /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
+        internal MessagingException(MessagingExceptionDetail detail, bool isTransientError) :
+            this(detail, isTransientError, null)
         {
-            this.Initialize(detail, DateTime.UtcNow);
         }
 
         /// <summary> Constructor. </summary>
         /// <param name="detail"> Detail about the cause of the exception. </param>
+        /// <param name="isTransientError">If set to <c>true</c>, indicates it is a transient error.</param>
         /// <param name="innerException"> The inner exception. </param>
-        internal MessagingException(MessagingExceptionDetail detail, Exception innerException) :
+        internal MessagingException(MessagingExceptionDetail detail, bool isTransientError, Exception innerException) :
             base(detail.Message, innerException)
         {
             this.Initialize(detail, DateTime.UtcNow);
+            this.IsTransient = isTransientError;
         }
 
         /// <summary> Constructor. </summary>
@@ -81,6 +43,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             this.Initialize(
                 (MessagingExceptionDetail)info.GetValue("Detail", typeof(MessagingExceptionDetail)),
                 (DateTime)info.GetValue("Timestamp", typeof(DateTime)));
+            this.IsTransient = (bool)info.GetValue("IsTransient", typeof(DateTime));
         }
 
         /// <summary>
@@ -98,7 +61,12 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         /// getting a true from this property implies that user can retry the operation that 
         /// generated the exception without additional intervention. 
         /// </summary>
-        public bool IsTransient { get; protected set; }
+        public bool IsTransient { get; private set; }
+
+        /// <summary>
+        /// If set, indicates recommended time for waiting before retrying transient errors.
+        /// </summary>
+        public TimeSpan? RetryAfter { get; protected set; }
 
         /// <summary>
         /// Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with information about the exception.
@@ -110,6 +78,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             base.GetObjectData(info, context);
 
             info.AddValue("Detail", this.Detail);
+            info.AddValue("IsTransient", this.IsTransient);
             info.AddValue("Timestamp", this.Timestamp.ToString());
         }
 

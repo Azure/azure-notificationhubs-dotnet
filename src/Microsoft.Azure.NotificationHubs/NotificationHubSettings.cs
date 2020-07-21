@@ -14,8 +14,10 @@ namespace Microsoft.Azure.NotificationHubs
     /// Notification Hubs client settings
     /// <seealso cref="NotificationHubClient" />
     /// </summary>
-    public class NotificationHubClientSettings
+    public class NotificationHubSettings
     {
+        private NotificationHubRetryOptions _retryOptions = new NotificationHubRetryOptions();
+
         /// <summary>
         /// Gets or sets the proxy
         /// </summary>
@@ -27,6 +29,11 @@ namespace Microsoft.Azure.NotificationHubs
         public HttpMessageHandler MessageHandler { get; set; }
 
         /// <summary>
+        /// Gets or sets HttpClient. If set will overwrite Proxy and MessageHandler.
+        /// </summary>
+        public HttpClient HttpClient { get; set; }
+
+        /// <summary>
         /// Gets or sets operation timeout of the HTTP operations.
         /// </summary>
         /// <value>
@@ -35,5 +42,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// <remarks>
         ///  </remarks>
         public TimeSpan? OperationTimeout { get; set; }
+
+        /// <summary>
+        /// The set of options to use for determining whether a failed operation should be retried and,
+        /// if so, the amount of time to wait between retry attempts.  These options also control the
+        /// amount of time allowed for receiving messages and other interactions with the Service Bus service.
+        /// </summary>
+        public NotificationHubRetryOptions RetryOptions
+        {
+            get => _retryOptions;
+            set
+            {
+                _retryOptions = value ?? throw new ArgumentNullException(nameof(RetryOptions));
+            }
+        }
     }
 }
