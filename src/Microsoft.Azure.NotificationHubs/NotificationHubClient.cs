@@ -27,7 +27,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// <summary>
     /// Represents a notification hub client.
     /// </summary>
-    public class NotificationHubClient
+    public class NotificationHubClient : INotificationHubClient
     {
         private const int EntitiesPerRequest = 100;
         private readonly HttpClient _httpClient;

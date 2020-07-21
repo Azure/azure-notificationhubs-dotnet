@@ -23,7 +23,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// <summary>
     /// Represents a namespace manager
     /// </summary>
-    public sealed class NamespaceManager
+    public sealed class NamespaceManager : INamespaceManager
     {
         private const string ApiVersion = "2017-04";
         private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
