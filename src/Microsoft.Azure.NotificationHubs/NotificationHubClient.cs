@@ -3048,7 +3048,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             uriBuilder.Path = $"{uriBuilder.Path}{_notificationHubPath}/";
-            AddToQuery(uriBuilder, $"{ManagementStrings.ApiVersionName}={ManagementStrings.ApiVersion}");
+            AddToQuery(uriBuilder, $"{ManagementStrings.ApiVersionName}={ApiVersionConstants.MaxSupportedApiVersion}");
 
             if (EnableTestSend)
             {

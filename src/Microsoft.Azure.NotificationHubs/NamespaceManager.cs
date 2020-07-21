@@ -25,7 +25,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class NamespaceManager
     {
-        private const string ApiVersion = "2017-04";
+        private const string ApiVersion = ApiVersionConstants.MaxSupportedApiVersion;
         private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
         private const string Footer = "</content></entry>";
         private const string TrackingIdHeaderKey = "TrackingId";
