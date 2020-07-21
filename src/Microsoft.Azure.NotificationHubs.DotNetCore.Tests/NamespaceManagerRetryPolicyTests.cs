@@ -31,7 +31,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             _mockHttp = new MockHttpMessageHandler();
             _namespaceClient = new NamespaceManager(_connectionString, new NotificationHubSettings
             {
-                MessageHandler = _mockHttp,
+                HttpClient = _mockHttp.ToHttpClient(),
                 RetryOptions = new NotificationHubRetryOptions
                 {
                     Delay = TimeSpan.FromMilliseconds(10)

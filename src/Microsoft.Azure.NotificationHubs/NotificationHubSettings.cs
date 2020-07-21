@@ -29,6 +29,11 @@ namespace Microsoft.Azure.NotificationHubs
         public HttpMessageHandler MessageHandler { get; set; }
 
         /// <summary>
+        /// Gets or sets HttpClient. If set will overwrite Proxy and MessageHandler.
+        /// </summary>
+        public HttpClient HttpClient { get; set; }
+
+        /// <summary>
         /// Gets or sets operation timeout of the HTTP operations.
         /// </summary>
         /// <value>

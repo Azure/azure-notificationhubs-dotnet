@@ -79,9 +79,13 @@ namespace Microsoft.Azure.NotificationHubs
             _baseUri = GetBaseUri(configurationManager);
             settings = settings ?? new NotificationHubSettings();
 
-            if (settings.MessageHandler != null)
+            if (settings.HttpClient != null)
             {
-                var httpClientHandler = settings?.MessageHandler;
+                _httpClient = settings.HttpClient;
+            }
+            else if (settings.MessageHandler != null)
+            {
+                var httpClientHandler = settings.MessageHandler;
                 _httpClient = new HttpClient(httpClientHandler);
             }
             else if (settings.Proxy != null)
