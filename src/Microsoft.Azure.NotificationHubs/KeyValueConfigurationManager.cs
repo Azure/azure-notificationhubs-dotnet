@@ -3,12 +3,8 @@
 // Licensed under the MIT License. See License.txt in the project root for 
 // license information.
 //------------------------------------------------------------
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Text.RegularExpressions;
-using Microsoft.Azure.NotificationHubs.Auth;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -112,100 +108,6 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 throw new ConfigurationException(string.Format(SRClient.AppSettingsConfigMissingSetting, EndpointConfigName));
             }
-        }
-
-        public NamespaceManager CreateNamespaceManager()
-        {
-            Validate();
-
-            string operationTimeout = connectionProperties[OperationTimeoutConfigName];
-            IEnumerable<Uri> endpoints = GetEndpointAddresses(connectionProperties[EndpointConfigName], connectionProperties[ManagementPortConfigName]);
-            string sasKeyName = connectionProperties[SharedAccessKeyName];
-            string sasKey = connectionProperties[SharedAccessValueName];
-
-            try
-            {
-                TokenProvider provider = CreateTokenProvider(sasKeyName, sasKey);
-                if (string.IsNullOrEmpty(operationTimeout))
-                {
-                    return new NamespaceManager(endpoints, provider);
-                }
-
-                return new NamespaceManager(
-                    endpoints,
-                    new NamespaceManagerSettings()
-                    {
-                        TokenProvider = provider
-                    });
-            }
-            catch (ArgumentException e)
-            {
-                throw new ArgumentException(
-                    string.Format(SRClient.AppSettingsCreateManagerWithInvalidConnectionString, e.Message),
-                    e);
-            }
-            catch (UriFormatException e)
-            {
-                throw new ArgumentException(
-                    string.Format(SRClient.AppSettingsCreateManagerWithInvalidConnectionString, e.Message),
-                    e);
-            }
-        }
-
-        internal TokenProvider CreateTokenProvider()
-        {
-            var connectionProperty3 = connectionProperties["SharedAccessKeyName"];
-            var connectionProperty4 = connectionProperties["SharedAccessKey"];
-            var sharedAccessKeyName = connectionProperty3;
-            var sharedAccessKey = connectionProperty4;
-            return CreateTokenProvider(
-                sharedAccessKeyName,
-                sharedAccessKey);
-        }
-
-        private static TokenProvider CreateTokenProvider(
-            string sharedAccessKeyName,
-            string sharedAccessKey)
-        {
-            if (string.IsNullOrWhiteSpace(sharedAccessKey))
-            {
-                throw new ArgumentException(nameof(sharedAccessKey));
-            }
-
-            return new SharedAccessSignatureTokenProvider(sharedAccessKeyName, sharedAccessKey);
-        }
-
-        public static IList<Uri> GetEndpointAddresses(string uriEndpoints, string portString)
-        {
-            List<Uri> addresses = new List<Uri>();
-            if (string.IsNullOrWhiteSpace(uriEndpoints))
-            {
-                return addresses;
-            }
-
-            string[] endpoints = uriEndpoints.Split(new string[] { ValueSeparator }, StringSplitOptions.RemoveEmptyEntries);
-            if (endpoints == null || endpoints.Length == 0)
-            {
-                return addresses;
-            }
-
-            if (!int.TryParse(portString, out int port))
-            {
-                port = -1;
-            }
-
-            foreach (string endpoint in endpoints)
-            {
-                var address = new UriBuilder(endpoint);
-                if (port > 0)
-                {
-                    address.Port = port;
-                }
-
-                addresses.Add(address.Uri);
-            }
-
-            return addresses;
         }
     }
 }

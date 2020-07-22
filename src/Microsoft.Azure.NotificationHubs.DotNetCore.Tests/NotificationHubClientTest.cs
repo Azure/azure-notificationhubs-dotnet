@@ -32,7 +32,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             _configuration = builder.Build();
             _testServer = new TestServerProxy();
 
-            var settings = new NotificationHubClientSettings
+            var settings = new NotificationHubSettings
             {
                 MessageHandler = _testServer
             };
