@@ -41,6 +41,8 @@ namespace Microsoft.Azure.NotificationHubs
     {
         internal const string TemplateRegistrationType = "template";
         internal static Regex SingleTagRegex = new Regex(@"^(\$(InstallationId|UserId):\{[-_@#.:=\w]+\}|[-_@#.:\w]+)$", RegexOptions.IgnoreCase);
+        internal static Regex UserIdRegex = new Regex(@"\$UserId:\{([-_@#.:=\w]+)\}", RegexOptions.IgnoreCase);
+        internal static Regex InstallationIdRegex = new Regex(@"\$InstallationId:\{([-_@#.:=\w]+)\}", RegexOptions.IgnoreCase);
 
         // SQL omits - (hypen)  during comparison
         // Following values are omitted to make array length 32 - 0, 8 , I, O, X. Because work order count is fully divisble by 32  
@@ -239,12 +241,12 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException(nameof(tags), "Value cannot be null");
             }
 
-            if (Regex.Matches(tags, @"\$InstallationId:\{[-_@#.:=\w]+\}", RegexOptions.IgnoreCase).Count > 1)
+            if (InstallationIdRegex.Matches(tags).Count > 1)
             {
                 return false;
             }
 
-            if (Regex.Matches(tags, @"\$UserId:\{[-_@#.:=\w]+\}", RegexOptions.IgnoreCase).Count > 1)
+            if (UserIdRegex.Matches(tags).Count > 1)
             {
                 return false;
             }
