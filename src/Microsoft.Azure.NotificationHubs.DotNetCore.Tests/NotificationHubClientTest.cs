@@ -879,7 +879,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
 
-            Assert.Equal(string.Empty, updatedInstallation.UserId);
+            Assert.Null(updatedInstallation.UserId);
             RecordTestResults();
         }
 
