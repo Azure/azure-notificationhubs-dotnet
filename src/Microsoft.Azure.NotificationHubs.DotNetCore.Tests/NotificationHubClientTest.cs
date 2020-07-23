@@ -833,7 +833,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             {
                 new PartialUpdateOperation()
                 {
-                    Operation = UpdateOperationType.Add,
+                    Operation = UpdateOperationType.Replace,
                     Path = "/userId",
                     Value = updatedUserId,
                 }
@@ -844,6 +844,42 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
 
             Assert.Equal(updatedUserId, updatedInstallation.UserId);
+            RecordTestResults();
+        }
+
+        [Fact]
+        private async Task PatchInstallationAsync_CreateInstallationWithUserIdAndRemoveUserIdThroughPatch_GetInstallationWithoutUserIdBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+            var userId = _testServer.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"],
+                UserId = userId
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            await _hubClient.PatchInstallationAsync(installationId, new List<PartialUpdateOperation>
+            {
+                new PartialUpdateOperation()
+                {
+                    Operation = UpdateOperationType.Remove,
+                    Path = "/userId",
+                }
+            });
+
+            await Sleep(TimeSpan.FromSeconds(1));
+
+            var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            Assert.Equal(string.Empty, updatedInstallation.UserId);
             RecordTestResults();
         }
 
