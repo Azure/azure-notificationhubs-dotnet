@@ -1,0 +1,76 @@
+{
+   "HttpCalls":[
+      {
+         "RequestUriPath":"/sdk-sample-nh/registrations?api-version=2020-06&$top=100",
+         "StatusCode":200,
+         "Headers":{
+            "Date":"Thu, 23 Jul 2020 06:14:27 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0",
+            "Transfer-Encoding":"chunked",
+            "Strict-Transport-Security":"max-age=2592000"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/atom+xml; type=feed; charset=utf-8"
+         },
+         "Content":"<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations?api-version=2020-06&amp;$top=100</id><updated>2020-07-23T06:14:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations?api-version=2020-06&amp;$top=100\"/><entry a:etag=\"W/&quot;2&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations/2958766974336277382-3933120332950681062-2?api-version=2020-06&amp;$top=100</id><title type=\"text\">2958766974336277382-3933120332950681062-2</title><published>2020-07-23T06:14:27Z</published><updated>2020-07-23T06:14:27Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations/2958766974336277382-3933120332950681062-2?api-version=2020-06&amp;$top=100\"/><content type=\"application/xml\"><AppleRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>2</ETag><ExpirationTime>9999-12-31T23:59:59.9999999Z</ExpirationTime><RegistrationId>2958766974336277382-3933120332950681062-2</RegistrationId><Tags>$InstallationId:{8bd50745-1399-4f29-a8c7-34d1e0472e4e}</Tags><DeviceToken>62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA</DeviceToken></AppleRegistrationDescription></content></entry></feed>"
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/registrations/2958766974336277382-3933120332950681062-2?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Date":"Thu, 23 Jul 2020 06:14:27 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0",
+            "Strict-Transport-Security":"max-age=2592000"
+         },
+         "ContentHeaders":{
+            "Content-Length":"0"
+         },
+         "Content":null
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/d578eed1-1eef-4dfa-badf-a3a0c14e71e4?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Date":"Thu, 23 Jul 2020 06:14:27 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0",
+            "Strict-Transport-Security":"max-age=2592000"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/xml; charset=utf-8",
+            "Content-Length":"0"
+         },
+         "Content":null
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/d578eed1-1eef-4dfa-badf-a3a0c14e71e4?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Date":"Thu, 23 Jul 2020 06:14:27 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0",
+            "Strict-Transport-Security":"max-age=2592000"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/xml; charset=utf-8",
+            "Content-Length":"0"
+         },
+         "Content":null
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/d578eed1-1eef-4dfa-badf-a3a0c14e71e4?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Date":"Thu, 23 Jul 2020 06:14:29 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0",
+            "Transfer-Encoding":"chunked",
+            "Strict-Transport-Security":"max-age=2592000"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/xml; charset=utf-8"
+         },
+         "Content":"{\"installationId\":\"d578eed1-1eef-4dfa-badf-a3a0c14e71e4\",\"pushChannel\":\"62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA\",\"pushChannelExpired\":false,\"platform\":\"apns\",\"expirationTime\":\"9999-12-31T23:59:59.9999999Z\"}"
+      }
+   ],
+   "Guids":[
+      "22ce92d1-f035-470c-a5d4-5b10e2fb25c1"
+   ]
+}
