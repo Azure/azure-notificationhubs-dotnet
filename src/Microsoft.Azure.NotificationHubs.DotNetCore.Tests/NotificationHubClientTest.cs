@@ -810,6 +810,44 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        private async Task PatchInstallationAsync_CreateInstallationWithUserIdAndUpdateUserIdThroughPatch_GetInstallationWithUpdatedUserIdBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var installationId = Guid.NewGuid().ToString();
+            var userId = _testServer.NewGuid().ToString();
+
+            var installation = new Installation
+            {
+                InstallationId = installationId,
+                Platform = NotificationPlatform.Apns,
+                PushChannel = _configuration["AppleDeviceToken"],
+                UserId = userId
+            };
+
+            await _hubClient.CreateOrUpdateInstallationAsync(installation);
+
+            var updatedUserId = _testServer.NewGuid().ToString();
+            await _hubClient.PatchInstallationAsync(installationId, new List<PartialUpdateOperation>
+            {
+                new PartialUpdateOperation()
+                {
+                    Operation = UpdateOperationType.Add,
+                    Path = "/userId",
+                    Value = updatedUserId,
+                }
+            });
+
+            await Sleep(TimeSpan.FromSeconds(1));
+
+            var updatedInstallation = await _hubClient.GetInstallationAsync(installationId);
+
+            Assert.Equal(updatedUserId, updatedInstallation.UserId);
+            RecordTestResults();
+        }
+
+        [Fact]
         private async Task DeleteInstallationAsync_CreateAndDeleteInstallation_InstallationIsDeleted()
         {
             LoadMockData();
