@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
 using Microsoft.Azure.NotificationHubs.Tests;
 using Microsoft.Azure.Storage;
