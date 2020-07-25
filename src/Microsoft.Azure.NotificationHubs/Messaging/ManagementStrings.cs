@@ -140,7 +140,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string PnsErrorDetailsUri = "PnsErrorDetailsUri";
 
         public const string ApiVersionName = "api-version";
-        public const string ApiVersion = "2017-04";
+        public const string ApiVersion = "2020-06";
 
         public const string OutputFilePath = "OutputFilePath";
         public const string FailedFilePath = "FailedFilePath";
