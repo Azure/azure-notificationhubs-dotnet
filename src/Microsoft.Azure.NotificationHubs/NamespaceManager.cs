@@ -27,7 +27,6 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class NamespaceManager : INamespaceManager
     {
-        private const string ApiVersion = "2017-04";
         private const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?><entry xmlns = \"http://www.w3.org/2005/Atom\"><content type = \"application/xml\">";
         private const string Footer = "</content></entry>";
         private const string TrackingIdHeaderKey = "TrackingId";
@@ -204,7 +203,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = path,
-                Query = $"api-version={ApiVersion}"
+                Query = $"api-version={ManagementStrings.ApiVersion}"
             };
 
             return await _retryPolicy.RunOperation(async (ct) =>
@@ -334,7 +333,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = path,
-                Query = $"api-version={ApiVersion}"
+                Query = $"api-version={ManagementStrings.ApiVersion}"
             };
 
             await _retryPolicy.RunOperation(async (ct) =>
@@ -423,7 +422,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = description.Path,
-                Query = $"api-version={ApiVersion}"
+                Query = $"api-version={ManagementStrings.ApiVersion}"
             };
             var xmlBody = CreateRequestBody(description);
 
@@ -485,7 +484,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
-                Query = $"api-version={ApiVersion}"
+                Query = $"api-version={ManagementStrings.ApiVersion}"
             };
             var xmlBody = CreateRequestBody(job);
 
@@ -530,7 +529,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs/{jobId}",
-                Query = $"api-version={ApiVersion}"
+                Query = $"api-version={ManagementStrings.ApiVersion}"
             };
 
             return await _retryPolicy.RunOperation(async (ct) =>
@@ -572,7 +571,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 Scheme = Uri.UriSchemeHttps,
                 Path = $"{notificationHubPath}/jobs",
-                Query = $"api-version={ApiVersion}"
+                Query = $"api-version={ManagementStrings.ApiVersion}"
             };
 
             return await _retryPolicy.RunOperation(async (ct) =>
@@ -696,7 +695,7 @@ namespace Microsoft.Azure.NotificationHubs
             var httpRequestMessage = new HttpRequestMessage(method, uri);
 
             httpRequestMessage.Headers.Add("Authorization", CreateToken(uri));
-            httpRequestMessage.Headers.Add("x-ms-version", ApiVersion);
+            httpRequestMessage.Headers.Add("x-ms-version", ManagementStrings.ApiVersion);
 
             return httpRequestMessage;
         }

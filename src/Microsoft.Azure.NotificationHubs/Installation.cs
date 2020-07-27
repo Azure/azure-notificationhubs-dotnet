@@ -24,6 +24,12 @@ namespace Microsoft.Azure.NotificationHubs
         public string InstallationId { get; set; }
 
         /// <summary>
+        /// Get or sets unique identifier for the user
+        /// </summary>
+        [JsonProperty(PropertyName = "userId")]
+        public string UserId { get; set; }
+
+        /// <summary>
         /// Gets or set registration id, token or URI obtained from platform-specific notification service
         /// </summary>
         [JsonProperty(PropertyName = "pushChannel")]
