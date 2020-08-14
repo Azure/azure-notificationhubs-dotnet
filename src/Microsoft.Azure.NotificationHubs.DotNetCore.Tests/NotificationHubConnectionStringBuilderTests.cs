@@ -4,10 +4,10 @@
 // license information.
 //------------------------------------------------------------
 
+using Xunit;
+
 namespace Microsoft.Azure.NotificationHubs.Tests
 {
-    using Xunit;
-
     public class NotificationHubConnectionStringBuilderTests
     {
         [Fact]

@@ -9,7 +9,7 @@
     <PackageId>Microsoft.Azure.NotificationHubs</PackageId>
     <PackageVersion>4.0.0</PackageVersion>
     <Authors>Microsoft</Authors>
-    <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=218949</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://aka.ms/NHNuget</PackageProjectUrl>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288890</PackageIconUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

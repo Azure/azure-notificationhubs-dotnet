@@ -4,19 +4,19 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Microsoft.Azure.NotificationHubs.Messaging;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Xunit;
+
 namespace Microsoft.Azure.NotificationHubs.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using Extensions.Configuration;
-    using Messaging;
-    using Newtonsoft.Json;
-    using Xunit;
-
     public class NotificationHubClientTest
     {
         private readonly IConfigurationRoot _configuration;

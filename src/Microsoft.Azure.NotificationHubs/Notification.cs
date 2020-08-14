@@ -4,11 +4,11 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// Abstract class representing a generic notification hub notification, including the target tag.
     /// </summary>

@@ -4,10 +4,10 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-
     static class Constants
     {
         public static readonly int MaximumTagSize = 120;

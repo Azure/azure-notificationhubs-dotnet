@@ -4,11 +4,11 @@
 // license information.
 //-----------------------------------------------------------------------------
 
+using System;
+using System.Runtime.Serialization;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary> Exception for signalling messaging entity already exists errors. </summary>
     [Serializable]
     public sealed class MessagingEntityAlreadyExistsException : MessagingException

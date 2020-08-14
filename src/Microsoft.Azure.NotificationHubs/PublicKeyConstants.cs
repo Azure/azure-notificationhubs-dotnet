@@ -39,6 +39,10 @@ namespace Microsoft.Azure.NotificationHubs
         /// Complete Phrase used in "InternalsVisibleTo" attribute in AssemblyInfo.cs
         /// </summary>
         public const string PublicKeyPhrase = ", PublicKey=" + PublicKeyValue;
+
+        /// <summary>
+        /// Public Test Key Phrase.
+        /// </summary>
         public const string PublicTestKeyPhrase = ", PublicKey=" + PublicKeyTestValue;
     }
 }
