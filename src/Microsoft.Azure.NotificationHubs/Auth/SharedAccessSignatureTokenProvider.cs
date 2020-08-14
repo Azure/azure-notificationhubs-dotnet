@@ -4,13 +4,16 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Text;
+using Microsoft.Azure.NotificationHubs.Common;
+
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
-    using Common;
-    using System;
-    using System.Text;
-    
-    internal class SharedAccessSignatureTokenProvider : TokenProvider
+    /// <summary>
+    /// Represents a Token Provider for Shared Access Signatures
+    /// </summary>
+    public class SharedAccessSignatureTokenProvider : TokenProvider
     {
         private const int MaxKeyNameLength = 256;
         private const int MaxKeyLength = 256;
@@ -89,10 +92,14 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             return new SharedAccessSignatureTokenProvider(keyName, sharedAccessKey, DefaultTokenTimeout);
         }
 
+        /// <summary>
+        /// Generates the token based upon the applies to.
+        /// </summary>
+        /// <param name="appliesTo">The scope of the token to generate.</param>
+        /// <returns>The generated token</returns>
         protected override string GenerateToken(string appliesTo)
         {
-            var tokenString = BuildSignature(appliesTo);
-            return tokenString;
+            return BuildSignature(appliesTo);
         }
 
         private string BuildSignature(string targetUri)

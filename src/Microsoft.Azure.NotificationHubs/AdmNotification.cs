@@ -4,10 +4,10 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-
     /// <summary>
     /// Represents the Amazon Device Messaging (ADM) notification.
     /// </summary>

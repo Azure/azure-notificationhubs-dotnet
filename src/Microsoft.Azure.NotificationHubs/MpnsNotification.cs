@@ -4,12 +4,12 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Xml;
+
 namespace Microsoft.Azure.NotificationHubs
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Xml;
-    
+{    
     /// <summary>
     /// Provides notification for Microsoft Push Notification Service (MPNS).
     /// </summary>

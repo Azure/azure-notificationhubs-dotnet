@@ -4,18 +4,18 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Runtime.Serialization;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
-    using System.Xml;
-    using System.Xml.Linq;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents the description of the MPNS template registration.
     /// </summary>
@@ -282,17 +282,17 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3003)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
-            this.ValidateMpnsHeaders(version);
+            base.OnValidate();
+            this.ValidateMpnsHeaders();
             if (this.IsXmlPayLoad())
             {
-                this.ValidateXmlPayLoad(version);
+                this.ValidateXmlPayLoad();
             }
             else if (this.IsJsonObjectPayLoad())
             {
-                this.ValidateJsonPayLoad(version);
+                this.ValidateJsonPayLoad();
             }
             else
             {
@@ -326,19 +326,19 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }
 
-        void ValidateMpnsHeaders(ApiVersion version)
+        void ValidateMpnsHeaders()
         {
             if (this.MpnsHeaders == null ||
                 !this.MpnsHeaders.ContainsKey(MpnsTemplateRegistrationDescription.NotificationClass) ||
                 string.IsNullOrWhiteSpace(this.MpnsHeaders[MpnsTemplateRegistrationDescription.NotificationClass]))
             {
                 throw new InvalidDataContractException(
-                    SRClient.MissingMpnsHeader(MpnsTemplateRegistrationDescription.NotificationClass));
+                    string.Format(SRClient.MissingMpnsHeader, MpnsTemplateRegistrationDescription.NotificationClass));
             }
 
             // MPNS headers validation
@@ -346,14 +346,14 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (string.IsNullOrWhiteSpace(this.MpnsHeaders[header]))
                 {
-                    throw new InvalidDataContractException(SRClient.MpnsHeaderIsNullOrEmpty(header));
+                    throw new InvalidDataContractException(string.Format(SRClient.MpnsHeaderIsNullOrEmpty, header));
                 }
 
-                ExpressionEvaluator.Validate(this.MpnsHeaders[header], version);
+                ExpressionEvaluator.Validate(this.MpnsHeaders[header]);
             }
         }
 
-        void ValidateXmlPayLoad(ApiVersion version)
+        void ValidateXmlPayLoad()
         {
             XDocument payloadDocument = XDocument.Parse(this.BodyTemplate);
             this.ExpressionStartIndices = new List<int>();
@@ -365,7 +365,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 foreach (XAttribute attribute in element.Attributes())
                 {
-                    if (ExpressionEvaluator.Validate(attribute.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(attribute.Value) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: id="$(id&gt;)" --> $(id&gt;)
@@ -379,7 +379,7 @@ namespace Microsoft.Azure.NotificationHubs
 
                 if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                 {
-                    if (ExpressionEvaluator.Validate(element.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(element.Value) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: <text id="1">$(na&gt;me)</text> --> $(na&gt;me)
@@ -394,7 +394,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        void ValidateJsonPayLoad(ApiVersion version)
+        void ValidateJsonPayLoad()
         {
             try
             {
@@ -406,12 +406,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value, version);
+                            ExpressionEvaluator.Validate(attribute.Value);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value, version);
+                            ExpressionEvaluator.Validate(element.Value);
                         }
                     }
                 }

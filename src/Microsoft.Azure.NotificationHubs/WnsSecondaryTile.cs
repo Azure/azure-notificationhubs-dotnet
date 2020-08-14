@@ -4,11 +4,11 @@
 // license information.
 //------------------------------------------------------------
 
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Represents the WNS secondary tile
     /// </summary>

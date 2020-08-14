@@ -4,12 +4,12 @@
 // license information.
 //------------------------------------------------------------
 
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-
     /// <summary>
     /// Patch an installation with this object
     /// </summary>

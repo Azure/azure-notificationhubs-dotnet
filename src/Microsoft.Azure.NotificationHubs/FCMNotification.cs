@@ -4,10 +4,10 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-
     /// <summary>
     /// Represents a Firebase Cloud Messaging notification.
     /// </summary>

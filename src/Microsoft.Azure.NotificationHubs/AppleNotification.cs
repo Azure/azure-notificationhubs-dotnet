@@ -4,13 +4,13 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.Serialization;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// Represents the Apple notification.
     /// </summary>

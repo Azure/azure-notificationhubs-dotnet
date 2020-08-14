@@ -4,14 +4,14 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Microsoft.Azure.NotificationHubs;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents the description of the MPNS registration.
     /// </summary>
@@ -128,7 +128,7 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.SecondaryTileName, Order = 2002, IsRequired = false, EmitDefaultValue = false)]
         public string SecondaryTileName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
             // Channel URI validations
             if (string.IsNullOrWhiteSpace(this.ChannelUri.ToString()) || !this.ChannelUri.IsAbsoluteUri)

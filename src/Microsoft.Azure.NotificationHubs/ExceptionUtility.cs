@@ -4,17 +4,19 @@
 // license information.
 //------------------------------------------------------------
 
+using Microsoft.Azure.NotificationHubs.Messaging;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using System.Xml;
+using static Microsoft.Azure.NotificationHubs.Messaging.MessagingExceptionDetail;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using Microsoft.Azure.NotificationHubs.Messaging;
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using System.Xml;
-
     internal static class ExceptionsUtility
     {
         private static readonly string ConflictOperationInProgressSubCode =
@@ -24,90 +26,58 @@ namespace Microsoft.Azure.NotificationHubs
         public const string HttpStatusCodeTag = "Code";
         public const string DetailTag = "Detail";
 
-        public static Exception HandleXmlException(XmlException exception)
+        public static Exception HandleXmlException(XmlException exception, string trackingId)
         {
-            return new MessagingException(SRClient.InvalidXmlFormat, false, exception);
+            var details = new MessagingExceptionDetail(ExceptionErrorCodes.InternalFailure, SRClient.InvalidXmlFormat, ErrorLevelType.ServerError, null, trackingId);
+            return new MessagingException(details, false, exception);
         }
 
-        public static Exception TranslateToMessagingException(this Exception ex, int timeoutInMilliseconds = 0, string trackingId = null)
+        public static async Task<Exception> TranslateToMessagingExceptionAsync(this HttpResponseMessage response, string trackingId)
         {
-            if(ex is XmlException)
+            var responseBody = string.Empty;
+            if (response.Content != null)
             {
-                return HandleXmlException((XmlException)ex);
+                responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
-
-            if(ex is HttpRequestException)
-            {
-                if (ex.InnerException is WebException)
-                {
-                    return HandleWebException((WebException)ex.InnerException, timeoutInMilliseconds, trackingId);
-                }
-                else
-                {
-                    return HandleUnexpectedException(ex, trackingId);
-                }
-            }
-
-            return HandleUnexpectedException(ex, trackingId);
-        }
-        public static async Task<Exception> TranslateToMessagingExceptionAsync(this HttpResponseMessage response, string method, int timeoutInMilliseconds, string trackingId)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var exceptionMessage = FormatExceptionMessage(responseBody, response.StatusCode, response.ReasonPhrase, trackingId);
-            var code = response.StatusCode;
+            var statusCode = response.StatusCode;
+            var retryAfter = response.Headers.RetryAfter?.Delta;
+            
+            switch (statusCode)
+            {
+                case HttpStatusCode.NotFound:
+                case HttpStatusCode.NoContent:
+                    return new MessagingEntityNotFoundException(new MessagingExceptionDetail(ExceptionErrorCodes.EndpointNotFound, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId));
+                case HttpStatusCode.Conflict:
+                    if (response.RequestMessage.Method.Equals(HttpMethod.Delete) ||
+                        response.RequestMessage.Method.Equals(HttpMethod.Put) ||
+                        exceptionMessage.Contains(ConflictOperationInProgressSubCode))
+                    {
+                        return new MessagingException(new MessagingExceptionDetail(ExceptionErrorCodes.ConflictGeneric, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId), false);
+                    }
+                    else
+                    {
+                        return new MessagingEntityAlreadyExistsException(new MessagingExceptionDetail(ExceptionErrorCodes.ConflictGeneric, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId));
+                    }
 
-            if (code == HttpStatusCode.NotFound || code == HttpStatusCode.NoContent)
-            {
-                return new MessagingEntityNotFoundException(exceptionMessage);
-            }
-            else if (code == HttpStatusCode.Conflict)
-            {
-                if (method.Equals(ManagementStrings.DeleteMethod))
-                {
-                    return new MessagingException(exceptionMessage);
-                }
-                if (method.Equals(ManagementStrings.PutMethod))
-                {
-                    return new MessagingException(exceptionMessage);
-                }
-                else if (exceptionMessage.Contains(ConflictOperationInProgressSubCode))
-                {
-                    return new MessagingException(exceptionMessage);
-                }
-                else
-                {
-                    return new MessagingEntityAlreadyExistsException(exceptionMessage, null);
-                }
-            }
-            else if (code == HttpStatusCode.Unauthorized)
-            {
-                return new UnauthorizedAccessException(exceptionMessage);
-            }
-            else if (code == HttpStatusCode.Forbidden)
-            {
-                // TODO: It is not always correct to assume Forbidden
-                // equals QuotaExceeded, but Gateway currently has no additional information
-                // for us to make better judgment.
-                return new QuotaExceededException(exceptionMessage);
-            }
-            else if (code == HttpStatusCode.BadRequest)
-            {
-                return new ArgumentException(exceptionMessage);
-            }
-            else if (code == HttpStatusCode.ServiceUnavailable)
-            {
-                return new ServerBusyException(exceptionMessage);
-            }
-            else if (code == HttpStatusCode.GatewayTimeout)
-            {
-                // mainly a test hook, but also a valid contract by itself
-                return new MessagingCommunicationException(exceptionMessage);
+                case HttpStatusCode.Unauthorized:
+                    return new UnauthorizedException(new MessagingExceptionDetail(ExceptionErrorCodes.UnauthorizedGeneric, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId));
+                case HttpStatusCode.Forbidden:
+                case (HttpStatusCode)429:
+                    return new QuotaExceededException(new MessagingExceptionDetail(ExceptionErrorCodes.Throttled, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId), retryAfter);
+                case HttpStatusCode.BadRequest:
+                    return new BadRequestException(new MessagingExceptionDetail(ExceptionErrorCodes.BadRequest, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId));
+                case HttpStatusCode.InternalServerError:
+                case HttpStatusCode.ServiceUnavailable:
+                case HttpStatusCode.GatewayTimeout:
+                case HttpStatusCode.RequestTimeout:
+                    return new ServerBusyException(new MessagingExceptionDetail(ExceptionErrorCodes.ServerBusy, exceptionMessage, ErrorLevelType.ServerError, statusCode, trackingId));
             }
 
-            return new MessagingException(exceptionMessage);
+            return new MessagingException(new MessagingExceptionDetail(ExceptionErrorCodes.UnknownExceptionDetail, exceptionMessage, ErrorLevelType.ServerError, statusCode, trackingId), false);
         }
 
-        private static string FormatExceptionMessage(string responseBody, HttpStatusCode code, string reasonPhrase, string trackingId)
+        internal static string FormatExceptionMessage(string responseBody, HttpStatusCode code, string reasonPhrase, string trackingId)
         {
             var exceptionMessage = string.Empty;
             using(var stringReader = new StringReader(responseBody))
@@ -127,55 +97,42 @@ namespace Microsoft.Azure.NotificationHubs
                 }
                 catch (XmlException)
                 {
-                    //Ignore this exception
+                    // Ignore this exception
                 }
             }
 
             if (string.IsNullOrEmpty(exceptionMessage))
             {
-                exceptionMessage = SRClient.TrackableHttpExceptionMessageFormat((int)code, code.ToString(), reasonPhrase, CreateClientTrackingExceptionInfo(trackingId));
+                exceptionMessage = string.Format(SRClient.TrackableHttpExceptionMessageFormat, (int)code, code.ToString(), reasonPhrase, CreateClientTrackingExceptionInfo(trackingId));
             }
 
             return exceptionMessage;
         }
 
-        public static Exception HandleWebException(WebException webException, int timeoutInMilliseconds, string trackingId)
+        public static Exception HandleSocketException(SocketException socketException, int timeoutInMilliseconds, string trackingId)
         {
-            var webResponse = (HttpWebResponse)webException.Response;
-            var exceptionMessage = webException.Message;
+            var exceptionMessage = socketException.Message;
 
-
-            if (webResponse == null)
+            switch (socketException.SocketErrorCode)
             {
-                switch (webException.Status)
-                {
-                    case WebExceptionStatus.RequestCanceled:
-                    case WebExceptionStatus.Timeout:
-                        exceptionMessage = SRClient.TrackableExceptionMessageFormat(SRClient.OperationRequestTimedOut(timeoutInMilliseconds), CreateClientTrackingExceptionInfo(trackingId));
-                        return new TimeoutException(exceptionMessage, webException);
-
-                    case WebExceptionStatus.ConnectFailure:
-                    case WebExceptionStatus.NameResolutionFailure:
-                        exceptionMessage = SRClient.TrackableExceptionMessageFormat(exceptionMessage, CreateClientTrackingExceptionInfo(trackingId));
-                        return new MessagingCommunicationException(exceptionMessage, webException);
-                }
+                case SocketError.AddressNotAvailable:
+                case SocketError.ConnectionRefused:
+                case SocketError.AccessDenied:
+                case SocketError.HostUnreachable:
+                case SocketError.HostNotFound:
+                    exceptionMessage = string.Format(SRClient.TrackableExceptionMessageFormat, exceptionMessage, CreateClientTrackingExceptionInfo(trackingId));
+                    return new MessagingCommunicationException(new MessagingExceptionDetail(ExceptionErrorCodes.ProviderUnreachable, exceptionMessage, ErrorLevelType.ClientConnection, null, trackingId), false, socketException);
+                default:
+                    exceptionMessage = string.Format(SRClient.TrackableExceptionMessageFormat, string.Format(SRClient.OperationRequestTimedOut, timeoutInMilliseconds), CreateClientTrackingExceptionInfo(trackingId));
+                    return new MessagingCommunicationException(new MessagingExceptionDetail(ExceptionErrorCodes.GatewayTimeoutFailure, exceptionMessage, ErrorLevelType.ClientConnection, null, trackingId), true, socketException);
             }
-            else
-            {
-                throw webException;
-            }
-
-            return new MessagingException(exceptionMessage, webException);
         }
 
         public static Exception HandleUnexpectedException(Exception ex, string trackingId)
         {
-            throw new MessagingException($"Unexpected exception encountered {CreateClientTrackingExceptionInfo(trackingId)}", ex);
-        }
-
-        public static bool IsMessagingException(this Exception e)
-        {
-            return (e is MessagingException || e is UnauthorizedAccessException || e is ArgumentException);
+            var exceptionMessage = $"Unexpected exception encountered {CreateClientTrackingExceptionInfo(trackingId)}";
+            var details = new MessagingExceptionDetail(ExceptionErrorCodes.UnknownExceptionDetail, exceptionMessage, ErrorLevelType.ClientConnection, null, trackingId);
+            throw new MessagingException(details, false, ex);
         }
 
         internal static string CreateClientTrackingExceptionInfo(string trackingId)

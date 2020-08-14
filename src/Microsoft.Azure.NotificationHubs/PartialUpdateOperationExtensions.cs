@@ -4,12 +4,12 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     internal static class PartialUpdateOperationExtensions
     {
         internal static string ToJson(this IList<PartialUpdateOperation> operations)

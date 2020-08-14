@@ -4,13 +4,13 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents Notification Hub registration description for Google Cloud Messaging
     /// </summary>
@@ -103,7 +103,7 @@ namespace Microsoft.Azure.NotificationHubs
             this.GcmRegistrationId = pnsHandle;
         }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
             if (string.IsNullOrWhiteSpace(this.GcmRegistrationId))
             {
@@ -152,6 +152,8 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
+#pragma warning disable CS0618
+
         /// <summary>
         /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmRegistrationDescription"/> class from <see cref="T:Microsoft.Azure.NotificationHubs.GcmRegistrationDescription"/> object.
         /// </summary>
@@ -164,6 +166,8 @@ namespace Microsoft.Azure.NotificationHubs
             this.ExtensionData = gcmRegistration.ExtensionData;
             this.PushVariables = gcmRegistration.PushVariables;
         }
+
+#pragma warning restore CS0618
 
         internal FcmRegistrationDescription(string notificationHubPath, string fcmRegistrationId, IEnumerable<string> tags)
             : base(notificationHubPath)
@@ -211,7 +215,7 @@ namespace Microsoft.Azure.NotificationHubs
             this.FcmRegistrationId = pnsHandle;
         }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
             if (string.IsNullOrWhiteSpace(this.FcmRegistrationId))
             {

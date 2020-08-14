@@ -4,15 +4,15 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Runtime.Serialization;
-    using System.Text.RegularExpressions;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents the description of apple registration.
     /// </summary>
@@ -105,7 +105,7 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.DeviceToken, Order = 2001, IsRequired = true)]
         public string DeviceToken { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
             if (string.IsNullOrWhiteSpace(this.DeviceToken))
             {

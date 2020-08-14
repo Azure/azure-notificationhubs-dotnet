@@ -4,27 +4,28 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
+using Microsoft.Azure.NotificationHubs.Messaging;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.Serialization;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Collections.Generic;
-    using System.Xml;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Represents a registration description.
     /// </summary>
     [DataContract(Namespace = ManagementStrings.Namespace)]
+#pragma warning disable CS0618
     [KnownType(typeof(GcmRegistrationDescription))]
     [KnownType(typeof(GcmTemplateRegistrationDescription))]
+#pragma warning restore CS0618
     [KnownType(typeof(FcmRegistrationDescription))]
     [KnownType(typeof(FcmTemplateRegistrationDescription))]
     [KnownType(typeof(AppleRegistrationDescription))]
@@ -259,7 +260,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public string Serialize()
         {
-            this.Validate(ApiVersion.Four, false);
+            this.Validate(false);
 
             var serializer = new EntityDescriptionSerializer();
             return serializer.Serialize(this);
@@ -283,17 +284,17 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal void Validate(ApiVersion version, bool checkExpirationTime = true)
+        internal void Validate(bool checkExpirationTime = true)
         {
             if (checkExpirationTime && this.ExpirationTime != null)
             {
                 throw new InvalidDataContractException(SRClient.CannotSpecifyExpirationTime);
             }
 
-            this.OnValidate(version);
+            this.OnValidate();
         } 
 
-        internal virtual void OnValidate(ApiVersion version)
+        internal virtual void OnValidate()
         {
         }
 

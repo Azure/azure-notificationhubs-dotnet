@@ -4,13 +4,13 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents a Baidu registration description.
     /// </summary>
@@ -122,7 +122,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
             if (string.IsNullOrWhiteSpace(this.BaiduChannelId))
             {

@@ -4,17 +4,17 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
-    using System.Xml;
-    using System.Xml.Linq;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Provides description for Windows template registration.
     /// </summary>
@@ -269,17 +269,17 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3003)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
-            this.ValidateWnsHeaders(version);
+            base.OnValidate();
+            this.ValidateWnsHeaders();
             if (this.IsXmlPayLoad())
             {
-                this.ValidateXmlPayLoad(version);
+                this.ValidateXmlPayLoad();
             }
             else if (this.IsJsonObjectPayLoad())
             {
-                this.ValidateJsonPayLoad(version);
+                this.ValidateJsonPayLoad();
             }
             else
             {
@@ -313,21 +313,21 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }
 
-        void ValidateWnsHeaders(ApiVersion version)
+        void ValidateWnsHeaders()
         {
             if (this.WnsHeaders == null)
             {
-                throw new InvalidDataContractException(SRClient.MissingWNSHeader(WindowsTemplateRegistrationDescription.Type));
+                throw new InvalidDataContractException(string.Format(SRClient.MissingWNSHeader, WindowsTemplateRegistrationDescription.Type));
             }
 
             if (!this.WnsHeaders.ContainsKey(WindowsTemplateRegistrationDescription.Type) || string.IsNullOrWhiteSpace(this.WnsHeaders[WindowsTemplateRegistrationDescription.Type]))
             {
-                throw new InvalidDataContractException(SRClient.MissingWNSHeader(WindowsTemplateRegistrationDescription.Type));
+                throw new InvalidDataContractException(string.Format(SRClient.MissingWNSHeader, WindowsTemplateRegistrationDescription.Type));
             }
 
             // WNS headers validation
@@ -335,14 +335,14 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (string.IsNullOrWhiteSpace(this.WnsHeaders[header]))
                 {
-                    throw new InvalidDataContractException(SRClient.WNSHeaderNullOrEmpty(header));
+                    throw new InvalidDataContractException(string.Format(SRClient.WNSHeaderNullOrEmpty, header));
                 }
 
-                ExpressionEvaluator.Validate(this.WnsHeaders[header], version);
+                ExpressionEvaluator.Validate(this.WnsHeaders[header]);
             }
         }
 
-        void ValidateXmlPayLoad(ApiVersion version)
+        void ValidateXmlPayLoad()
         {
             XDocument payloadDocument = XDocument.Parse(this.BodyTemplate);
             this.ExpressionStartIndices = new List<int>();
@@ -354,7 +354,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 foreach (XAttribute attribute in element.Attributes())
                 {
-                    if (ExpressionEvaluator.Validate(attribute.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(attribute.Value) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: id="$(id&gt;)" --> $(id&gt;)
@@ -368,7 +368,7 @@ namespace Microsoft.Azure.NotificationHubs
 
                 if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                 {
-                    if (ExpressionEvaluator.Validate(element.Value, version) != ExpressionEvaluator.ExpressionType.Literal)
+                    if (ExpressionEvaluator.Validate(element.Value) != ExpressionEvaluator.ExpressionType.Literal)
                     {
                         // Extracts escaped expression.
                         // Example: <text id="1">$(na&gt;me)</text> --> $(na&gt;me)
@@ -383,7 +383,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
-        void ValidateJsonPayLoad(ApiVersion version)
+        void ValidateJsonPayLoad()
         {
             try
             {
@@ -395,12 +395,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value, version);
+                            ExpressionEvaluator.Validate(attribute.Value);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value, version);
+                            ExpressionEvaluator.Validate(element.Value);
                         }
                     }
                 }
@@ -424,7 +424,7 @@ namespace Microsoft.Azure.NotificationHubs
             int newIndex = this.BodyTemplate.Value.IndexOf(escapedExpression, previousIndex + 1, StringComparison.OrdinalIgnoreCase);
             if (newIndex == -1)
             {
-                throw new InvalidDataContractException(SRClient.UnsupportedExpression(expression));
+                throw new InvalidDataContractException(string.Format(SRClient.UnsupportedExpression, expression));
             }
 
             this.ExpressionStartIndices.Add(newIndex);

@@ -4,17 +4,17 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Xml.Linq;
+using System.Xml;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
-    using System.Xml.Linq;
-    using System.Xml;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents Notification Hub template registration description for Google Cloud Messaging
     /// </summary>
@@ -121,9 +121,9 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3002)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
+            base.OnValidate();
 
             try
             {
@@ -135,12 +135,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value, version);
+                            ExpressionEvaluator.Validate(attribute.Value);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value, version);
+                            ExpressionEvaluator.Validate(element.Value);
                         }
                     }
                 }
@@ -161,7 +161,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }
@@ -243,6 +243,8 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
+#pragma warning disable CS0618
+
         /// <summary>
         /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmTemplateRegistrationDescription"/> class from  <see cref="T:Microsoft.Azure.NotificationHubs.GcmTemplateRegistrationDescription"/> object.
         /// </summary>
@@ -253,6 +255,8 @@ namespace Microsoft.Azure.NotificationHubs
             this.BodyTemplate = gcmRegistration.BodyTemplate;
             this.TemplateName = gcmRegistration.TemplateName;
         }
+
+#pragma warning restore CS0618
 
         internal FcmTemplateRegistrationDescription(string notificationHubPath, string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
             : base(notificationHubPath, fcmRegistrationId, tags)
@@ -277,9 +281,9 @@ namespace Microsoft.Azure.NotificationHubs
         [DataMember(Name = ManagementStrings.TemplateName, IsRequired = false, Order = 3002)]
         public string TemplateName { get; set; }
 
-        internal override void OnValidate(ApiVersion version)
+        internal override void OnValidate()
         {
-            base.OnValidate(version);
+            base.OnValidate();
 
             try
             {
@@ -291,12 +295,12 @@ namespace Microsoft.Azure.NotificationHubs
                     {
                         foreach (XAttribute attribute in element.Attributes())
                         {
-                            ExpressionEvaluator.Validate(attribute.Value, version);
+                            ExpressionEvaluator.Validate(attribute.Value);
                         }
 
                         if (!element.HasElements && !string.IsNullOrEmpty(element.Value))
                         {
-                            ExpressionEvaluator.Validate(element.Value, version);
+                            ExpressionEvaluator.Validate(element.Value);
                         }
                     }
                 }
@@ -317,7 +321,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 if (this.TemplateName.Length > RegistrationSDKHelper.TemplateMaxLength)
                 {
-                    throw new InvalidDataContractException(SRClient.TemplateNameLengthExceedsLimit(RegistrationSDKHelper.TemplateMaxLength));
+                    throw new InvalidDataContractException(string.Format(SRClient.TemplateNameLengthExceedsLimit, RegistrationSDKHelper.TemplateMaxLength));
                 }
             }
         }

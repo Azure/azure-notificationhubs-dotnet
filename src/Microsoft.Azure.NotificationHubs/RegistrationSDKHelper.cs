@@ -4,15 +4,14 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Xml;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Xml;
-    using Microsoft.Azure.NotificationHubs;
-
     internal static class RegistrationSDKHelper
     {
         internal const int TemplateMaxLength = 200;
@@ -34,7 +33,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             // validate
-            registration.Validate(ApiVersion.Four);
+            registration.Validate();
         }
 
         /// <summary>

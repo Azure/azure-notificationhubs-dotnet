@@ -4,11 +4,11 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+using System.Globalization;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Globalization;
-
     /// <summary>
     /// Represents a Baidu notification hub notification, including the target tag
     /// </summary>
