@@ -4,15 +4,15 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+
 namespace Microsoft.Azure.NotificationHubs.Auth
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Web;
-
     internal static class SharedAccessSignatureBuilder
     {
         private const string SharedAccessSignature = "SharedAccessSignature";

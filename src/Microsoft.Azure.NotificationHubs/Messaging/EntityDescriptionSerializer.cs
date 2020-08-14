@@ -4,16 +4,14 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Xml;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-    using System.IO;
-    using System.Runtime.Serialization;
-    using System.Text;
-    using System.Xml;
-    using System.Collections.Generic;
-    using Microsoft.Azure.NotificationHubs;
-
     internal class EntityDescriptionSerializer
     {
         const int MaxItemsInObjectGraph = 256;
@@ -43,17 +41,25 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 typeof(AppleTemplateRegistrationDescription).Name,
                 this.CreateSerializer<AppleTemplateRegistrationDescription>());
 
+#pragma warning disable CS0618
+
             this.entirySerializers.Add(
                 typeof(GcmRegistrationDescription).Name,
                 this.CreateSerializer<GcmRegistrationDescription>());
+
+#pragma warning restore CS0618
 
             this.entirySerializers.Add(
                 typeof(FcmRegistrationDescription).Name,
                 this.CreateSerializer<FcmRegistrationDescription>());
 
+#pragma warning disable CS0618
+
             this.entirySerializers.Add(
                 typeof(GcmTemplateRegistrationDescription).Name,
                 this.CreateSerializer<GcmTemplateRegistrationDescription>());
+
+#pragma warning restore CS0618
 
             this.entirySerializers.Add(
                 typeof(FcmTemplateRegistrationDescription).Name,
@@ -128,6 +134,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             return stringBuilder.ToString();
         }
 
+#pragma warning disable CS0618
+
         public void Serialize(EntityDescription description, XmlWriter writer)
         {
             // Convert FCM descriptions into their GCM counterparts
@@ -153,6 +161,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             
             serializer.WriteObject(writer, description);
         }
+
+#pragma warning restore CS0618
 
         private DataContractSerializer GetSerializer(string typeName)
         {

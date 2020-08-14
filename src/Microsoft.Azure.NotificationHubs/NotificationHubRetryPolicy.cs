@@ -4,15 +4,15 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.ComponentModel;
+using System.Runtime.ExceptionServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.ComponentModel;
-    using System.Runtime.ExceptionServices;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     ///   An abstract representation of a policy to govern retrying of messaging operations.
     /// </summary>

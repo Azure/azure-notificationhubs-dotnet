@@ -4,17 +4,14 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Runtime.Serialization;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using Microsoft.Azure.NotificationHubs;
-    using Microsoft.Azure.NotificationHubs.Common;
-
     static class ExpressionEvaluator
     {
         public const string InternalBodyProperty = "READ_ONCE_BODY_PUSHNOTIFICATION";

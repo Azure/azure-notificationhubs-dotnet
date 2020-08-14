@@ -4,19 +4,19 @@
 // license information.
 //------------------------------------------------------------
 
+using Microsoft.Azure.NotificationHubs.Messaging;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using System.Xml;
+using static Microsoft.Azure.NotificationHubs.Messaging.MessagingExceptionDetail;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using Microsoft.Azure.NotificationHubs.Messaging;
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Sockets;
-    using System.Threading.Tasks;
-    using System.Xml;
-    using static Microsoft.Azure.NotificationHubs.Messaging.MessagingExceptionDetail;
-
     internal static class ExceptionsUtility
     {
         private static readonly string ConflictOperationInProgressSubCode =
@@ -95,7 +95,7 @@ namespace Microsoft.Azure.NotificationHubs
                     reader.ReadStartElement(DetailTag);
                     exceptionMessage = string.Format(CultureInfo.InvariantCulture, "{0} {1}", exceptionMessage, reader.ReadString());
                 }
-                catch (XmlException ex)
+                catch (XmlException)
                 {
                     // Ignore this exception
                 }

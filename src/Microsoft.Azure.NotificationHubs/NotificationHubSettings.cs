@@ -4,12 +4,12 @@
 // license information.
 // ----------------------------------------------------------------
 
+using System;
+using System.Net;
+using System.Net.Http;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Net;
-    using System.Net.Http;
-
     /// <summary>
     /// Notification Hubs client settings
     /// <seealso cref="NotificationHubClient" />

@@ -4,10 +4,10 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-
     /// <summary>
     /// This class can be used to construct a connection string to be used
     /// in creating messaging client entities. It can also be used to perform

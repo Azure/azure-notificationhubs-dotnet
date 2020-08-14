@@ -1116,7 +1116,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.InvalidOperationException">InstallationId must be specified</exception>
         public async Task CreateOrUpdateInstallationAsync(Installation installation, CancellationToken cancellationToken)
         {
-            if (installation==null)
+            if (installation == null)
             {
                 throw new ArgumentNullException(nameof(installation));
             }
@@ -3199,6 +3199,8 @@ namespace Microsoft.Azure.NotificationHubs
                         xmlReader.ReadStartElement();
                         var entity = (TEntity)_entitySerializer.Deserialize(xmlReader, xmlReader.Name);
 
+#pragma warning disable CS0618
+
                         if (entity is GcmTemplateRegistrationDescription)
                         {
                             var fcmTemplateRegistrationDescription = new FcmTemplateRegistrationDescription(entity as GcmTemplateRegistrationDescription);
@@ -3210,7 +3212,9 @@ namespace Microsoft.Azure.NotificationHubs
                             var fcmRegistrationDescription = new FcmRegistrationDescription(entity as GcmRegistrationDescription);
                             entity = (fcmRegistrationDescription as TEntity);
                         }
-                        
+
+#pragma warning restore CS0618
+
                         result.Add(entity);
                     }
                 }
@@ -3234,6 +3238,8 @@ namespace Microsoft.Azure.NotificationHubs
 
                 var entity = _entitySerializer.Deserialize(xmlReader, xmlReader.Name);
 
+#pragma warning disable CS0618
+
                 if (typeof(GcmRegistrationDescription).IsAssignableFrom(typeof(TEntity)))
                 {
                     return (TEntity)entity;
@@ -3250,6 +3256,8 @@ namespace Microsoft.Azure.NotificationHubs
                     var fcmRegistrationDescription = new FcmRegistrationDescription(gcmRegistrationDescription);
                     return (fcmRegistrationDescription as TEntity);
                 }
+
+#pragma warning restore CS0618
 
                 return (TEntity)entity;
             }
@@ -3285,6 +3293,8 @@ namespace Microsoft.Azure.NotificationHubs
             }
         }
 
+#pragma warning disable CS0618  
+
         private static Notification FcmToGcmNotificationTypeCast(Notification notification)
         {
             if (notification.GetType().Name == "FcmNotification")
@@ -3294,5 +3304,7 @@ namespace Microsoft.Azure.NotificationHubs
 
             return notification;
         }
+
+#pragma warning restore CS0618
     }
 }

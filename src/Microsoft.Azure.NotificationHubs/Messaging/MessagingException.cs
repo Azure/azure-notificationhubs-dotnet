@@ -4,12 +4,12 @@
 // license information.
 //-----------------------------------------------------------------------------
 
+using System;
+using System.Collections;
+using System.Runtime.Serialization;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-    using System.Collections;
-    using System.Runtime.Serialization;
-
     /// <summary> Exception for signalling messaging errors. </summary>
     /// Any class that derives from this should be added to Microsoft.Notifications.Messaging.MessagingExceptionHelper.ErrorCodes
     [Serializable]
