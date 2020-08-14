@@ -366,7 +366,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
         /// Documentation on the APNS payload can be found
-        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification">here</a>.</param>
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
