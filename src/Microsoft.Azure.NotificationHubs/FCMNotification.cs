@@ -26,6 +26,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
+            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -42,6 +43,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
+            this.ContentType = "application/json";
         }
 
         /// <summary>

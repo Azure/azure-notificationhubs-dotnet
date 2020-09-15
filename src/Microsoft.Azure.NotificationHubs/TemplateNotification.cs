@@ -31,6 +31,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.templateProperties = templateProperties;
+            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -49,6 +50,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.templateProperties = templateProperties;
+            this.ContentType = "application/json";
         }
 
         /// <summary>

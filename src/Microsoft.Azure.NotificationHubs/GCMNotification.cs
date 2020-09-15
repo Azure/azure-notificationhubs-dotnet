@@ -27,6 +27,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
+            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -43,6 +44,7 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
+            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace Microsoft.Azure.NotificationHubs
             : base(fcmNotification.Headers, fcmNotification.Tag)
         {
             this.Body = fcmNotification.Body;
+            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -71,7 +74,6 @@ namespace Microsoft.Azure.NotificationHubs
         /// Validate and populates the headers.
         /// </summary>
         protected override void OnValidateAndPopulateHeaders()
-        {
-        }
+        {}
     }
 }
