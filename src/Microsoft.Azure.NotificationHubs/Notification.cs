@@ -29,7 +29,6 @@ namespace Microsoft.Azure.NotificationHubs
                                : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             this.tag = tag;
-            this.ContentType = "application/xml";
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <value>
         /// The type of the notification content.
         /// </value>
-        public string ContentType { get; set; }
+        public abstract string ContentType { get; }
 
         /// <summary>
         /// Gets or sets the notification tag.

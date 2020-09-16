@@ -31,7 +31,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.templateProperties = templateProperties;
-            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -50,7 +49,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.templateProperties = templateProperties;
-            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -62,6 +60,17 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return RegistrationDescription.TemplateRegistrationType; }
+        }
+
+        /// <summary>
+        /// Gets content type.
+        /// </summary>
+        /// <value>
+        /// The type of the content.
+        /// </value>
+        public override string ContentType
+        {
+            get { return "application/json"; }
         }
 
         /// <summary>

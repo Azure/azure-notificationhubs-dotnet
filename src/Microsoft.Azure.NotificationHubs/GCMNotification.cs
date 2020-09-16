@@ -27,7 +27,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
-            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -44,7 +43,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
-            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -56,7 +54,6 @@ namespace Microsoft.Azure.NotificationHubs
             : base(fcmNotification.Headers, fcmNotification.Tag)
         {
             this.Body = fcmNotification.Body;
-            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -68,6 +65,17 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return GcmCredential.AppPlatformName; }
+        }
+
+        /// <summary>
+        /// Gets content type.
+        /// </summary>
+        /// <value>
+        /// The type of the content.
+        /// </value>
+        public override string ContentType
+        {
+            get { return "application/json"; }
         }
 
         /// <summary>

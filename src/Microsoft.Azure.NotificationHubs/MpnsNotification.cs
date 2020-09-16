@@ -125,6 +125,17 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Gets content type.
+        /// </summary>
+        /// <value>
+        /// The type of the content.
+        /// </value>
+        public override string ContentType
+        {
+            get { return "application/xml"; }
+        }
+
+        /// <summary>
         /// Validate and populates the headers.
         /// </summary>
         protected override void OnValidateAndPopulateHeaders()

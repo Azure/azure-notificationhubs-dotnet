@@ -39,7 +39,6 @@ namespace Microsoft.Azure.NotificationHubs
 
             this.Body = message;
             this.MessageType = messageType;
-            this.ContentType = "application/x-www-form-urlencoded";
         }
 
         /// <summary>
@@ -59,6 +58,17 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return BaiduCredential.AppPlatformName; }
+        }
+
+        /// <summary>
+        /// Gets content type.
+        /// </summary>
+        /// <value>
+        /// The type of the content.
+        /// </value>
+        public override string ContentType
+        {
+            get { return "application/x-www-form-urlencoded"; }
         }
 
         /// <summary>

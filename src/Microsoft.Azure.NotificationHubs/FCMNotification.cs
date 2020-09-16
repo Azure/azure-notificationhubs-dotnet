@@ -26,7 +26,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
-            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -43,7 +42,6 @@ namespace Microsoft.Azure.NotificationHubs
             }
 
             this.Body = jsonPayload;
-            this.ContentType = "application/json";
         }
 
         /// <summary>
@@ -55,6 +53,17 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return FcmCredential.AppPlatformName; }
+        }
+
+        /// <summary>
+        /// Gets content type.
+        /// </summary>
+        /// <value>
+        /// The type of the content.
+        /// </value>
+        public override string ContentType
+        {
+            get { return "application/json"; }
         }
 
         /// <summary>
