@@ -5,6 +5,7 @@
 //----------------------------------------------------------------
 
 using System;
+using System.Text;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -14,7 +15,7 @@ namespace Microsoft.Azure.NotificationHubs
     [Obsolete("GcmNotification is deprecated, please use FcmNotification instead.")]
     internal sealed class GcmNotification : Notification, INativeNotification
     {
-        const string contentType = "application/json";
+        private static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class.

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -16,7 +17,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class AppleNotification : Notification, INativeNotification
     {
-        const string contentType = "application/json";
+        private static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.AppleNotification"/> class.

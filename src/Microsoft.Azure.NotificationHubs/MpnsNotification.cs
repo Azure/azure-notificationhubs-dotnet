@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Xml;
 
 namespace Microsoft.Azure.NotificationHubs
@@ -15,7 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class MpnsNotification : Notification, INativeNotification
     {
-        const string contentType = "application/xml";
+        private static string contentType = $"application/xml;charset={Encoding.UTF8.WebName}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.MpnsNotification" /> class.

@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.NotificationHubs
@@ -15,7 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class TemplateNotification : Notification
     {
-        const string contentType = "application/json";
+        private static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
         IDictionary<string, string> templateProperties;
 
         /// <summary>
