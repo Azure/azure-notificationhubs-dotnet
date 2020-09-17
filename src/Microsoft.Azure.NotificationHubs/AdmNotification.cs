@@ -13,7 +13,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class AdmNotification : Notification, INativeNotification
     {
-        const string contentType = "application/xml";
+        const string contentType = "application/json";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.AdmNotification"/> class.
