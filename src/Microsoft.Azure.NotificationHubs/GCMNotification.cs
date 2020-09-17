@@ -14,12 +14,14 @@ namespace Microsoft.Azure.NotificationHubs
     [Obsolete("GcmNotification is deprecated, please use FcmNotification instead.")]
     internal sealed class GcmNotification : Notification, INativeNotification
     {
+        const string contentType = "application/json";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload.</param>
         public GcmNotification(string jsonPayload)
-            : base(null, null)
+            : base(null, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -35,7 +37,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="jsonPayload">The JSON payload.</param><param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
         public GcmNotification(string jsonPayload, string tag)
-            : base(null, tag)
+            : base(null, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -51,7 +53,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="fcmNotification">The FcmNotification object to create a new GcmNotifications from.</param>
         [Obsolete("This method is obsolete.")]
         public GcmNotification(FcmNotification fcmNotification)
-            : base(fcmNotification.Headers, fcmNotification.Tag)
+            : base(fcmNotification.Headers, fcmNotification.Tag, contentType)
         {
             this.Body = fcmNotification.Body;
         }
@@ -65,17 +67,6 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return GcmCredential.AppPlatformName; }
-        }
-
-        /// <summary>
-        /// Gets content type.
-        /// </summary>
-        /// <value>
-        /// The type of the content.
-        /// </value>
-        public override string ContentType
-        {
-            get { return "application/json"; }
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class WindowsNotification : Notification, INativeNotification
     {
+        const string contentType = "application/xml";
         const string WnsTypeName = "X-WNS-Type";
         const string Raw = "wns/raw";
         const string Badge = "wns/badge";
@@ -54,7 +55,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="payLoad">The payload.</param><param name="wnsHeaders">A list of WNS headers.</param>
         public WindowsNotification(string payLoad, IDictionary<string, string> wnsHeaders)
-            : base(wnsHeaders, null)
+            : base(wnsHeaders, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(payLoad))
             {
@@ -100,7 +101,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="payLoad">The payload.</param><param name="wnsHeaders">A list of WNS headers.</param><param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
         public WindowsNotification(string payLoad, IDictionary<string, string> wnsHeaders, string tag)
-            : base(wnsHeaders, tag)
+            : base(wnsHeaders, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(payLoad))
             {
@@ -122,29 +123,6 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        /// Gets content type.
-        /// </summary>
-        /// <value>
-        /// The type of the content.
-        /// </value>
-        public override string ContentType
-        {
-            get
-            {
-                if (this.Headers.ContainsKey(WnsTypeName) &&
-                this.Headers[WnsTypeName].Equals(Raw, StringComparison.OrdinalIgnoreCase))
-                {
-                    return "application/octet-stream";
-                }
-                else
-                {
-
-                    return "application/xml";
-                }
-            }
-        }
-
-        /// <summary>
         /// Validate and populates the headers.
         /// </summary>
         protected override void OnValidateAndPopulateHeaders()
@@ -154,6 +132,7 @@ namespace Microsoft.Azure.NotificationHubs
             {
                 //raw notification
                 this.AddNotificationTypeHeader(WindowsTemplateBodyType.Raw);
+                this.ContentType = "application/octet-stream";
             }
             else
             {

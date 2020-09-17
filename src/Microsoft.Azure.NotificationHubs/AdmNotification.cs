@@ -13,12 +13,14 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class AdmNotification : Notification, INativeNotification
     {
+        const string contentType = "application/xml";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.AdmNotification"/> class.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload.</param>
         public AdmNotification(string jsonPayload)
-            : base(null, null)
+            : base(null, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -37,17 +39,6 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return AdmCredential.AppPlatformName; }
-        }
-
-        /// <summary>
-        /// Gets content type.
-        /// </summary>
-        /// <value>
-        /// The type of the content.
-        /// </value>
-        public override string ContentType
-        {
-            get { return "application/xml"; }
         }
 
         /// <summary>

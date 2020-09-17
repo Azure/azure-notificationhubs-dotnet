@@ -15,6 +15,8 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class MpnsNotification : Notification, INativeNotification
     {
+        const string contentType = "application/xml";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.MpnsNotification" /> class.
         /// </summary>
@@ -72,7 +74,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="mpnsHeaders">The MPNS headers.</param>
         /// <exception cref="System.ArgumentNullException">payLoad</exception>
         public MpnsNotification(string payLoad, IDictionary<string, string> mpnsHeaders)
-            : base(mpnsHeaders, null)
+            : base(mpnsHeaders, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(payLoad))
             {
@@ -103,7 +105,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">Thrown if the payload is null or empty</exception>
         [Obsolete("This method is obsolete.")]
         public MpnsNotification(string payLoad, IDictionary<string, string> mpnsHeaders, string tag)
-            : base(mpnsHeaders, tag)
+            : base(mpnsHeaders, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(payLoad))
             {
@@ -122,17 +124,6 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return MpnsCredential.AppPlatformName; }
-        }
-
-        /// <summary>
-        /// Gets content type.
-        /// </summary>
-        /// <value>
-        /// The type of the content.
-        /// </value>
-        public override string ContentType
-        {
-            get { return "application/xml"; }
         }
 
         /// <summary>

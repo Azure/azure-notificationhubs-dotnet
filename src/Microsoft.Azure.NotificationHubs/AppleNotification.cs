@@ -16,6 +16,8 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class AppleNotification : Notification, INativeNotification
     {
+        const string contentType = "application/json";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.AppleNotification"/> class.
         /// </summary>
@@ -31,7 +33,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="jsonPayload">The JSON payload.</param>
         /// <param name="apnsHeaders">The APNS headers.</param>
         public AppleNotification(string jsonPayload, IDictionary<string, string> apnsHeaders)
-            : base(apnsHeaders, null)
+            : base(apnsHeaders, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -48,7 +50,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
         public AppleNotification(string jsonPayload, string tag)
-            : base(null, tag)
+            : base(null, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -64,7 +66,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="jsonPayload">The JSON payload.</param>
         /// <param name="expiry">The expiration of the notification.</param>
         public AppleNotification(string jsonPayload, DateTime? expiry)
-            : base(null, null)
+            : base(null, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -82,7 +84,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="expiry">The expiration of the notification.</param><param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
         public AppleNotification(string jsonPayload, DateTime? expiry, string tag)
-            : base(null, tag)
+            : base(null, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -118,17 +120,6 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return ApnsCredential.AppPlatformName; }
-        }
-
-        /// <summary>
-        /// Gets content type.
-        /// </summary>
-        /// <value>
-        /// The type of the content.
-        /// </value>
-        public override string ContentType
-        {
-            get { return "application/json"; }
         }
 
         /// <summary>

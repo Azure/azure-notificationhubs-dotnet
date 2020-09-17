@@ -13,12 +13,14 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class FcmNotification : Notification, INativeNotification
     {
+        const string contentType = "application/json";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmNotification"/> class.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload.</param>
         public FcmNotification(string jsonPayload)
-            : base(null, null)
+            : base(null, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -34,7 +36,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="jsonPayload">The JSON payload.</param><param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
         public FcmNotification(string jsonPayload, string tag)
-            : base(null, tag)
+            : base(null, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
@@ -53,17 +55,6 @@ namespace Microsoft.Azure.NotificationHubs
         protected override string PlatformType
         {
             get { return FcmCredential.AppPlatformName; }
-        }
-
-        /// <summary>
-        /// Gets content type.
-        /// </summary>
-        /// <value>
-        /// The type of the content.
-        /// </value>
-        public override string ContentType
-        {
-            get { return "application/json"; }
         }
 
         /// <summary>
