@@ -14,7 +14,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class FcmNotification : Notification, INativeNotification
     {
-        private static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
+        static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmNotification"/> class.

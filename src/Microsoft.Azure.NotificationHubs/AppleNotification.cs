@@ -17,7 +17,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class AppleNotification : Notification, INativeNotification
     {
-        private static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
+        static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.AppleNotification"/> class.

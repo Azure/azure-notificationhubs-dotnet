@@ -16,7 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class MpnsNotification : Notification, INativeNotification
     {
-        private static string contentType = $"application/xml;charset={Encoding.UTF8.WebName}";
+        static string contentType = $"application/xml;charset={Encoding.UTF8.WebName}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.MpnsNotification" /> class.

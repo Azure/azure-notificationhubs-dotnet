@@ -16,7 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class TemplateNotification : Notification
     {
-        private static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
+        const string contentType = "application/json";
         IDictionary<string, string> templateProperties;
 
         /// <summary>
