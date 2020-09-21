@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
@@ -16,6 +17,35 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             Assert.Equal($"application/json;charset={Encoding.UTF8.WebName}", new TemplateNotification(new Dictionary<string, string>()).ContentType);
             Assert.Equal("application/json", new AdmNotification("{\"data\":{\"key1\":\"value1\"}}").ContentType);
             Assert.Equal("application/x-www-form-urlencoded", new BaiduNotification("{\"title\":\"Title\",\"description\":\"Description\"}").ContentType);
+        }
+
+        [Theory]
+        [InlineData("application/json")]
+        [InlineData("application/json;charset=utf-8")]
+        [InlineData("application/json;charset=UTF-8")]
+        [InlineData("application/json; charset = UTF-8")]
+        [InlineData("application/json;charset='UTF-8'")]
+        [InlineData("application/json;charset=\"UTF-8\"")]
+        [InlineData("application/xml")]
+        [InlineData("application/x-www-form-urlencoded")]
+        [InlineData("application/octet-stream")]
+        public void ParseContentTypeFailsForValidString(string contentType)
+        {
+            NotificationHubClient.ParseContentType(contentType, out var mediaType, out var encoding);
+            Assert.NotEmpty(mediaType);
+            Assert.NotNull(encoding);
+        }
+
+        [Theory]
+        [InlineData(@"application/json;charset=123")]
+        [InlineData(@"application/json;charset=")]
+        [InlineData(@"application/json;charset=utf-8;123")]
+        [InlineData(@"application/json;charset=utf - 8")]
+        public void ParseContentTypeFailsForInvalidString(string contentType)
+        {
+            var mediaType = string.Empty;
+            Encoding encoding;
+            Assert.Throws<ArgumentException>(() => NotificationHubClient.ParseContentType(contentType, out mediaType, out encoding));
         }
     }
 }
