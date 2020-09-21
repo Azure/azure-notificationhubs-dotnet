@@ -37,15 +37,18 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         }
 
         [Theory]
+        [InlineData(@"123;charset=utf-8")]
+        [InlineData(@";charset=utf-8")]
+        [InlineData(@"charset=utf-8")]
+        [InlineData(@"application")]
+        [InlineData(@"application/")]
         [InlineData(@"application/json;charset=123")]
         [InlineData(@"application/json;charset=")]
         [InlineData(@"application/json;charset=utf-8;123")]
         [InlineData(@"application/json;charset=utf - 8")]
         public void ParseContentTypeFailsForInvalidString(string contentType)
         {
-            var mediaType = string.Empty;
-            Encoding encoding;
-            Assert.Throws<ArgumentException>(() => NotificationHubClient.ParseContentType(contentType, out mediaType, out encoding));
+            Assert.Throws<ArgumentException>(() => NotificationHubClient.ParseContentType(contentType, out _, out _));
         }
     }
 }
