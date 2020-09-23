@@ -76,4 +76,4 @@ dotnet run
 To run the sample open the solution, select UwpSample as a startup project, and hit F5.
 
 ## Azure Functions
-Go [here](https://github.com/Azure/azure-notificationhubs-dotnet/blob/master/Samples/AzFunctions/readme.md) to see how to run the function samples
+Go [here](https://github.com/Azure/azure-notificationhubs-dotnet/blob/main/Samples/AzFunctions/readme.md) to see how to run the function samples
