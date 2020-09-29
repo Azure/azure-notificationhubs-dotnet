@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.NotificationHubs
@@ -15,6 +16,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class TemplateNotification : Notification
     {
+        static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
         IDictionary<string, string> templateProperties;
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="templateProperties">The template properties.</param>
         /// <exception cref="System.ArgumentNullException">properties</exception>
         public TemplateNotification(IDictionary<string, string> templateProperties)
-            : base(null, null)
+            : base(null, null, contentType)
         {
             if (templateProperties == null)
             {
@@ -41,7 +43,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <exception cref="System.ArgumentNullException">properties</exception>
         [Obsolete("This method is obsolete.")]
         public TemplateNotification(IDictionary<string, string> templateProperties, string tag)
-            : base(null, tag)
+            : base(null, tag, contentType)
         {
             if (templateProperties == null)
             {

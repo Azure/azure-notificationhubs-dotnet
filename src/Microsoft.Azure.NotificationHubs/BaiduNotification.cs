@@ -14,6 +14,8 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class BaiduNotification : Notification, INativeNotification
     {
+        const string contentType = "application/x-www-form-urlencoded";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BaiduNotification"/> class.
         /// </summary>
@@ -30,7 +32,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="messageType">Type of the message.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when a Baidu notification message.description is null</exception>
         public BaiduNotification(string message, int? messageType)
-            : base(null, null)
+            : base(null, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
@@ -39,7 +41,6 @@ namespace Microsoft.Azure.NotificationHubs
 
             this.Body = message;
             this.MessageType = messageType;
-            this.ContentType = "application/x-www-form-urlencoded";
         }
 
         /// <summary>

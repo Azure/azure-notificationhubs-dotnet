@@ -17,11 +17,11 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Xml;
 using Microsoft.Azure.NotificationHubs.Auth;
 using Microsoft.Azure.NotificationHubs.Messaging;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Azure.NotificationHubs
 {
@@ -2758,7 +2758,9 @@ namespace Microsoft.Azure.NotificationHubs
 
                     var content = new MultipartContent("mixed", "nh-batch-multipart-boundary");
 
-                    var notificationContent = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
+                    ParseContentType(notification.ContentType, out var mediaType, out var encoding);
+
+                    var notificationContent = new StringContent(notification.Body, encoding, mediaType);
                     notificationContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { Name = "notification" };
                     content.Add(notificationContent);
 
@@ -2850,8 +2852,9 @@ namespace Microsoft.Azure.NotificationHubs
                         request.Headers.Add(item.Key, item.Value);
                     }
 
-                    request.Content = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
-                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(notification.ContentType);
+                    ParseContentType(notification.ContentType, out var mediaType, out var encoding);
+                    request.Content = new StringContent(notification.Body, encoding, mediaType);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
 
                     using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, ct).ConfigureAwait(false))
                     {
@@ -2882,6 +2885,48 @@ namespace Microsoft.Azure.NotificationHubs
             }, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contentType"></param>
+        /// <param name="mediaType"></param>
+        /// <param name="encoding"></param>
+        public static void ParseContentType(string contentType, out string mediaType, out Encoding encoding)
+        {
+            var splitted = contentType.Split(';');
+            mediaType = splitted[0];
+            if (!MediaTypeHeaderValue.TryParse(mediaType, out _))
+            {
+                throw new ArgumentException($"{nameof(contentType)} is not valid.");
+            }
+
+            encoding = Encoding.UTF8;
+
+            if (splitted.Count() == 2)
+            {
+                var matches = Regex.Matches(splitted[1], @"charset\s*=[\s""']*([^\s""']*)", RegexOptions.IgnoreCase);
+                if (matches.Count > 0)
+                {
+                    try
+                    {
+                        encoding = Encoding.GetEncoding(matches[0].Groups[1].Value);
+                    }
+                    catch
+                    {
+                        throw new ArgumentException($"{nameof(contentType)} is not valid.");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"{nameof(contentType)} is not valid.");
+                }
+            }
+            else if (splitted.Count() > 2)
+            {
+                throw new ArgumentException($"{nameof(contentType)} is not valid.");
+            }
+        }
+
         private async Task<ScheduledNotification> SendScheduledNotificationImplAsync(Notification notification, DateTimeOffset scheduledTime, string tagExpression, CancellationToken cancellationToken)
         {
             var requestUri = GetGenericRequestUriBuilder();
@@ -2908,8 +2953,9 @@ namespace Microsoft.Azure.NotificationHubs
                         request.Headers.Add(item.Key, item.Value);
                     }
 
-                    request.Content = new StringContent(notification.Body, Encoding.UTF8, notification.ContentType);
-                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(notification.ContentType);
+                    ParseContentType(notification.ContentType, out var mediaType, out var encoding);
+                    request.Content = new StringContent(notification.Body, encoding, mediaType);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(mediaType);
 
                     using (var response = await SendRequestAsync(request, trackingId, new[] { HttpStatusCode.OK, HttpStatusCode.Created }, ct).ConfigureAwait(false))
                     {

@@ -21,15 +21,17 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.Notification"/> class.
         /// </summary>
-        /// <param name="additionalHeaders">The additional headers.</param><param name="tag">The notification tag.</param>
-        protected Notification(IDictionary<string, string> additionalHeaders, string tag)
+        /// <param name="additionalHeaders">The additional headers.</param>
+        /// <param name="tag">The notification tag.</param>
+        /// <param name="contentType">Notification content type.</param>
+        protected Notification(IDictionary<string, string> additionalHeaders, string tag, string contentType)
         {
             this.headers = additionalHeaders != null
                                ? new Dictionary<string, string>(additionalHeaders, StringComparer.OrdinalIgnoreCase)
                                : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             this.tag = tag;
-            this.ContentType = "application/xml";
+            this.ContentType = contentType;
         }
 
         /// <summary>
