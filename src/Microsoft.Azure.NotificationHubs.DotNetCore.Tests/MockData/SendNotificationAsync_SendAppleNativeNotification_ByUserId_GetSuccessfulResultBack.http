@@ -1,0 +1,22 @@
+{
+   "HttpCalls":[
+      {
+         "RequestUriPath":"/sdk-sample-nh/messages?api-version=2020-06",
+         "StatusCode":201,
+         "Headers":{
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Thu, 23 Jul 2020 04:28:44 GMT",
+            "Location":"https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/messages/4995f50796f046d6a61aa7580af3c9c7-20200723042844-586152-24?api-version=2020-06",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Length":"0",
+            "Content-Type":"application/xml; charset=utf-8"
+         },
+         "Content":null
+      }
+   ],
+   "Guids":[
+
+   ]
+}

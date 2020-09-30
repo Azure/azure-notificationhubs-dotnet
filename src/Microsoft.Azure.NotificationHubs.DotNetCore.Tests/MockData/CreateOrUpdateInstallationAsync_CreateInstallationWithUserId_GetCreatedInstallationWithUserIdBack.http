@@ -1,0 +1,63 @@
+{
+   "HttpCalls":[
+      {
+         "RequestUriPath":"/sdk-sample-nh/registrations?api-version=2020-06&$top=100",
+         "StatusCode":200,
+         "Headers":{
+            "Transfer-Encoding":"chunked",
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Wed, 22 Jul 2020 07:00:59 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/atom+xml; type=feed; charset=utf-8"
+         },
+         "Content":"<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations?api-version=2020-06&amp;$top=100</id><updated>2020-07-22T07:00:59Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations?api-version=2020-06&amp;$top=100\"/><entry a:etag=\"W/&quot;1&quot;\" xmlns:a=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><id>https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations/8697951862487716102-1012849077441598430-1?api-version=2020-06&amp;$top=100</id><title type=\"text\">8697951862487716102-1012849077441598430-1</title><published>2020-07-22T07:00:59Z</published><updated>2020-07-22T07:00:59Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations/8697951862487716102-1012849077441598430-1?api-version=2020-06&amp;$top=100\"/><content type=\"application/xml\"><GcmTemplateRegistrationDescription xmlns=\"http://schemas.microsoft.com/netservices/2010/10/servicebus/connect\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\"><ETag>1</ETag><ExpirationTime>9999-12-31T23:59:59.999Z</ExpirationTime><RegistrationId>8697951862487716102-1012849077441598430-1</RegistrationId><GcmRegistrationId>amzn1.adm-registration.v2.123</GcmRegistrationId><BodyTemplate><![CDATA[{\"data\":{\"message\":\"Message\"}}]]></BodyTemplate><TemplateName>Template Name</TemplateName></GcmTemplateRegistrationDescription></content></entry></feed>"
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/registrations/8697951862487716102-1012849077441598430-1?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Wed, 22 Jul 2020 07:00:59 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Length":"0"
+         },
+         "Content":null
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/08c88ecf-32b5-412b-aba2-29be97ce34c3?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Wed, 22 Jul 2020 07:00:59 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Length":"0",
+            "Content-Type":"application/xml; charset=utf-8"
+         },
+         "Content":null
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/08c88ecf-32b5-412b-aba2-29be97ce34c3?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Transfer-Encoding":"chunked",
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Wed, 22 Jul 2020 07:01:01 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/xml; charset=utf-8"
+         },
+         "Content":"{\"installationId\":\"08c88ecf-32b5-412b-aba2-29be97ce34c3\",\"pushChannel\":\"62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA\",\"pushChannelExpired\":false,\"platform\":\"apns\",\"expirationTime\":\"9999-12-31T23:59:59.9999999Z\",\"userId\":\"d798d460-79d2-449a-b2fc-fa5bf4090f38\"}"
+      }
+   ],
+   "Guids":[
+      "08c88ecf-32b5-412b-aba2-29be97ce34c3",
+      "d798d460-79d2-449a-b2fc-fa5bf4090f38"
+   ]
+}

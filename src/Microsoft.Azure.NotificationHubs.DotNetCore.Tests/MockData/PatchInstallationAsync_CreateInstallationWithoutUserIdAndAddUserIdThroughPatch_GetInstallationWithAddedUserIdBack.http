@@ -1,0 +1,63 @@
+{
+   "HttpCalls":[
+      {
+         "RequestUriPath":"/sdk-sample-nh/registrations?api-version=2020-06&$top=100",
+         "StatusCode":200,
+         "Headers":{
+            "Transfer-Encoding":"chunked",
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Thu, 23 Jul 2020 04:33:54 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/atom+xml; type=feed; charset=utf-8"
+         },
+         "Content":"<feed xmlns=\"http://www.w3.org/2005/Atom\"><title type=\"text\">Registrations</title><id>https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations?api-version=2020-06&amp;$top=100</id><updated>2020-07-23T04:33:54Z</updated><link rel=\"self\" href=\"https://sdk-sample-namespace.notificationhub.int7.windows-int.net/sdk-sample-nh/registrations?api-version=2020-06&amp;$top=100\"/></feed>"
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/80fee11a-30ab-494c-970a-ce8eda14c142?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Thu, 23 Jul 2020 04:33:54 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Length":"0",
+            "Content-Type":"application/xml; charset=utf-8"
+         },
+         "Content":null
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/80fee11a-30ab-494c-970a-ce8eda14c142?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Thu, 23 Jul 2020 04:33:55 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Length":"0",
+            "Content-Type":"application/xml; charset=utf-8"
+         },
+         "Content":null
+      },
+      {
+         "RequestUriPath":"/sdk-sample-nh/installations/80fee11a-30ab-494c-970a-ce8eda14c142?api-version=2020-06",
+         "StatusCode":200,
+         "Headers":{
+            "Transfer-Encoding":"chunked",
+            "Strict-Transport-Security":"max-age=2592000",
+            "Date":"Thu, 23 Jul 2020 04:33:56 GMT",
+            "Server":"Microsoft-HTTPAPI/2.0"
+         },
+         "ContentHeaders":{
+            "Content-Type":"application/xml; charset=utf-8"
+         },
+         "Content":"{\"installationId\":\"80fee11a-30ab-494c-970a-ce8eda14c142\",\"pushChannel\":\"62BCD3484834B7E2DC56733AC5509259230CC1BA82BA1AE7D06E91908A05A8FA\",\"pushChannelExpired\":false,\"platform\":\"apns\",\"expirationTime\":\"9999-12-31T23:59:59.9999999Z\",\"userId\":\"ab25de9f-fcf7-49db-a527-28f797b148b6\"}"
+      }
+   ],
+   "Guids":[
+      "ab25de9f-fcf7-49db-a527-28f797b148b6"
+   ]
+}
