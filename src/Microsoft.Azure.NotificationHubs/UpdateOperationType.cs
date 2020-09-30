@@ -4,10 +4,10 @@
 // license information.
 //------------------------------------------------------------
 
+using System.Runtime.Serialization;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System.Runtime.Serialization;
-
     /// <summary>
     ///  Update Operation Types
     /// </summary>

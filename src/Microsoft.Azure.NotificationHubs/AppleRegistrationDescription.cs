@@ -4,15 +4,15 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Runtime.Serialization;
-    using System.Text.RegularExpressions;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents the description of apple registration.
     /// </summary>

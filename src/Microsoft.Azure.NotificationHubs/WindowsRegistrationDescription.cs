@@ -4,13 +4,13 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Provides description for Windows registration.
     /// </summary>
@@ -147,7 +147,6 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Called when validate event occurs.
         /// </summary>
-        /// <param name="version">The version.</param>
         /// <exception cref="System.Runtime.Serialization.InvalidDataContractException"></exception>
         internal override void OnValidate()
         {

@@ -4,18 +4,18 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using Microsoft.Azure.NotificationHubs.Messaging;
+using RichardSzalay.MockHttp;
+using Xunit;
+
 namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Sockets;
-    using System.Threading.Tasks;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-    using RichardSzalay.MockHttp;
-    using Xunit;
-
     public class NotificationHubClientRetryPolicyTests
     {
         private readonly string _connectionString;

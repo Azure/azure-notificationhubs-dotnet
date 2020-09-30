@@ -4,17 +4,17 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Microsoft.Azure.NotificationHubs.Tests
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Net;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     public class TestServerProxy : HttpClientHandler
     {
         private const string ServerUriKey = "##ServerUri##";

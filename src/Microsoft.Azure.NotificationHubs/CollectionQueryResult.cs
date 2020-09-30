@@ -4,11 +4,11 @@
 // license information.
 //------------------------------------------------------------
 
+using System.Collections.Generic;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System.Collections.Generic;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents a collection query result.
     /// </summary>

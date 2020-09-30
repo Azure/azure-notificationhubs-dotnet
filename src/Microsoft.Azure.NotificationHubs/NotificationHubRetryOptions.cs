@@ -4,10 +4,10 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-
     /// <summary>
     ///    The set of options that can be specified to influence how
     ///    retry attempts are made, and a failure is eligible to be retried.

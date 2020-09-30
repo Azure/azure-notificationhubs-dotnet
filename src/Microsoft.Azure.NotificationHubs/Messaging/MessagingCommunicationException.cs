@@ -4,11 +4,11 @@
 // license information.
 //-----------------------------------------------------------------------------
 
+using System;
+using System.Runtime.Serialization;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// Exception for signaling general communication errors related to messaging operations.
     /// </summary>

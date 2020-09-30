@@ -4,17 +4,17 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
-    using System.Xml;
-    using System.Xml.Linq;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents a Baidu template registration description.
     /// </summary>

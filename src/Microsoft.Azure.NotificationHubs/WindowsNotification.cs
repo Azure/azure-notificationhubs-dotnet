@@ -4,17 +4,18 @@
 // license information.
 //----------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Xml;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Xml;
-
     /// <summary>
     /// Represents the Windows notification.
     /// </summary>
     public sealed class WindowsNotification : Notification, INativeNotification
     {
+        const string contentType = "application/xml";
         const string WnsTypeName = "X-WNS-Type";
         const string Raw = "wns/raw";
         const string Badge = "wns/badge";
@@ -54,7 +55,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="payLoad">The payload.</param><param name="wnsHeaders">A list of WNS headers.</param>
         public WindowsNotification(string payLoad, IDictionary<string, string> wnsHeaders)
-            : base(wnsHeaders, null)
+            : base(wnsHeaders, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(payLoad))
             {
@@ -100,7 +101,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <param name="payLoad">The payload.</param><param name="wnsHeaders">A list of WNS headers.</param><param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
         public WindowsNotification(string payLoad, IDictionary<string, string> wnsHeaders, string tag)
-            : base(wnsHeaders, tag)
+            : base(wnsHeaders, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(payLoad))
             {

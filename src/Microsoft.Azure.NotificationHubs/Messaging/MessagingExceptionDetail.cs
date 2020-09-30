@@ -4,11 +4,11 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Net;
+
 namespace Microsoft.Azure.NotificationHubs.Messaging
 {
-    using System;
-    using System.Net;
-
     /// <summary>
     /// Details about the cause of a Messaging Exception that map errors to specific exceptions.
     /// </summary>

@@ -7,7 +7,7 @@ This repository contains source code for Azure Notification Hubs .NET SDK as wel
 
 ## Building Code
 
-To build the `Microsoft.Azure.NotificationHubs`, you need support for [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).  This requires a minimum of .NET Core 2.0, .NET Framework 4.6.1 or Mono 5.4.  This project ships with two unit test files, one for .NET Core 2.0, and one for .NET Framework 4.6.1 or Mono. 
+To build the `Microsoft.Azure.NotificationHubs`, you need support for [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).  This requires a minimum of .NET Core 3.1, .NET Framework 4.6.1 or Mono 5.4.  This project ships with two unit test files, one for .NET Core 3.1, and one for .NET Framework 4.6.1 or Mono. 
 
 ## Contributing
 

@@ -49,6 +49,11 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             _cacheTokens = cacheTokens;
         }
 
+        /// <summary>
+        /// When implemented, generates a token based upon the scope.
+        /// </summary>
+        /// <param name="appliesTo">The scope for the token.</param>
+        /// <returns>The generated token based upon the scope.</returns>
         protected abstract string GenerateToken(string appliesTo);
 
         /// <summary>
@@ -124,6 +129,9 @@ namespace Microsoft.Azure.NotificationHubs.Auth
             return $"{appliesTo}_{action}";
         }
 
+        /// <summary>
+        /// Disposes the current object.
+        /// </summary>
         public void Dispose()
         {
             _tokenCache?.Dispose();

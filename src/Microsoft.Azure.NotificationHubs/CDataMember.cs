@@ -5,13 +5,13 @@
 // license information.
 //------------------------------------------------------------
 
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System.Runtime.Serialization;
-    using System.Xml;
-    using System.Xml.Schema;
-    using System.Xml.Serialization;
-
     /// <summary>
     /// Represents the body part of Template registration descriptions. The body tag within a template XML description can be any string value
     /// and is treated as a CData section.

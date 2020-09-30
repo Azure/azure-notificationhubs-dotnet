@@ -4,17 +4,17 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Xml.Linq;
+using System.Xml;
+using Microsoft.Azure.NotificationHubs.Messaging;
+
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
-    using System.Xml.Linq;
-    using System.Xml;
-    using Microsoft.Azure.NotificationHubs.Messaging;
-
     /// <summary>
     /// Represents Notification Hub template registration description for Google Cloud Messaging
     /// </summary>
@@ -243,6 +243,8 @@ namespace Microsoft.Azure.NotificationHubs
         {
         }
 
+#pragma warning disable CS0618
+
         /// <summary>
         /// Creates instance of <see cref="T:Microsoft.Azure.NotificationHubs.FcmTemplateRegistrationDescription"/> class from  <see cref="T:Microsoft.Azure.NotificationHubs.GcmTemplateRegistrationDescription"/> object.
         /// </summary>
@@ -253,6 +255,8 @@ namespace Microsoft.Azure.NotificationHubs
             this.BodyTemplate = gcmRegistration.BodyTemplate;
             this.TemplateName = gcmRegistration.TemplateName;
         }
+
+#pragma warning restore CS0618
 
         internal FcmTemplateRegistrationDescription(string notificationHubPath, string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags)
             : base(notificationHubPath, fcmRegistrationId, tags)
