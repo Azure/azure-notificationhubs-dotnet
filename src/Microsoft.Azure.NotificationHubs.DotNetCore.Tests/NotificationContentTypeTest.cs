@@ -29,7 +29,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         [InlineData("application/xml")]
         [InlineData("application/x-www-form-urlencoded")]
         [InlineData("application/octet-stream")]
-        public void ParseContentTypeFailsForValidString(string contentType)
+        public void ParseContentTypeSuccessForValidString(string contentType)
         {
             NotificationHubClient.ParseContentType(contentType, out var mediaType, out var encoding);
             Assert.NotEmpty(mediaType);
