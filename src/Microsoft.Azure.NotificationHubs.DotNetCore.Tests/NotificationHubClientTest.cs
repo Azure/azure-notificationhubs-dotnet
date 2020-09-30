@@ -843,13 +843,8 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         private async Task SendNotificationAsync_SendGcmNativeNotification_GetSuccessfulResultBack()
         {
             LoadMockData();
-            var notification = new FcmNotification("{\"data\":{\"message\":\"Message from .net sdk\"}}");
-
-            //var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
-
-            var notificationResult = await _hubClient.SendNotificationAsync(notification);
-
-
+            var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
+            var notificationResult = await _hubClient.SendNotificationAsync(notification, "someRandomTag1 && someRandomTag2");
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
             RecordTestResults();
         }
