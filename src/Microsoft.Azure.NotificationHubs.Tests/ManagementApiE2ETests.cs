@@ -22,7 +22,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
     public class ManagementApiE2ETests
     {
         private const string IncorrectConnectionString = "Endpoint=sb://sample-test.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SharedAccessKey";
-        private const string NotificationHubNamespaceUriString = "NotificationHubNamespaceUriString";
         private const string NotificationHubConnectionString = "NotificationHubConnectionString";
         private const string NotificationHubName = "NotificationHubName";
         private const string InputFileName = "ImportRegistrations.txt";
@@ -33,13 +32,11 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string ContainerName = "ContainerName";
 
         private NamespaceManager _namespaceManager;
-        private NotificationHubSettings _notificationHubSettings;
         private string _notificationHubName;
         private readonly Uri _inputFileSasUri;
         private readonly Uri _outputContainerSasUri;
         private readonly TestServerProxy _testServer;
 
-        private string _namespaceUriString;
         private string _notificationHubConnectionString;
 
         public ManagementApiE2ETests()
@@ -49,7 +46,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            _namespaceUriString = Environment.GetEnvironmentVariable(NotificationHubNamespaceUriString.ToUpperInvariant()) ?? configuration[NotificationHubNamespaceUriString];
             _notificationHubConnectionString = Environment.GetEnvironmentVariable(NotificationHubConnectionString.ToUpperInvariant()) ?? configuration[NotificationHubConnectionString];
             _notificationHubName = Environment.GetEnvironmentVariable(NotificationHubName.ToUpperInvariant()) ?? configuration[NotificationHubName];
 
@@ -301,7 +297,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             if (recordingMode == RecordingMode.Playback)
             {
                 _notificationHubName = "test";
-                _namespaceUriString = "https://sample.servicebus.windows.net/";
             }
 
             var namespaceManagerSettings = new NotificationHubSettings();

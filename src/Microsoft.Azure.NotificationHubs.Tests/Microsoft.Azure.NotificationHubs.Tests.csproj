@@ -1,8 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-
+    <TargetFrameworks>netcoreapp2.1;net461;netcoreapp3.1</TargetFrameworks>
+    <NoWarn>$(NoWarn);CS0618;CS8603;CS8625</NoWarn>
+    <AssemblyName>Microsoft.Azure.NotificationHubs.Tests</AssemblyName>
+    <RootNamespace>Microsoft.Azure.NotificationHubs.Tests</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -25,7 +29,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="MockData\*.http">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
