@@ -3,6 +3,7 @@
 // license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,30 +27,30 @@ namespace RedundantHubSample
 
         private static async Task CreateRedundantInstallations(RedundantNotificationHubClient nhClient)
         {
-            var fcmDeviceId = Guid.NewGuid().ToString();
-            var fcmInstallation = new Installation
+            var deviceId = Guid.NewGuid().ToString();
+            var installation = new Installation
             {
                 InstallationId = "test-redundancy-install-id",
                 Platform = NotificationPlatform.Fcm,
-                PushChannel = fcmDeviceId,
+                PushChannel = deviceId,
                 PushChannelExpired = false,
                 Tags = new[] { "fcm" }
             };
-            await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation);
+            await nhClient.CreateOrUpdateInstallationAsync(installation);
 
-            var installtions = await nhClient.GetInstallaitonsAsync(fcmInstallation.InstallationId);
-            if (installtions.Length == 2)
+            var installations = await nhClient.GetInstallaitonsAsync(installation.InstallationId);
+            if (installations.Count() == 2)
             {
-                Console.WriteLine("Installtions created in both namespaces");
+                Console.WriteLine("Installations created in both namespaces");
             }
 
-            var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, fcmInstallation.InstallationId);
+            var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, installation.InstallationId);
             var details = await GetPushDetailsAndPrintOutcome(nhClient, outcomeFcm);
             PrintPushOutcome(details, nhClient.UsePrimaryForSend);
 
             // Send notifications to installation in backup namespace
             nhClient.UsePrimaryForSend = false;
-            var outcomeFcmFromBackUp = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, fcmInstallation.InstallationId);
+            var outcomeFcmFromBackUp = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, installation.InstallationId);
             var backupDetails = await GetPushDetailsAndPrintOutcome(nhClient, outcomeFcmFromBackUp);
             PrintPushOutcome(backupDetails, nhClient.UsePrimaryForSend);
         }
@@ -73,7 +74,6 @@ namespace RedundantHubSample
                 Console.WriteLine($"Fcm has no outcome due to it is only available for Standard SKU pricing tier.");
                 return null;
             }
-
             return await WaitForThePushStatusAsync(nhClient, notificationOutcome);
         }
 
@@ -133,9 +133,22 @@ namespace RedundantHubSample
                 _primaryNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken),
                 _backupNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken));
 
-        public async Task<Installation[]> GetInstallaitonsAsync(string installationId)
+        public async Task<IEnumerable<Installation>> GetInstallaitonsAsync(string installationId)
         {
-            return new Installation[] {await _primaryNotificationHubClient.GetInstallationAsync(installationId), await _backupNotificationHubClient.GetInstallationAsync(installationId)};
+            var installations = new List<Installation>();
+            Func<INotificationHubClient, Task> getInstallations = async (nhClient) =>
+            {
+                try
+                {
+                    installations.Add(await nhClient.GetInstallationAsync(installationId));
+                }
+                catch (Exception)
+                {
+
+                }
+            };
+            await Task.WhenAll(getInstallations(_primaryNotificationHubClient), getInstallations(_backupNotificationHubClient));
+            return installations;
         }
 
         public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken = default)
