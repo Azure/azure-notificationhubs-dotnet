@@ -28,10 +28,10 @@ namespace RedundantHubSample
                 _primaryNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken),
                 _backupNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken));
 
-        public async Task<Installation> GetInstallationAsync(string installationId) =>
-            DefaultNamespace == DefaultNamespace.Primary ?
-                await _primaryNotificationHubClient.GetInstallationAsync(installationId) :
-                await _backupNotificationHubClient.GetInstallationAsync(installationId);
+        public Task<Installation> GetInstallationAsync(string installationId) 
+            => DefaultNamespace == DefaultNamespace.Primary ?
+                _primaryNotificationHubClient.GetInstallationAsync(installationId) :
+                _backupNotificationHubClient.GetInstallationAsync(installationId);
 
         public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken = default)
             => DefaultNamespace == DefaultNamespace.Primary ?
