@@ -38,21 +38,18 @@ namespace RedundantHubSample
             };
             await nhClient.CreateOrUpdateInstallationAsync(installation);
 
-            var installations = await nhClient.GetInstallaitonsAsync(installation.InstallationId);
-            if (installations.Count() == 2)
-            {
-                Console.WriteLine("Installations created in both namespaces");
-            }
+            await nhClient.GetInstallationAsync(installation.InstallationId);
+            
 
             var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, installation.InstallationId);
             var details = await GetPushDetailsAndPrintOutcome(nhClient, outcomeFcm);
-            PrintPushOutcome(details, nhClient.UsePrimaryForSend);
+            PrintPushOutcome(details, true);
 
             // Send notifications to installation in backup namespace
-            nhClient.UsePrimaryForSend = false;
+            nhClient.DefaultNamespace = DefaultNamespace.Backup;
             var outcomeFcmFromBackUp = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, installation.InstallationId);
             var backupDetails = await GetPushDetailsAndPrintOutcome(nhClient, outcomeFcmFromBackUp);
-            PrintPushOutcome(backupDetails, nhClient.UsePrimaryForSend);
+            PrintPushOutcome(backupDetails, false);
         }
 
         private static SampleConfiguration LoadConfiguration(string[] args)
@@ -68,17 +65,12 @@ namespace RedundantHubSample
 
         private static async Task<NotificationDetails> GetPushDetailsAndPrintOutcome(RedundantNotificationHubClient nhClient, NotificationOutcome notificationOutcome)
         {
-            // The Notification ID is only available for Standard SKUs. For Basic and Free SKUs the API to get notification outcome details can not be called.
             if (string.IsNullOrEmpty(notificationOutcome.NotificationId))
             {
                 Console.WriteLine($"Fcm has no outcome due to it is only available for Standard SKU pricing tier.");
                 return null;
             }
-            return await WaitForThePushStatusAsync(nhClient, notificationOutcome);
-        }
 
-        private static async Task<NotificationDetails> WaitForThePushStatusAsync(RedundantNotificationHubClient nhClient, NotificationOutcome notificationOutcome)
-        {
             var notificationId = notificationOutcome.NotificationId;
             var state = NotificationOutcomeState.Enqueued;
             var count = 0;
@@ -113,53 +105,5 @@ namespace RedundantHubSample
             }
             Console.WriteLine($"{(isPrimary ? "Primary" : "Backup")} error details URL: {details.PnsErrorDetailsUri}");
         }
-    }
-
-    public class RedundantNotificationHubClient
-    {
-        private readonly INotificationHubClient _primaryNotificationHubClient;
-        private readonly INotificationHubClient _backupNotificationHubClient;
-
-        public RedundantNotificationHubClient(string primaryConnectionString, string backupConnectionString, string hubName)
-        {
-            _primaryNotificationHubClient = NotificationHubClient.CreateClientFromConnectionString(primaryConnectionString, hubName);
-            _backupNotificationHubClient = NotificationHubClient.CreateClientFromConnectionString(backupConnectionString, hubName);
-        }
-
-        public bool UsePrimaryForSend { get; set; } = true;
-
-        public Task CreateOrUpdateInstallationAsync(Installation installation, CancellationToken cancellationToken = default)
-            => Task.WhenAll(
-                _primaryNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken),
-                _backupNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken));
-
-        public async Task<IEnumerable<Installation>> GetInstallaitonsAsync(string installationId)
-        {
-            var installations = new List<Installation>();
-            Func<INotificationHubClient, Task> getInstallations = async (nhClient) =>
-            {
-                try
-                {
-                    installations.Add(await nhClient.GetInstallationAsync(installationId));
-                }
-                catch (Exception)
-                {
-
-                }
-            };
-            await Task.WhenAll(getInstallations(_primaryNotificationHubClient), getInstallations(_backupNotificationHubClient));
-            return installations;
-        }
-
-        public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken = default)
-            => UsePrimaryForSend ?
-                _primaryNotificationHubClient.SendFcmNativeNotificationAsync(jsonPayload, tagExpression, cancellationToken) :
-                _backupNotificationHubClient.SendFcmNativeNotificationAsync(jsonPayload, tagExpression, cancellationToken);
-
-
-        public Task<NotificationDetails> GetNotificationOutcomeDetailsAsync(string notificationId, CancellationToken cancellationToken = default)
-            => UsePrimaryForSend ?
-                _primaryNotificationHubClient.GetNotificationOutcomeDetailsAsync(notificationId, cancellationToken) :
-                _backupNotificationHubClient.GetNotificationOutcomeDetailsAsync(notificationId, cancellationToken);
     }
 }
