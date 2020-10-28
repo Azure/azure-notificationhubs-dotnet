@@ -3,7 +3,6 @@
 // license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,18 +37,37 @@ namespace RedundantHubSample
             };
             await nhClient.CreateOrUpdateInstallationAsync(installation);
 
-            await nhClient.GetInstallationAsync(installation.InstallationId);
+            // Confirm if the installation is created for primary namepsace.
+            await GetInstallationAsync(nhClient, installation.InstallationId);
             
-
             var outcomeFcm = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, installation.InstallationId);
             var details = await GetPushDetailsAndPrintOutcome(nhClient, outcomeFcm);
             PrintPushOutcome(details, true);
 
-            // Send notifications to installation in backup namespace
+            // Confirm if the installation is created for backup namepsace.
             nhClient.DefaultNamespace = DefaultNamespace.Backup;
+            await GetInstallationAsync(nhClient, installation.InstallationId);
+
+            // Send notifications to installation in backup namespace
             var outcomeFcmFromBackUp = await nhClient.SendFcmNativeNotificationAsync(FcmSampleNotificationContent, installation.InstallationId);
             var backupDetails = await GetPushDetailsAndPrintOutcome(nhClient, outcomeFcmFromBackUp);
             PrintPushOutcome(backupDetails, false);
+        }
+
+        private static async Task<Installation> GetInstallationAsync(RedundantNotificationHubClient nhClient, string installationId)
+        {
+            while (true)
+            {
+                try
+                {
+                    return await nhClient.GetInstallationAsync(installationId);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Waiting for installation to be created");
+                    Thread.Sleep(1000);
+                }
+            }
         }
 
         private static SampleConfiguration LoadConfiguration(string[] args)

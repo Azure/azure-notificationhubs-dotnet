@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.NotificationHubs;
 
@@ -29,23 +28,10 @@ namespace RedundantHubSample
                 _primaryNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken),
                 _backupNotificationHubClient.CreateOrUpdateInstallationAsync(installation, cancellationToken));
 
-        public async Task<Installation> GetInstallationAsync(string installationId)
-        {
-            while (true)
-            {
-                try
-                {
-                    return DefaultNamespace == DefaultNamespace.Primary ?
-                        await _primaryNotificationHubClient.GetInstallationAsync(installationId) :
-                        await _backupNotificationHubClient.GetInstallationAsync(installationId);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Waiting for installation to be created");
-                    Thread.Sleep(1000);
-                }
-            }
-        }
+        public async Task<Installation> GetInstallationAsync(string installationId) =>
+            DefaultNamespace == DefaultNamespace.Primary ?
+                await _primaryNotificationHubClient.GetInstallationAsync(installationId) :
+                await _backupNotificationHubClient.GetInstallationAsync(installationId);
 
         public Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken = default)
             => DefaultNamespace == DefaultNamespace.Primary ?
