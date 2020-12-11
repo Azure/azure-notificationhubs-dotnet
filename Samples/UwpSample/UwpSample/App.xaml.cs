@@ -96,7 +96,7 @@ namespace UwpSample
         {
             var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
 
-            var hub = new NotificationHubClient(Secrets.HubName, Secrets.HubConnectionString);
+            var hub = new NotificationHubClient(Secrets.HubConnectionString, Secrets.HubName);
             await hub.CreateOrUpdateInstallationAsync(new Installation
             {
                 Platform = NotificationPlatform.Wns,
