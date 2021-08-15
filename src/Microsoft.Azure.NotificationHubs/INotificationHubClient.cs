@@ -1260,7 +1260,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// Sends a notification directly to all devices listed in deviceHandles (a valid tokens as expressed by the Notification type).
         /// Users of this API do not use Registrations or Installations. Instead, users of this API manage all devices
         /// on their own and use Azure Notification Hub solely as a pass through service to communicate with
-        /// the various Push Notification Services.
+        /// the various Push Notification Services.  This feature is not available on the free SKU.
         /// </summary>
         /// <param name="notification">A instance of a Notification, identifying which Push Notification Service to send to.</param>
         /// <param name="deviceHandles">A list of valid device identifiers.</param>
@@ -1274,7 +1274,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// Sends a notification directly to all devices listed in deviceHandles (a valid tokens as expressed by the Notification type).
         /// Users of this API do not use Registrations or Installations. Instead, users of this API manage all devices
         /// on their own and use Azure Notification Hub solely as a pass through service to communicate with
-        /// the various Push Notification Services.
+        /// the various Push Notification Services.  This feature is not available on the free SKU.
         /// </summary>
         /// <param name="notification">A instance of a Notification, identifying which Push Notification Service to send to.</param>
         /// <param name="deviceHandles">A list of valid device identifiers.</param>
