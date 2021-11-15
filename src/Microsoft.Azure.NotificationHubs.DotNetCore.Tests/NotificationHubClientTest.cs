@@ -1189,11 +1189,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var registration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
             var receivedRegistration = await _hubClient.GetRegistrationAsync<GcmRegistrationDescription>(createdRegistration.RegistrationId);
 
             Assert.IsType<GcmRegistrationDescription>(receivedRegistration);
+#pragma warning restore 618
             RecordTestResults();
         }
 
@@ -1235,6 +1237,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var registration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             registration.TemplateName = "Template Name";
 
@@ -1242,6 +1245,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var receivedRegistration = await _hubClient.GetRegistrationAsync<GcmTemplateRegistrationDescription>(createdRegistration.RegistrationId);
 
             Assert.IsType<GcmTemplateRegistrationDescription>(receivedRegistration);
+#pragma warning restore 618
             RecordTestResults();
         }
 
@@ -1251,10 +1255,12 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var registration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
 
             Assert.IsType<GcmRegistrationDescription>(createdRegistration);
+#pragma warning restore 618
             RecordTestResults();
         }
 
@@ -1277,12 +1283,14 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var registration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             registration.TemplateName = "Template Name";
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
 
             Assert.IsType<GcmTemplateRegistrationDescription>(createdRegistration);
+#pragma warning restore 618
             RecordTestResults();
         }
 
@@ -1307,6 +1315,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var registration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
 
             var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
@@ -1315,6 +1324,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var updatedRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(createdRegistration);
 
             Assert.IsType<GcmRegistrationDescription>(updatedRegistration);
+#pragma warning restore 618
             RecordTestResults();
         }
 
@@ -1342,6 +1352,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var registration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             registration.Tags = new HashSet<string>() { "tag1" };
             registration.TemplateName = "Template Name";
@@ -1352,6 +1363,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var updatedRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(createdRegistration);
 
             Assert.IsType<GcmTemplateRegistrationDescription>(updatedRegistration);
+#pragma warning restore 618
             RecordTestResults();
         }
 
@@ -1380,7 +1392,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var gcmRegistration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+#pragma warning restore 618
             var fcmRegistration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"]);
 
             await _hubClient.CreateRegistrationAsync(gcmRegistration);
@@ -1402,8 +1416,10 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var gcmTemplateRegistration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             gcmTemplateRegistration.TemplateName = "Gcm Template Name";
+#pragma warning restore 618
 
             var fcmTemplateRegistration = new FcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             fcmTemplateRegistration.TemplateName = "Fcm Template Name";
@@ -1427,7 +1443,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
 
+#pragma warning disable 618
             var gcmRegistration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"], new[] { "tag1" });
+#pragma warning restore 618
             var fcmRegistration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"], new[] { "tag1" });
 
             await _hubClient.CreateRegistrationAsync(gcmRegistration);
@@ -1448,10 +1466,11 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
-
+#pragma warning disable 618
             var gcmTemplateRegistration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             gcmTemplateRegistration.Tags = new HashSet<string>() { "tag2" };
             gcmTemplateRegistration.TemplateName = "Gcm Template Name";
+#pragma warning restore 618
 
             var fcmTemplateRegistration = new FcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             fcmTemplateRegistration.Tags = new HashSet<string>() { "tag2" };
@@ -1475,8 +1494,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
-
+#pragma warning disable 618
             var gcmRegistration = new GcmRegistrationDescription(_configuration["GcmDeviceToken"]);
+#pragma warning restore 618
             var fcmRegistration = new FcmRegistrationDescription(_configuration["GcmDeviceToken"]);
 
             await _hubClient.CreateRegistrationAsync(gcmRegistration);
@@ -1497,10 +1517,10 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             LoadMockData();
             await DeleteAllRegistrationsAndInstallations();
-
+#pragma warning disable 618
             var gcmTemplateRegistration = new GcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             gcmTemplateRegistration.TemplateName = "Gcm Template Name";
-
+#pragma warning restore 618
             var fcmTemplateRegistration = new FcmTemplateRegistrationDescription(_configuration["GcmDeviceToken"], "{\"data\":{\"message\":\"Message\"}}");
             fcmTemplateRegistration.TemplateName = "Fcm Template Name";
 
