@@ -33,7 +33,6 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         private const string ContainerName = "ContainerName";
 
         private NamespaceManager _namespaceManager;
-        private NotificationHubSettings _notificationHubSettings;
         private string _notificationHubName;
         private readonly Uri _inputFileSasUri;
         private readonly Uri _outputContainerSasUri;
