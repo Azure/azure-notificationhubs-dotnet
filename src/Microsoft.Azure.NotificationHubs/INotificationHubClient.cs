@@ -667,7 +667,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(int top);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(int top);
 
         /// <summary>
         /// Asynchronously retrieves all registrations in this notification hub.
@@ -677,7 +677,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(int top, CancellationToken cancellationToken);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(int top, CancellationToken cancellationToken);
 
         /// <summary>
         /// Asynchronously retrieves all registrations in this notification hub.
@@ -687,7 +687,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(string continuationToken, int top);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(string continuationToken, int top);
 
         /// <summary>
         /// Asynchronously retrieves all registrations in this notification hub.
@@ -698,7 +698,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(string continuationToken, int top, CancellationToken cancellationToken);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetAllRegistrationsAsync(string continuationToken, int top, CancellationToken cancellationToken);
 
         /// <summary>
         /// Returns the base URI for the notification hub client.
@@ -845,7 +845,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, int top);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, int top);
 
         /// <summary>
         /// Asynchronously gets the registrations by channel.
@@ -856,7 +856,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, int top, CancellationToken cancellationToken);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, int top, CancellationToken cancellationToken);
 
         /// <summary>
         /// Asynchronously gets the registrations by channel.
@@ -868,7 +868,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">pnsHandle</exception>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, string continuationToken, int top);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, string continuationToken, int top);
 
         /// <summary>
         /// Asynchronously gets the registrations by channel.
@@ -881,7 +881,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">pnsHandle</exception>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, string continuationToken, int top, CancellationToken cancellationToken);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByChannelAsync(string pnsHandle, string continuationToken, int top, CancellationToken cancellationToken);
 
         /// <summary>
         /// Asynchronously gets the registrations by tag.
@@ -891,7 +891,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, int top);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, int top);
 
         /// <summary>
         /// Asynchronously gets the registrations by tag.
@@ -902,7 +902,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, int top, CancellationToken cancellationToken);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, int top, CancellationToken cancellationToken);
 
         /// <summary>
         /// Asynchronously gets the registrations by tag.
@@ -914,7 +914,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown when tag object is null</exception>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, string continuationToken, int top);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, string continuationToken, int top);
 
         /// <summary>
         /// Asynchronously gets the registrations by tag.
@@ -927,7 +927,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// The task that completes the asynchronous operation, which will contain a null or empty continuation token when there is no additional data available in the query.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown when tag object is null</exception>
-        Task<CollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, string continuationToken, int top, CancellationToken cancellationToken);
+        Task<ICollectionQueryResult<RegistrationDescription>> GetRegistrationsByTagAsync(string tag, string continuationToken, int top, CancellationToken cancellationToken);
 
         /// <summary>
         /// Determines whether the given installation exists based upon the installation identifier.

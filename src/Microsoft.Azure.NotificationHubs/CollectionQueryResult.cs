@@ -13,7 +13,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// Represents a collection query result.
     /// </summary>
     /// <typeparam name="T">The type of the result.</typeparam>
-    public sealed class CollectionQueryResult<T> : IEnumerable<T> where T : EntityDescription
+    public sealed class CollectionQueryResult<T> : ICollectionQueryResult<T> where T : EntityDescription
     {
         private IEnumerable<T> results;
 
