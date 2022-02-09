@@ -144,5 +144,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
 
         public const string OutputFilePath = "OutputFilePath";
         public const string FailedFilePath = "FailedFilePath";
+
+        public const string DailyMaxActiveRegistrations = "DailyMaxActiveRegistrations";
+        public const string DailyMaxActiveDevices = "DailyMaxActiveDevices";
+        public const string DailyOperations = "DailyOperations";
+        public const string UserMetadata = "UserMetadata";
     }
 }

@@ -327,6 +327,52 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Gets the daily operations for the Notificationhub.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// The daily operations for the Notificationhub.
+        /// </returns>
+        [DataMember(Name = ManagementStrings.DailyOperations, IsRequired = false, EmitDefaultValue = false, Order = 1007)]
+        public long DailyOperations
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the daily maximum active devices for Notificationhub.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// The daily maximum active devices for Notificationhub.
+        /// </returns>
+        [DataMember(Name = ManagementStrings.DailyMaxActiveDevices, IsRequired = false, EmitDefaultValue = false, Order = 1008)]
+        public long DailyMaxActiveDevices
+        {
+            get;
+            internal set;
+        }
+
+        /// <summary>
+        /// Gets the daily maximum active registrations for the Notificationhub.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// The daily maximum active registrations for the Notificationhub.
+        /// </returns>
+        [DataMember(Name = ManagementStrings.DailyMaxActiveRegistrations, IsRequired = false, EmitDefaultValue = false, Order = 1009)]
+        public long DailyMaxActiveRegistrations
+        {
+            get;
+            internal set;
+        }
+
+
+        [DataMember(Name = ManagementStrings.UserMetadata, IsRequired = false, EmitDefaultValue = false, Order = 1010)]
+        internal string InternalUserMetadata { get; set; }
+
+        /// <summary>
         /// Gets or sets the Adm credential credential.
         /// </summary>
         /// 
@@ -351,6 +397,36 @@ namespace Microsoft.Azure.NotificationHubs
         {
             get;
             set;
+        }
+
+        /// <summary>
+        ///   Gets/Sets any User Metadata associated with the NotificationHub.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// The user metadata associated with the NotificationHub.
+        /// </returns>
+        public string UserMetadata
+        {
+            get
+            {
+                return this.InternalUserMetadata;
+            }
+            set
+            {
+                this.ThrowIfReadOnly();
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    this.InternalUserMetadata = null;
+                    return;
+                }
+
+                if (value.Length > Constants.MaximumUserMetadataLength)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(UserMetadata));
+                }
+                this.InternalUserMetadata = value;
+            }
         }
 
         internal override bool RequiresEncryption

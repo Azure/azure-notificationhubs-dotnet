@@ -14,6 +14,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public static readonly int DefaultMaxDeliveryCount = 10;
         public static readonly TimeSpan DefaultRegistrationTtl = TimeSpan.MaxValue;
         public static readonly TimeSpan MinimumRegistrationTtl = TimeSpan.FromDays(1);
+        public const int MaximumUserMetadataLength = 1024;
 
         public const string NotificationHub = "NotificationHub";
         public const string PathDelimiter = @"/";
