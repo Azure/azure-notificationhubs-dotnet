@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Management.NotificationHubs" Version="2.3.3-preview" />
     <PackageReference Include="Microsoft.Azure.Management.ResourceManager" Version="3.10.0-preview" />
-    <PackageReference Include="Microsoft.Azure.NotificationHubs" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Azure.NotificationHubs" Version="4.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
