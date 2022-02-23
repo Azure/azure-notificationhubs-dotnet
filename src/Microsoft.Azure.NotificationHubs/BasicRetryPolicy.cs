@@ -2,11 +2,9 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Globalization;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs

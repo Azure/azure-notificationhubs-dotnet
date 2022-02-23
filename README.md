@@ -67,6 +67,51 @@ hub = await namespaceManager.UpdateNotificationHubAsync(hub, CancellationToken.N
 await namespaceManager.DeleteNotificationHubAsync("hubname", CancellationToken.None);
 ```
 
+## Azure Notification Hubs Operations
+
+The `NotificationHubClient` class and `INotificationHubClient` interface is the main entry point for installations/registrations, but also sending push notifications.  To create a `NotificationHubClient`, you need the connection string from your Access Policy with the desired permissions such as `Listen`, `Manage` and `Send`, and in addition, the hub name to use.
+
+```csharp
+INotificationHubClient hub = new NotificationHubClient("connection string", "hubname");
+```
+
+## Azure Notification Hubs Installation API
+
+An Installation is an enhanced registration that includes a bag of push related properties. It is the latest and best approach to registering your devices.
+
+The following are some key advantages to using installations:
+
+- Creating or updating an installation is fully idempotent. So you can retry it without any concerns about duplicate registrations.
+- The installation model supports a special tag format `($InstallationId:{INSTALLATION_ID})` that enables sending a notification directly to the specific device. For example, if the app's code sets an installation ID of `joe93developer` for this particular device, a developer can target this device when sending a notification to the `$InstallationId:{joe93developer}` tag. This enables you to target a specific device without having to do any additional coding.
+- Using installations also enables you to do partial registration updates. The partial update of an installation is requested with a PATCH method using the JSON-Patch standard. This is useful when you want to update tags on the registration. You don't have to pull down the entire registration and then resend all the previous tags again.
+
+Using this SDK, you can do these Installation API operations.  For example, we can create an installation for an Amazon Kindle Fire.
+
+```java
+AdmInstallation installation = new AdmInstallation("installation-id", "adm-push-channel");
+hub.createOrUpdateInstallation(installation);
+```
+
+An installation can have multiple tags and multiple templates with its own set of tags and headers.
+
+```java
+installation.addTag("foo");
+installation.addTemplate("template1", new InstallationTemplate("{\"data\":{\"key1\":\"$(value1)\"}}","tag-for-template1"));
+installation.addTemplate("template2", new InstallationTemplate("{\"data\":{\"key2\":\"$(value2)\"}}","tag-for-template2"));
+hub.createOrUpdateInstallation(installation);
+```
+
+For advanced scenarios we have partial update capability which allows to modify only particular properties of the installation object. Basically partial update is subset of [JSON Patch](https://tools.ietf.org/html/rfc6902/) operations you can run against Installation object.
+
+```java
+PartialUpdateOperation addChannel = new PartialUpdateOperation(UpdateOperationType.Add, "/pushChannel", "adm-push-channel2");
+PartialUpdateOperation addTag = new PartialUpdateOperation(UpdateOperationType.Add, "/tags", "bar");
+PartialUpdateOperation replaceTemplate = new PartialUpdateOperation(UpdateOperationType.Replace, "/templates/template1", new InstallationTemplate("{\"data\":{\"key3\":\"$(value3)\"}}","tag-for-template1")).toJson());
+hub.patchInstallation("installation-id", addChannel, addTag, replaceTemplate);
+```
+
+**Create an Azure Notification Hub Client:**
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
