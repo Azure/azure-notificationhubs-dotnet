@@ -4,6 +4,43 @@
 
 This repository contains source code for Azure Notification Hubs .NET SDK as well as samples for using the client.  This library is also available via NuGet as part of [`Microsoft.Azure.NotificationHubs`](https://www.nuget.org/packages/Microsoft.Azure.NotificationHubs/).
 
+Table of Contents:
+
+- [Building Code](#building-code)
+- [Getting Started](#getting-started)
+- [Azure Notification Hubs Management Operations](#azure-notification-hubs-management-operations)
+  - [Create a namespace manager](#create-a-namespace-manager)
+  - [Create an Azure Notification Hub](#create-an-azure-notification-hub)
+  - [Get a Azure Notification Hub](#get-a-azure-notification-hub)
+  - [Update an Azure Notification Hub](#update-an-azure-notification-hub)
+  - [Delete an Azure Notification Hub](#delete-an-azure-notification-hub)
+- [Azure Notification Hubs Operations](#azure-notification-hubs-operations)
+- [Azure Notification Hubs Installation API](#azure-notification-hubs-installation-api)
+  - [Delete an Installation](#delete-an-installation)
+- [Azure Notification Hub Registration API](#azure-notification-hub-registration-api)
+  - [Create an Apple Registration](#create-an-apple-registration)
+  - [Create Template Registrations](#create-template-registrations)
+  - [Update a Registration](#update-a-registration)
+  - [Delete a Registration](#delete-a-registration)
+  - [Get a Single Registration](#get-a-single-registration)
+  - [Get Registrations With a Given Tag](#get-registrations-with-a-given-tag)
+  - [Get Registrations By Channel](#get-registrations-by-channel)
+- [Send Notifications](#send-notifications)
+  - [Send an Apple Push Notification](#send-an-apple-push-notification)
+  - [Send a Template Notification](#send-a-template-notification)
+  - [Send To An Installation ID](#send-to-an-installation-id)
+  - [Send to a User ID](#send-to-a-user-id)
+  - [Send To An Installation Template For An Installation](#send-to-an-installation-template-for-an-installation)
+- [Scheduled Send Operations](#scheduled-send-operations)
+  - [Schedule Apple Native Send Operation](#schedule-apple-native-send-operation)
+  - [Cancel Scheduled Notification](#cancel-scheduled-notification)
+- [Import and Export Registrations](#import-and-export-registrations)
+  - [Submit an Export Job](#submit-an-export-job)
+  - [Submit an Import Job](#submit-an-import-job)
+  - [Wait for Job Completion](#wait-for-job-completion)
+  - [Get All jobs](#get-all-jobs)
+- [References](#references)
+
 ## Building Code
 
 To build the `Microsoft.Azure.NotificationHubs`, you need support for [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).  This requires a minimum of .NET Core 3.1, .NET Framework 4.6.2 or Mono 5.4.  This project ships with two unit test files, one for .NET Core 6.0, and one for .NET Framework 4.6.2 or Mono. This library ships binaries for .NET Standard 2.0, .NET Standard 2.1 and .NET 6.0.
@@ -14,20 +51,6 @@ To get started, you can find all the classes in the `Microsoft.Azure.Notificatio
 
 ```csharp
 using Microsoft.Azure.NotificationHubs;
-```
-
-The Azure Notification Hubs SDK for .NET support both synchronous and asynchronous operations on `NotificationHubClient` and `/NamespaceManagerClient`.  The asynchronous APIs have the `Async` suffix returning `Task` objects.
-
-```csharp
-// Synchronous
-var hub = new NotificationHubDescription("hubname");
-hub.WnsCredential = new WnsCredential("sid","key");
-hub = namespaceManager.CreateNotificationHub(hub);
-
-// Asynchronous
-var hub = new NotificationHubDescription("hubname");
-hub.WnsCredential = new WnsCredential("sid","key");
-hub = await namespaceManager.CreateNotificationHubAsync(hub, CancellationToken.None);
 ```
 
 ## Azure Notification Hubs Management Operations
@@ -155,14 +178,6 @@ Keep in mind that `CreateOrUpdateInstallationAsync`, `PatchInstallationAsync` an
 
 A registration associates the Platform Notification Service (PNS) handle for a device with tags and possibly a template. The PNS handle could be a ChannelURI, device token, or FCM registration ID. Tags are used to route notifications to the correct set of device handles. Templates are used to implement per-registration transformation.  The Registration API handles requests for these operations.
 
-### Create a Windows Registration
-
-```csharp
-var tags = new HashSet<string> { "platform_uwp", "os_windows10" };
-var channelUri = new Uri("https://notify.windows.net/mychannel");
-WindowsRegistrationDescription created = await hub.CreateWindowsNativeRegistrationAsync(channelUri, tags);
-```
-
 ### Create an Apple Registration
 
 ```csharp
@@ -289,7 +304,7 @@ var props = new Dictionary<string, string>
     { "value3", "some value" }
 };
 var n = new TemplateNotification(prop);
-NotificationOutcome outcome = await hub.SendNotificationAsync(n, "$InstallationId:{installation-id} && tag-for-template1");
+NotificationOutcome outcome = await hub.SendNotificationAsync(n, "$InstallationId:{installation-id} && template1");
 ```
 
 ## Scheduled Send Operations
