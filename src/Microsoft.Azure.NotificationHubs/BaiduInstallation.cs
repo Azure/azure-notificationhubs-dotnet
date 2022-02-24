@@ -4,6 +4,8 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
     /// <summary>
@@ -23,13 +25,22 @@ namespace Microsoft.Azure.NotificationHubs
         /// Creates a new instance of the BaiduInstallation class with the Baidu User ID and Channel ID
         /// to set on the PushChannel.
         /// </summary>
+        /// <param name="installationId">The unique identifier for the installation.</param>
         /// <param name="baiduUserId">The Baidu User ID.</param>
         /// <param name="baiduChannelId">The Baidu Channel ID.</param>
-        public BaiduInstallation(string baiduUserId, string baiduChannelId)
+        public BaiduInstallation(string installationId, string baiduUserId, string baiduChannelId) : this()
         {
-            Platform = NotificationPlatform.Baidu;
+            InstallationId = installationId ?? throw new ArgumentNullException(nameof(installationId));
+            if (string.IsNullOrWhiteSpace(baiduUserId))
+            {
+                throw new ArgumentNullException(nameof(baiduUserId));
+            }
+            if (string.IsNullOrWhiteSpace(baiduChannelId))
+            {
+                throw new ArgumentNullException(nameof(baiduChannelId));
+            }
+                
             PushChannel = $"{baiduUserId}-{baiduChannelId}";
         }
     }
 }
-

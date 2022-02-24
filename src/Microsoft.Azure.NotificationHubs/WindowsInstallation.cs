@@ -4,6 +4,8 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
     /// <summary>
@@ -22,11 +24,12 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Creates a new instance of the WnsInstallation class.
         /// </summary>
+        /// <param name="installationId">The unique identifier for the installation.</param>
         /// <param name="channelUri">The WNS Channel URI to use for the PushChannel.</param>
-        public WindowsInstallation(string channelUri)
+        public WindowsInstallation(string installationId, string channelUri) : this()
         {
-            PushChannel = channelUri;
-            Platform = NotificationPlatform.Wns;
+            InstallationId = installationId ?? throw new ArgumentNullException(nameof(installationId));
+            PushChannel = channelUri ?? throw new ArgumentNullException(nameof(channelUri));
         }
     }
 }

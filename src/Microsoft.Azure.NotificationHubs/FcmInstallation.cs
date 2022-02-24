@@ -4,6 +4,8 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
     /// <summary>
@@ -22,11 +24,12 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Creates a new instance of the FcmInstallation class.
         /// </summary>
+        /// <param name="installationId">The unique identifier for the installation.</param>
         /// <param name="registrationId">The Firebase registration ID to use for the PushChannel.</param>
-        public FcmInstallation(string registrationId)
+        public FcmInstallation(string installationId, string registrationId) : this()
         {
-            PushChannel = registrationId;
-            Platform = NotificationPlatform.Fcm;
+            InstallationId = installationId ?? throw new ArgumentNullException(nameof(installationId));
+            PushChannel = registrationId ?? throw new ArgumentNullException(nameof(registrationId));
         }
     }
 }

@@ -10,6 +10,8 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 {
     public class InstallationTests
     {
+        private const string InstallationId = "13EADDC4-00DE-46A5-955F-E200E25CA66C";
+
         [Fact]
         public void CanCreateAppleInstallation()
         {
@@ -23,8 +25,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             const string AppleDeviceToken = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
 
-            var installation = new AppleInstallation(AppleDeviceToken);
+            var installation = new AppleInstallation(InstallationId, AppleDeviceToken);
 
+            Assert.Equal(InstallationId, installation.InstallationId);
             Assert.Equal(AppleDeviceToken, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Apns, installation.Platform);
         }
@@ -42,8 +45,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             const string AdmRegistrationId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
 
-            var installation = new AdmInstallation(AdmRegistrationId);
+            var installation = new AdmInstallation(InstallationId, AdmRegistrationId);
 
+            Assert.Equal(InstallationId, installation.InstallationId);
             Assert.Equal(AdmRegistrationId, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Adm, installation.Platform);
         }
@@ -62,8 +66,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             const string UserId = "baiduuser";
             const string ChannelId = "baiduchannel";
 
-            var installation = new BaiduInstallation(UserId, ChannelId);
+            var installation = new BaiduInstallation(InstallationId, UserId, ChannelId);
 
+            Assert.Equal(InstallationId, installation.InstallationId);
             Assert.Equal($"{UserId}-{ChannelId}", installation.PushChannel);
             Assert.Equal(NotificationPlatform.Baidu, installation.Platform);
         }
@@ -81,8 +86,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             const string FcmRegistrationId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
 
-            var installation = new FcmInstallation(FcmRegistrationId);
+            var installation = new FcmInstallation(InstallationId, FcmRegistrationId);
 
+            Assert.Equal(InstallationId, installation.InstallationId);
             Assert.Equal(FcmRegistrationId, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Fcm, installation.Platform);
         }
@@ -100,8 +106,9 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             const string ChannelUri = "https://notify.windows.net";
 
-            var installation = new WindowsInstallation(ChannelUri);
+            var installation = new WindowsInstallation(InstallationId, ChannelUri);
 
+            Assert.Equal(InstallationId, installation.InstallationId);
             Assert.Equal(ChannelUri, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Wns, installation.Platform);
         }
@@ -119,7 +126,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         {
             const string ChannelUri = "https://notify.windows.net";
 
-            var installation = new WindowsPhoneInstallation(ChannelUri);
+            var installation = new WindowsPhoneInstallation(InstallationId, ChannelUri);
 
             Assert.Equal(ChannelUri, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Mpns, installation.Platform);

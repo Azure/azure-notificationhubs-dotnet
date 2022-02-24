@@ -4,6 +4,8 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
     /// <summary>
@@ -22,11 +24,12 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Creates a new instance of the AdmInstallation class.
         /// </summary>
+        /// <param name="installationId">The unique identifier for the installation.</param>
         /// <param name="admRegistrationId">The ADM registration ID to use for the PushChannel.</param>
-        public AdmInstallation(string admRegistrationId)
+        public AdmInstallation(string installationId, string admRegistrationId) : this()
         {
-            PushChannel = admRegistrationId;
-            Platform = NotificationPlatform.Adm;
+            InstallationId = installationId ?? throw new ArgumentNullException(nameof(installationId));
+            PushChannel = admRegistrationId ?? throw new ArgumentNullException(nameof(admRegistrationId));
         }
     }
 }

@@ -4,6 +4,8 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+
 namespace Microsoft.Azure.NotificationHubs
 {
     /// <summary>
@@ -22,11 +24,12 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Creates a new instance of the AppleInstallation class.
         /// </summary>
+        /// <param name="installationId">The unique identifier for the installation.</param>
         /// <param name="deviceToken">The APNs device token to use for the PushChannel.</param>
-        public AppleInstallation(string deviceToken)
+        public AppleInstallation(string installationId, string deviceToken) : this()
         {
-            PushChannel = deviceToken;
-            Platform = NotificationPlatform.Apns;
+            InstallationId = installationId ?? throw new ArgumentNullException(nameof(installationId));
+            PushChannel = deviceToken ?? throw new ArgumentNullException(nameof(deviceToken));
         }
     }
 }
