@@ -165,7 +165,7 @@ WindowsRegistrationDescription created = await hub.CreateWindowsNativeRegistrati
 
 ### Create an Apple Registration
 
-```java
+```csharp
 var deviceToken = "device-token";
 var tags = new HashSet<string> { "platform_ios", "os_tvos" };
 AppleRegistrationDescription created = await hub.CreateAppleNativeRegistrationAsync(deviceToken, tags);
