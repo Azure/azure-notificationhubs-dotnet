@@ -28,8 +28,8 @@ namespace Microsoft.Azure.NotificationHubs
             : base(string.Empty)
         {
             int index = pnsHandle.IndexOf('-');
-            this.BaiduUserId = pnsHandle.Substring(0, index);
-            this.BaiduChannelId = pnsHandle.Substring(index + 1, pnsHandle.Length - index - 1);
+            BaiduUserId = pnsHandle.Substring(0, index);
+            BaiduChannelId = pnsHandle.Substring(index + 1, pnsHandle.Length - index - 1);
             if (string.IsNullOrWhiteSpace(BaiduUserId))
             {
                 throw new ArgumentNullException("baiduRegistrationId");
@@ -43,8 +43,8 @@ namespace Microsoft.Azure.NotificationHubs
         public BaiduRegistrationDescription(BaiduRegistrationDescription sourceRegistration)
             : base(sourceRegistration)
         {
-            this.BaiduUserId = sourceRegistration.BaiduUserId;
-            this.BaiduChannelId = sourceRegistration.BaiduChannelId;
+            BaiduUserId = sourceRegistration.BaiduUserId;
+            BaiduChannelId = sourceRegistration.BaiduChannelId;
         }
 
         /// <summary>

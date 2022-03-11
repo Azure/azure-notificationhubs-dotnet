@@ -4,13 +4,12 @@
 // license information.
 //------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.NotificationHubs
 {
-    using System;
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Represents template which may belong to an instance of <see cref="T:Microsoft.Azure.NotificationHubs.Installation"/> class
     /// </summary>
