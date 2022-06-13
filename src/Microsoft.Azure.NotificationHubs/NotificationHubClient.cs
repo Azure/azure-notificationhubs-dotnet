@@ -358,7 +358,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
         /// Documentation on the APNS payload can be found
-        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification">here</a>.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
@@ -373,7 +373,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
         /// Documentation on the APNS payload can be found
-        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification">here</a>.</param>
         /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
@@ -388,7 +388,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
         /// Documentation on the APNS payload can be found
-        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification">here</a>.</param>
         /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
         /// <returns>
@@ -404,7 +404,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
         /// Documentation on the APNS payload can be found
-        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification">here</a>.</param>
         /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
@@ -419,7 +419,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         /// <param name="jsonPayload">This is a valid Apple Push Notification Service (APNS) payload.
         /// Documentation on the APNS payload can be found
-        /// <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html">here</a>.</param>
+        /// <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification">here</a>.</param>
         /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
         /// <returns>
