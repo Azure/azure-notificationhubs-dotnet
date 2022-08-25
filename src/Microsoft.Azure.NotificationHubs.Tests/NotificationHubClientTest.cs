@@ -1050,7 +1050,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
 
             var notificationResult = await _hubClient.SendDirectNotificationAsync(notification, new[] { _configuration["FcmDeviceToken"] });
-                
+   
             Assert.Equal(NotificationOutcomeState.Enqueued, notificationResult.State);
             RecordTestResults();
         }
