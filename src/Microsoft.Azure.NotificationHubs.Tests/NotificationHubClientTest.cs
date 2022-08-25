@@ -1541,9 +1541,13 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         private async Task SendDirectNotificationAsync_ListenOnlyConnectionString_ThrowsUnauthorizedException()
         {
             LoadMockData();
+            var settings = new NotificationHubSettings
+            {
+                MessageHandler = _testServer
+            };
             var notification = new FcmNotification("{\"data\":{\"message\":\"Message\"}}");
 
-            var hubClient = new NotificationHubClient(_configuration["NotificationHubListenOnlyConnectionString"], _configuration["NotificationHubName"]);
+            var hubClient = new NotificationHubClient(_configuration["NotificationHubListenOnlyConnectionString"], _configuration["NotificationHubName"], settings);
 
             await Assert.ThrowsAsync<UnauthorizedException>(() => hubClient.SendDirectNotificationAsync(notification, _configuration["GcmDeviceToken"]));
             RecordTestResults();
