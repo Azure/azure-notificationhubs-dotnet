@@ -45,6 +45,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             {
                 _testServer.RecordingMode = RecordingMode.Playback;
                 _configuration["NotificationHubConnectionString"] = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
+                _configuration["NotificationHubListenOnlyConnectionString"] = "Endpoint=sb://sample.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=xxxxxx";
                 _configuration["NotificationHubName"] = "test";
             }
             _hubClient = new NotificationHubClient(_configuration["NotificationHubConnectionString"], _configuration["NotificationHubName"], settings);
