@@ -63,6 +63,12 @@ namespace Microsoft.Azure.NotificationHubs
                 case HttpStatusCode.Unauthorized:
                     return new UnauthorizedException(new MessagingExceptionDetail(ExceptionErrorCodes.UnauthorizedGeneric, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId));
                 case HttpStatusCode.Forbidden:
+                    // Forbidden response code can be returned when service is throttling. When this happens, the `Retry-After` header will be present so we use this to differentiate the failure mode.
+                    if (retryAfter != null)
+                    {
+                        return new QuotaExceededException(new MessagingExceptionDetail(ExceptionErrorCodes.Throttled, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId), retryAfter);
+                    }
+                    return new UnauthorizedException(new MessagingExceptionDetail(ExceptionErrorCodes.ForbiddenGeneric, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId));
                 case (HttpStatusCode)429:
                     return new QuotaExceededException(new MessagingExceptionDetail(ExceptionErrorCodes.Throttled, exceptionMessage, ErrorLevelType.UserError, statusCode, trackingId), retryAfter);
                 case HttpStatusCode.BadRequest:
