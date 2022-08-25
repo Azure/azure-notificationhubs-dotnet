@@ -1,0 +1,20 @@
+{
+    "HttpCalls": [
+        {
+            "RequestUriPath": "/hub1/messages?api-version=2020-06&direct",
+            "StatusCode": 403,
+            "Headers": {
+                "Date": "Thu, 25 Aug 2022 23:16:06 GMT",
+                "Server": "Kestrel",
+                "Strict-Transport-Security": "max-age=2592000",
+                "TrackingId": "c0f4869e-6b6e-49bd-804a-c28cf17d929a",
+                "x-ms-correlation-request-id": "297c956c-c06b-4729-bc79-91e2bc6ed05c"
+            },
+            "ContentHeaders": {
+                "Content-Length": "0"
+            },
+            "Content": null
+        }
+    ],
+    "Guids": []
+}
