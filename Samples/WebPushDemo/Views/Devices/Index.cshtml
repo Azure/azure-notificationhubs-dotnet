@@ -1,0 +1,66 @@
+﻿@model IEnumerable<WebPushDemo.Models.Devices>
+
+@{
+    ViewData["Title"] = "Registered Devices";
+}
+
+<div class="col-sm-6">
+    <h2>Registered Devices</h2>
+</div>
+<div class="col-sm-6">
+    <div class="pull-right" style="margin-top: 15px;">
+        <a asp-action="Create" class="btn btn-primary">Add Device</a>
+    </div>
+</div>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PushEndpoint)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PushP256DH)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.PushAuth)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td style="max-width: 100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                    @Html.DisplayFor(modelItem => item.PushEndpoint)
+                </td>
+                <td style="max-width: 100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                    @Html.DisplayFor(modelItem => item.PushP256DH)
+                </td>
+                <td style="max-width: 100px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                    @Html.DisplayFor(modelItem => item.PushAuth)
+                </td>
+                <td>
+                    <a asp-controller="WebPush" asp-action="Send" asp-route-id="@item.Id">Send</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="5" style="text-align: center; font-weight: bold;">
+                    No devices registered yet.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
