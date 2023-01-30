@@ -1,2 +1,16 @@
 
 This project samples browser push notification using Azure Notification Hub.
+
+Setup “WebPushDemo” project to be able to use the browser as notification gateway. 
+Open in visual studio and make sure framework 5.0 is installed. If you open project in VS2022, it will 
+directly prompt you to install 5.0 if not found. Update “appsettings.json” by adding at end of file:
+"VapidKeys": {
+    "PublicKey": "vapid public key generated in step2",
+    "PrivateKey": "vapid private key generated in step2"
+  }
+
+Running (F5) “WebPushDemo” will open browser with localhost:port#. You can add a device and send payload 
+to the added device. Example using Edge, Click on “Add Device” once run successfully, 
+it will provide the PushEndpoint, PushP256DH, and PushAuth.  
+(Make sure  Edge browser “notifications” is enabled or add if needed the localhost:port# in the allow list)
+
