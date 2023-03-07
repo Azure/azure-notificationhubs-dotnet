@@ -383,6 +383,111 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        public async Task CreateRegistrationAsync_PassValidXiaomiNativeRegistration_GetCreatedRegistrationBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new XiaomiRegistrationDescription(_configuration["XiaomiDeviceToken"]);
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.XiaomiRegistrationId, createdRegistration.XiaomiRegistrationId);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateRegistrationAsync_PassValidXiaomiTemplateRegistration_GetCreatedRegistrationBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new XiaomiTemplateRegistrationDescription(_configuration["XiaomiDeviceToken"], "{\"data\":{\"key1\":\"value1\"}}");
+            registration.PushVariables = new Dictionary<string, string>()
+            {
+                {"var1", "value1"}
+            };
+            registration.Tags = new HashSet<string>() { "tag1" };
+            registration.TemplateName = "Template Name";
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            Assert.NotNull(createdRegistration.RegistrationId);
+            Assert.NotNull(createdRegistration.ETag);
+            Assert.NotNull(createdRegistration.ExpirationTime);
+            Assert.Contains(new KeyValuePair<string, string>("var1", "value1"), createdRegistration.PushVariables);
+            Assert.Contains("tag1", createdRegistration.Tags);
+            Assert.Equal(registration.XiaomiRegistrationId, createdRegistration.XiaomiRegistrationId);
+            Assert.Equal(registration.BodyTemplate.Value, createdRegistration.BodyTemplate.Value);
+            Assert.Equal(registration.TemplateName, createdRegistration.TemplateName);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateRegistrationAsync_UpdateXiaomiNativeRegistration_GetXiaomiRegistrationType()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new XiaomiRegistrationDescription(_configuration["XiaomiDeviceToken"]);
+            registration.Tags = new HashSet<string>() { "tag1" };
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            createdRegistration.Tags = new HashSet<string>() { "tag2" };
+            var updatedRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(createdRegistration);
+
+            Assert.IsType<XiaomiRegistrationDescription>(updatedRegistration);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateRegistrationAsync_UpsertXiaomiNativeRegistration_GetUpsertedRegistrationBack()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var registration = new XiaomiRegistrationDescription(_configuration["XiaomiDeviceToken"]);
+
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(registration);
+
+            createdRegistration.Tags = new HashSet<string>() { "tag1" };
+
+            var updatedRegistration = await _hubClient.CreateOrUpdateRegistrationAsync(createdRegistration);
+
+            Assert.Contains("tag1", updatedRegistration.Tags);
+            RecordTestResults();
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateRegistrationAsync_DeleteXiaomiNativeRegistration_GetNonExistingRegistration()
+        {
+            LoadMockData();
+            await DeleteAllRegistrationsAndInstallations();
+
+            var xiaomiRegistration = new XiaomiRegistrationDescription(_configuration["XiaomiDeviceToken"], new[] { "tag1" });
+            var createdRegistration = await _hubClient.CreateRegistrationAsync(xiaomiRegistration);
+
+            var registrationExists = await _hubClient.RegistrationExistsAsync(createdRegistration.RegistrationId);
+            Assert.True(registrationExists);
+
+            await _hubClient.DeleteRegistrationAsync(createdRegistration.RegistrationId);
+
+            registrationExists = await _hubClient.RegistrationExistsAsync(createdRegistration.RegistrationId);
+            Assert.False(registrationExists);
+        }
+
+        [Fact]
         public async Task CreateOrUpdateRegistrationAsync_UpsertAppleNativeRegistration_GetUpsertedRegistrationBack()
         {
             LoadMockData();
