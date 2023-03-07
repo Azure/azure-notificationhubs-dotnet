@@ -149,7 +149,7 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             Assert.Equal(InstallationId, installation.InstallationId);
             Assert.Equal(XiaomiDeviceToken, installation.PushChannel);
-            Assert.Equal(NotificationPlatform.Apns, installation.Platform);
+            Assert.Equal(NotificationPlatform.Xiaomi, installation.Platform);
         }
     }
 }
