@@ -39,6 +39,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string MpnsTemplateRegistrationDescription = "MpnsTemplateRegistrationDescription";
         public const string AdmRegistrationDescription = "AdmRegistrationDescription";
         public const string AdmTemplateRegistrationDescription = "AdmTemplateRegistrationDescription";
+        public const string XiaomiRegistrationDescription = "XiaomiRegistrationDescription";
+        public const string XiaomiTemplateRegistrationDescription = "XiaomiTemplateRegistrationDescription";
         public const string PnsCredential = "PnsCredential";
         public const string PnsCredentials = "PnsCredentials";
         public const string GcmCredential = "GcmCredential";
@@ -59,6 +61,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string ChannelUri = "ChannelUri";
         public const string SecondaryTileName = "SecondaryTileName";
         public const string AdmRegistrationId = "AdmRegistrationId";
+        public const string XiaomiRegistrationId = "XiaomiRegistrationId";
         public const string DeviceToken = "DeviceToken";
         public const string Expiry = "Expiry";
         public const string Priority = "Priority";
