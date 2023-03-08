@@ -47,6 +47,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string WnsCredential = "WnsCredential";
         public const string ApnsCredential = "ApnsCredential";
         public const string AdmCredential = "AdmCredential";
+        public const string XiaomiCredential = "XiaomiCredential";
         public const string GcmRegistrationId = "GcmRegistrationId";
         public const string FcmRegistrationId = "FcmRegistrationId";
         public const string BaiduUserId = "BaiduUserId";
