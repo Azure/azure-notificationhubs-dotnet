@@ -109,12 +109,12 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public override int GetHashCode()
         {
-            if (string.IsNullOrWhiteSpace(this.AppSecret) || string.IsNullOrWhiteSpace(this.Endpoint))
+            if (string.IsNullOrWhiteSpace(this.AppSecret))
             {
                 return base.GetHashCode();
             }
 
-            return unchecked(this.AppSecret.GetHashCode() ^ this.Endpoint.GetHashCode());
+            return AppSecret.GetHashCode();
         }
 
         /// <summary>Validates the MPNS credential.</summary>
