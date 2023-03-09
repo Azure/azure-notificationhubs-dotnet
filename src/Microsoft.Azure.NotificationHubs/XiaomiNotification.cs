@@ -15,6 +15,9 @@ namespace Microsoft.Azure.NotificationHubs
     public sealed class XiaomiNotification : Notification, INativeNotification
     {
         static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
+        static string targetPipeline = "X-Target-Pipeline";
+        static string serviceBusNotificationFormat = "ServiceBusNotification-Format";
+        static string newPipeline = "New";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.XiaomiNotification"/> class.
@@ -64,6 +67,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         protected override void OnValidateAndPopulateHeaders()
         {
+            this.AddOrUpdateHeader(serviceBusNotificationFormat, PlatformType);
+            this.AddOrUpdateHeader(targetPipeline, newPipeline);
         }
     }
 }
