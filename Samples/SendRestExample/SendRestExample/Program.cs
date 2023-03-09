@@ -23,7 +23,7 @@ namespace SendRestExample
             Console.WriteLine("\nNotification Message ID : ");
             //String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "GCM").Result;
             //String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "WNS").Result;
-            String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "APNS").Result;
+            String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "xiaomi").Result;
 
             if (messageId != null)
                 Console.WriteLine(messageId + "\n");
@@ -107,6 +107,12 @@ namespace SendRestExample
                                 "</visual>" +
                             "</toast>";
                     response = await ExecuteREST("POST", uri, sasToken, headers, body, "application/xml");
+                    break;
+                case "xiaomi":
+                    headers.Add("X-Target-Pipeline", "New");
+                    headers.Add("ServiceBusNotification-Format", "xiaomi");
+                    body = "{\"title\":\"Title\",\"payload\":\"" + message + "\",\"description\":\"Description\"}";
+                    response = await ExecuteREST("POST", uri, sasToken, headers, body);
                     break;
             }
 
