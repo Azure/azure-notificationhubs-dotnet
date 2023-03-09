@@ -875,7 +875,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload)
         {
-            return SendXiaomiNativeNotificationAsync(nativePayload, string.Empty);
+            return SendNotificationAsync(new XiaomiNotification(nativePayload), string.Empty);
         }
 
         /// <summary>
