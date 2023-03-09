@@ -4,6 +4,7 @@
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.NotificationHubs;
@@ -19,6 +20,7 @@ namespace SendPushSample
         private const string AppleSampleNotificationContent = "{\"aps\":{\"alert\":\"Notification Hub test notification from SDK sample\"}}";
         private const string AppleSampleSilentNotificationContent = "{\"aps\":{\"content-available\":1}, \"foo\": 2 }";
         private const string WnsSampleNotification = "<?xml version=\"1.0\" encoding=\"utf-8\"?><toast><visual><binding template=\"ToastText01\"><text id=\"1\">Notification Hub test notification from SDK sample</text></binding></visual></toast>";
+        private const string XiaomiSampleNotification = "{\"title\":\"Title\",\"payload\":\"Notification Hub test notification from SDK sample\",\"description\":\"Description\"}";
 
         static async Task Main(string[] args)
         {
@@ -39,6 +41,8 @@ namespace SendPushSample
             await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation);
 
             var appleDeviceId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
+            var xiaomiDeviceId = "2882303761517422626";
+
             var apnsInstallation = new Installation
             {
                 InstallationId = "fake-apns-install-id",
@@ -75,6 +79,9 @@ namespace SendPushSample
                     var outcomeWns = await nhClient.SendWindowsNativeNotificationAsync(WnsSampleNotification);
                     await GetPushDetailsAndPrintOutcome("WNS", nhClient, outcomeWns);
 
+                    var outcomeXiaomi = await nhClient.SendXiaomiNativeNotificationAsync(XiaomiSampleNotification);
+                    await GetPushDetailsAndPrintOutcome("Xiaomi", nhClient, outcomeXiaomi);
+
                     break;
                 case SampleConfiguration.Operation.SendByTag:
                     // Send notifications by tag
@@ -93,6 +100,9 @@ namespace SendPushSample
                     var outcomeApnsByDeviceId = await nhClient.SendDirectNotificationAsync(CreateApnsNotification(), config.AppleDeviceId ?? appleDeviceId);
                     await GetPushDetailsAndPrintOutcome("APNS Direct", nhClient, outcomeApnsByDeviceId);
 
+                    var outcomeXiaomiByDeviceId = await nhClient.SendDirectNotificationAsync(CreateXiaomiNotification(), config.XiaomiDeviceId ?? xiaomiDeviceId);
+                    await GetPushDetailsAndPrintOutcome("Xiaomi Direct", nhClient, outcomeXiaomiByDeviceId);
+
                     break;
                 default:
                     Console.WriteLine("Invalid Sendtype");
@@ -108,6 +118,11 @@ namespace SendPushSample
         private static Notification CreateApnsNotification()
         {
             return new AppleNotification(AppleSampleNotificationContent);
+        }
+
+        private static Notification CreateXiaomiNotification()
+        {
+            return new XiaomiNotification(XiaomiSampleNotification);
         }
 
         private static async Task<NotificationDetails> WaitForThePushStatusAsync(string pnsType, NotificationHubClient nhClient, NotificationOutcome notificationOutcome)
