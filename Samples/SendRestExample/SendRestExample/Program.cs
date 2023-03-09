@@ -18,12 +18,12 @@ namespace SendRestExample
             string hubName = ConfigurationManager.AppSettings["HubName"];
             string fullConnectionString = ConfigurationManager.AppSettings["DefaultFullSharedAccessSignature"];
 
-
             // Example sending a native notification
             Console.WriteLine("\nNotification Message ID : ");
             //String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "GCM").Result;
             //String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "WNS").Result;
-            String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "xiaomi").Result;
+            //String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "XIAOMI").Result;
+            String messageId = SendNativeNotificationREST(hubName, fullConnectionString, "Hello From REST", "APNS").Result;
 
             if (messageId != null)
                 Console.WriteLine(messageId + "\n");

@@ -888,61 +888,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload, CancellationToken cancellationToken)
         {
-            return SendXiaomiNativeNotificationAsync(nativePayload, string.Empty, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends a Xiaomi native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The native payload.</param>
-        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload, string tagExpression)
-        {
-            return SendNotificationAsync(new XiaomiNotification(nativePayload), tagExpression);
-        }
-
-        /// <summary>
-        /// Sends a Xiaomi native notification to a tag expression (a single tag "tag" is a valid tag expression). To specify headers for Xiaomi, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The native payload.</param>
-        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload, string tagExpression, CancellationToken cancellationToken)
-        {
-            return SendNotificationAsync(new XiaomiNotification(nativePayload), tagExpression, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends a Xiaomi native notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||"). To specify headers for Xiaomi, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The notification payload.</param>
-        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload, IEnumerable<string> tags)
-        {
-            return SendNotificationAsync(new XiaomiNotification(nativePayload), tags);
-        }
-
-        /// <summary>
-        /// Sends a Xiaomi native notification to a non-empty set of tags (maximum 20). This is equivalent to a tag expression with boolean ORs ("||"). To specify headers for Xiaomi, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
-        /// </summary>
-        /// <param name="nativePayload">The notification payload.</param>
-        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
-        /// <returns>
-        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
-        /// </returns>
-        public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload, IEnumerable<string> tags, CancellationToken cancellationToken)
-        {
-            return SendNotificationAsync(new XiaomiNotification(nativePayload), tags, cancellationToken);
+            return SendNotificationAsync(new XiaomiNotification(nativePayload), string.Empty, cancellationToken);
         }
 
         /// <summary>
