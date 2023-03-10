@@ -1294,7 +1294,7 @@
   <data name="ServerIsBusy" xml:space="preserve">
     <value>Server is busy.</value>
   </data>
-  <data name="AppSecretOrEndpointInvalid" xml:space="preserve">
+  <data name="XiaomiAppSecretOrEndpointInvalid" xml:space="preserve">
     <value>Invalid Xiaomi app secret or endpoint</value>
   </data>
 </root>

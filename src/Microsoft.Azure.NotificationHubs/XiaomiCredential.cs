@@ -34,9 +34,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.XiaomiCredential"/> class.
         /// </summary>
         /// <param name="appSecret">The Xiaomi app secret key.</param>
-        public XiaomiCredential(string appSecret)
+        /// <param name="endPoint">The Xiaomi endpoint url</param>
+        public XiaomiCredential(string appSecret, string endPoint)
         {
             this.AppSecret = appSecret;
+            this.Endpoint = endPoint;
         }
 
         /// <summary>
@@ -123,12 +125,12 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (this.Properties == null || this.Properties.Count != 2)
             {
-                throw new InvalidDataContractException(SRClient.AppSecretOrEndpointInvalid);
+                throw new InvalidDataContractException(SRClient.XiaomiAppSecretOrEndpointInvalid);
             }
 
             if (string.IsNullOrWhiteSpace(this.AppSecret) || string.IsNullOrWhiteSpace(this.Endpoint))
             {
-                throw new InvalidDataContractException(SRClient.AppSecretOrEndpointInvalid);
+                throw new InvalidDataContractException(SRClient.XiaomiAppSecretOrEndpointInvalid);
             }
 
             if (!Uri.TryCreate(this.Endpoint, UriKind.Absolute, out Uri result) ||
@@ -137,9 +139,9 @@ namespace Microsoft.Azure.NotificationHubs
                 !string.Equals(this.Endpoint, ProdOtherEndpoint,
                     StringComparison.OrdinalIgnoreCase) &&
                 !string.Equals(this.Endpoint, SandboxEndpoint,
-                     StringComparison.OrdinalIgnoreCase)))
+                     StringComparison.OrdinalIgnoreCase)) && !allowLocalMockPns)
             {
-                throw new InvalidDataContractException(SRClient.AppSecretOrEndpointInvalid);
+                throw new InvalidDataContractException(SRClient.XiaomiAppSecretOrEndpointInvalid);
             }
         }
     }

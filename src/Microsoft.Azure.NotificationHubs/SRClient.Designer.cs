@@ -205,15 +205,6 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid Xiaomi app secret or endpoint.
-        /// </summary>
-        internal static string AppSecretOrEndpointInvalid {
-            get {
-                return ResourceManager.GetString("AppSecretOrEndpointInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A duplicate property &apos;{0}&apos; was found in the Notification Hubs connection string..
         /// </summary>
         internal static string AppSettingsConfigDuplicateSetting {
@@ -3585,6 +3576,15 @@ namespace Microsoft.Azure.NotificationHubs {
         internal static string X509InvalidUsageTime {
             get {
                 return ResourceManager.GetString("X509InvalidUsageTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Xiaomi app secret or endpoint.
+        /// </summary>
+        internal static string XiaomiAppSecretOrEndpointInvalid {
+            get {
+                return ResourceManager.GetString("XiaomiAppSecretOrEndpointInvalid", resourceCulture);
             }
         }
         
