@@ -58,8 +58,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// </value>
         protected override string PlatformType
         {
-            // This will be changed into XiaomiCredential.AppPlatformName when we add the XiaomiCredential class in a following PR
-            get { return "xiaomi"; } 
+            get { return XiaomiCredential.AppPlatformName; } 
         }
 
         /// <summary>
