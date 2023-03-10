@@ -867,6 +867,31 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends a Xiaomi native notification. To specify headers for Xiaomi, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="nativePayload">The native payload.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload)
+        {
+            return SendNotificationAsync(new XiaomiNotification(nativePayload), string.Empty);
+        }
+
+        /// <summary>
+        /// Sends a Xiaomi native notification. To specify headers for Xiaomi, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="nativePayload">The native payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendXiaomiNativeNotificationAsync(string nativePayload, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new XiaomiNotification(nativePayload), string.Empty, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
         /// </summary>
         /// <param name="notification">The notification to send.</param>

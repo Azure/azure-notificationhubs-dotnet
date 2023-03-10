@@ -17,6 +17,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
             Assert.Equal($"application/json;charset={Encoding.UTF8.WebName}", new TemplateNotification(new Dictionary<string, string>()).ContentType);
             Assert.Equal("application/json", new AdmNotification("{\"data\":{\"key1\":\"value1\"}}").ContentType);
             Assert.Equal("application/x-www-form-urlencoded", new BaiduNotification("{\"title\":\"Title\",\"description\":\"Description\"}").ContentType);
+            Assert.Equal($"application/json;charset={Encoding.UTF8.WebName}", new XiaomiNotification("{\"payload\":\"Payload\",\"title\":\"Title\",\"description\":\"Description\"}").ContentType);
         }
 
         [Theory]
