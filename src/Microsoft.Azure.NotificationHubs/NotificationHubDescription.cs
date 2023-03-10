@@ -327,20 +327,6 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
-        /// Gets or sets the Xiaomi credential.
-        /// </summary>
-        /// 
-        /// <returns>
-        /// The Xiaomi credential.
-        /// </returns>
-        [DataMember(Name = ManagementStrings.XiaomiCredential, IsRequired = false, EmitDefaultValue = false, Order = 1007)]
-        public XiaomiCredential XiaomiCredential
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Gets the daily operations for the Notificationhub.
         /// </summary>
         /// 
@@ -408,6 +394,19 @@ namespace Microsoft.Azure.NotificationHubs
         /// </value>
         [DataMember(Name = ManagementStrings.BaiduCredential, IsRequired = false, EmitDefaultValue = false, Order = 1016)]
         public BaiduCredential BaiduCredential
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the Xiaomi credential.
+        /// </summary>
+        /// <value>
+        /// The Xiaomi credential.
+        /// </value>
+        [DataMember(Name = ManagementStrings.XiaomiCredential, IsRequired = false, EmitDefaultValue = false, Order = 1017)]
+        public XiaomiCredential XiaomiCredential
         {
             get;
             set;
