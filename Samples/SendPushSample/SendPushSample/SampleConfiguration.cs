@@ -11,6 +11,7 @@ namespace SendPushSample
         public string Tag {get; set; }
         public string FcmDeviceId {get; set; }
         public string AppleDeviceId {get; set; }
+        public string XiaomiDeviceId { get; set; }
         public string SendType {get; set; }
         public string AppleGroupId { get; set; }
 
