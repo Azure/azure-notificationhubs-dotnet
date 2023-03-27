@@ -14,7 +14,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// </summary>
     public sealed class XiaomiNotification : Notification, INativeNotification
     {
-        static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
+        static string contentType = "application/json";
         static string targetPipeline = "X-Target-Pipeline";
         static string serviceBusNotificationFormat = "ServiceBusNotification-Format";
         static string newPipeline = "New";
