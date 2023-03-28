@@ -41,7 +41,7 @@ namespace SendPushSample
             await nhClient.CreateOrUpdateInstallationAsync(fcmInstallation);
 
             var appleDeviceId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
-            var xiaomiDeviceId = 55gYkr3bEoCn2lB39wRfjIXAJ02wJSPFXf5Wt6sN24iMxaKzuLJtuJTR3hk/ViG2";
+            var xiaomiDeviceId = "55gYkr3bEoCn2lB39wRfjIXAJ02wJSPFXf5Wt6sN24iMxaKzuLJtuJTR3hk/ViG2";
 
             var apnsInstallation = new Installation
             {
