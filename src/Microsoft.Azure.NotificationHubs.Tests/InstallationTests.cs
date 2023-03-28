@@ -131,6 +131,26 @@ namespace Microsoft.Azure.NotificationHubs.Tests
             Assert.Equal(ChannelUri, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Mpns, installation.Platform);
         }
+
+        [Fact]
+        public void CanCreateXiaomiInstallation()
+        {
+            var installation = new XiaomiInstallation();
+
+            Assert.Equal(NotificationPlatform.Xiaomi, installation.Platform);
+        }
+
+        [Fact]
+        public void CanCreateXiaomiInstallationWithToken()
+        {
+            const string XiaomiDeviceToken = "h1";
+
+            var installation = new XiaomiInstallation(InstallationId, XiaomiDeviceToken);
+
+            Assert.Equal(InstallationId, installation.InstallationId);
+            Assert.Equal(XiaomiDeviceToken, installation.PushChannel);
+            Assert.Equal(NotificationPlatform.Xiaomi, installation.Platform);
+        }
     }
 }
 

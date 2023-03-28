@@ -56,5 +56,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         [EnumMember(Value = "baidu")]
         Baidu=6,
+
+        /// <summary>
+        /// Xiaomi Installation Platform
+        /// </summary>
+        [EnumMember(Value = "xiaomi")]
+        Xiaomi=7,
     }
 }
