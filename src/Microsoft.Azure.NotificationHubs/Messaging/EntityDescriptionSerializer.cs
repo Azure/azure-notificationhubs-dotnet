@@ -90,6 +90,14 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 this.CreateSerializer<BaiduTemplateRegistrationDescription>());
 
             this.entirySerializers.Add(
+                typeof(XiaomiRegistrationDescription).Name,
+                this.CreateSerializer<XiaomiRegistrationDescription>());
+
+            this.entirySerializers.Add(
+                typeof(XiaomiTemplateRegistrationDescription).Name,
+                this.CreateSerializer<XiaomiTemplateRegistrationDescription>());
+
+            this.entirySerializers.Add(
                 typeof(NotificationHubJob).Name,
                 this.CreateSerializer<NotificationHubJob>());
         }

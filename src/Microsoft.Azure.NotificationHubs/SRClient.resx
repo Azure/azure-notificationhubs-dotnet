@@ -1294,4 +1294,7 @@
   <data name="ServerIsBusy" xml:space="preserve">
     <value>Server is busy.</value>
   </data>
+  <data name="XiaomiRegistrationIdInvalid" xml:space="preserve">
+    <value>The xiaomi registration id is invalid</value>
+  </data>
 </root>
