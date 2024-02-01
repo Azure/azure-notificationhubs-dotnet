@@ -630,6 +630,85 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends Firebase Cloud Messaging (FCM) V1 native notification.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM V1 message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload)
+        {
+            return SendFcmV1NativeNotificationAsync(jsonPayload, string.Empty);
+        }
+
+        /// <summary>
+        /// Sends Firebase Cloud Messaging (FCM) V1 native notification.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, CancellationToken cancellationToken)
+        {
+            return SendFcmV1NativeNotificationAsync(jsonPayload, string.Empty, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends FCM V1 native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, string tagExpression)
+        {
+            return SendNotificationAsync(new FcmV1Notification(jsonPayload), tagExpression);
+        }
+
+        /// <summary>
+        /// Sends FCM V1 native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new FcmV1Notification(jsonPayload), tagExpression, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends a FCM V1 native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, IEnumerable<string> tags)
+        {
+            return SendNotificationAsync(new FcmV1Notification(jsonPayload), tags);
+        }
+
+        /// <summary>
+        /// Sends a FCM V1 native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new FcmV1Notification(jsonPayload), tags, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a Baidu native notification.
         /// </summary>
         /// <param name="message">This is a json request. Baidu documents the format for the json <a href="http://push.baidu.com/doc/restapi/restapi">here</a>.</param>
@@ -1894,6 +1973,118 @@ namespace Microsoft.Azure.NotificationHubs
         {
             return CreateRegistrationAsync(new FcmTemplateRegistrationDescription(fcmRegistrationId, jsonPayload, tags), cancellationToken);
         }
+
+        #region FCM V1 Create Registration
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId)
+        {
+            return CreateFcmV1NativeRegistrationAsync(fcmV1RegistrationId, null);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId, CancellationToken cancellationToken)
+        {
+            return CreateFcmV1NativeRegistrationAsync(fcmV1RegistrationId, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId, IEnumerable<string> tags)
+        {
+            return CreateRegistrationAsync(new FcmV1RegistrationDescription(fcmV1RegistrationId, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new FcmV1RegistrationDescription(fcmV1RegistrationId, tags), cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload)
+        {
+            return CreateFcmV1TemplateRegistrationAsync(fcmV1RegistrationId, jsonPayload, null);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload, CancellationToken cancellationToken)
+        {
+            return CreateFcmV1TemplateRegistrationAsync(fcmV1RegistrationId, jsonPayload, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload, IEnumerable<string> tags)
+        {
+            return CreateRegistrationAsync(new FcmV1TemplateRegistrationDescription(fcmV1RegistrationId, jsonPayload, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new FcmV1TemplateRegistrationDescription(fcmV1RegistrationId, jsonPayload, tags), cancellationToken);
+        }
+
+        #endregion
 
         #region Baidu Create Registration
 

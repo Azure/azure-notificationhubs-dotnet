@@ -400,6 +400,20 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Gets or sets the FCM V1 credential.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// The FCM V1 credential.
+        /// </returns>
+        [DataMember(Name = ManagementStrings.FcmV1Credential, IsRequired = false, EmitDefaultValue = false, Order = 1017)]
+        public FcmV1Credential FcmV1Credential
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         ///   Gets/Sets any User Metadata associated with the NotificationHub.
         /// </summary>
         /// 
