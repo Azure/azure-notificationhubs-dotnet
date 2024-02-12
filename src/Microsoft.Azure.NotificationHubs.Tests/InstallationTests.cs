@@ -94,6 +94,26 @@ namespace Microsoft.Azure.NotificationHubs.Tests
         }
 
         [Fact]
+        public void CanCreateFcmV1Installation()
+        {
+            var installation = new FcmV1Installation();
+
+            Assert.Equal(NotificationPlatform.FcmV1, installation.Platform);
+        }
+
+        [Fact]
+        public void CanCreateFcmV1InstallationWithRegistrationId()
+        {
+            const string FcmV1RegistrationId = "00fc13adff785122b4ad28809a3420982341241421348097878e577c991de8f0";
+
+            var installation = new FcmV1Installation(InstallationId, FcmV1RegistrationId);
+
+            Assert.Equal(InstallationId, installation.InstallationId);
+            Assert.Equal(FcmV1RegistrationId, installation.PushChannel);
+            Assert.Equal(NotificationPlatform.FcmV1, installation.Platform);
+        }
+
+        [Fact]
         public void CanCreateWindowsInstallation()
         {
             var installation = new WindowsInstallation();

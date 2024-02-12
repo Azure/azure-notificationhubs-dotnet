@@ -10,18 +10,17 @@ using System.Text;
 namespace Microsoft.Azure.NotificationHubs
 {
     /// <summary>
-    /// Represents a Google Cloud Messaging notification.
+    /// Represents a Firebase Cloud Messaging V1 notification.
     /// </summary>
-    [Obsolete("GcmNotification is deprecated, please use FcmV1Notification instead.")]
-    internal sealed class GcmNotification : Notification, INativeNotification
+    public sealed class FcmV1Notification : Notification, INativeNotification
     {
         static string contentType = $"application/json;charset={Encoding.UTF8.WebName}";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class.
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmV1Notification"/> class.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload.</param>
-        public GcmNotification(string jsonPayload)
+        public FcmV1Notification(string jsonPayload)
             : base(null, null, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
@@ -29,15 +28,15 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException("jsonPayload");
             }
 
-            this.Body = jsonPayload;
+            Body = jsonPayload;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class.
+        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.FcmV1Notification"/> class.
         /// </summary>
         /// <param name="jsonPayload">The JSON payload.</param><param name="tag">The notification tag.</param>
         [Obsolete("This method is obsolete.")]
-        public GcmNotification(string jsonPayload, string tag)
+        public FcmV1Notification(string jsonPayload, string tag)
             : base(null, tag, contentType)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload))
@@ -45,18 +44,7 @@ namespace Microsoft.Azure.NotificationHubs
                 throw new ArgumentNullException("jsonPayload");
             }
 
-            this.Body = jsonPayload;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.GcmNotification"/> class from <see cref="T:Microsoft.Azure.NotificationHubs.FcmNotification"/> object.
-        /// </summary>
-        /// <param name="fcmNotification">The FcmNotification object to create a new GcmNotifications from.</param>
-        [Obsolete("This method is obsolete.")]
-        public GcmNotification(FcmNotification fcmNotification)
-            : base(fcmNotification.Headers, fcmNotification.Tag, contentType)
-        {
-            this.Body = fcmNotification.Body;
+            Body = jsonPayload;
         }
 
         /// <summary>
@@ -67,13 +55,14 @@ namespace Microsoft.Azure.NotificationHubs
         /// </value>
         protected override string PlatformType
         {
-            get { return GcmCredential.AppPlatformName; }
+            get { return FcmV1Credential.AppPlatformName; }
         }
 
         /// <summary>
         /// Validate and populates the headers.
         /// </summary>
         protected override void OnValidateAndPopulateHeaders()
-        {}
+        {
+        }
     }
 }

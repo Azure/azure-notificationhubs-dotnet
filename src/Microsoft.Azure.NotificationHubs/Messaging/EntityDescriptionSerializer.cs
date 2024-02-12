@@ -66,6 +66,14 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 this.CreateSerializer<FcmTemplateRegistrationDescription>());
 
             this.entirySerializers.Add(
+                typeof(FcmV1RegistrationDescription).Name,
+                this.CreateSerializer<FcmV1RegistrationDescription>());
+
+            this.entirySerializers.Add(
+                typeof(FcmV1TemplateRegistrationDescription).Name,
+                this.CreateSerializer<FcmV1TemplateRegistrationDescription>());
+
+            this.entirySerializers.Add(
                 typeof(MpnsRegistrationDescription).Name,
                 this.CreateSerializer<MpnsRegistrationDescription>());
 

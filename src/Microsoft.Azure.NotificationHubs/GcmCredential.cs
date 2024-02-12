@@ -13,7 +13,7 @@ namespace Microsoft.Azure.NotificationHubs
     /// Represents the Google Cloud Messaging credential.
     /// </summary>
     [DataContract(Name = ManagementStrings.GcmCredential, Namespace = ManagementStrings.Namespace)]
-    [Obsolete("GcmCredential is deprecated, please use FcmCredential instead.")]
+    [Obsolete("GcmCredential is deprecated, please use FcmV1Credential instead.")]
     
     public class GcmCredential : PnsCredential
     {

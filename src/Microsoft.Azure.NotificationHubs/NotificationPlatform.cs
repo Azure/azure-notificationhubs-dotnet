@@ -56,5 +56,11 @@ namespace Microsoft.Azure.NotificationHubs
         /// </summary>
         [EnumMember(Value = "baidu")]
         Baidu=6,
+
+        /// <summary>
+        /// FCM V1 Installation Platform
+        /// </summary>
+        [EnumMember(Value = "fcmV1")]
+        FcmV1=9,
     }
 }

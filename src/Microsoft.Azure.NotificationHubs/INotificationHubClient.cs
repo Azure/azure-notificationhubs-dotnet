@@ -334,6 +334,90 @@ namespace Microsoft.Azure.NotificationHubs
         Task<FcmTemplateRegistrationDescription> CreateFcmTemplateRegistrationAsync(string fcmRegistrationId, string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId);
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId, IEnumerable<string> tags);
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 native registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1RegistrationDescription> CreateFcmV1NativeRegistrationAsync(string fcmV1RegistrationId, IEnumerable<string> tags, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload);
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload, IEnumerable<string> tags);
+
+        /// <summary>
+        /// Asynchronously creates FCM V1 template registration.
+        /// </summary>
+        /// <param name="fcmV1RegistrationId">The FCM V1 registration ID.</param>
+        /// <param name="jsonPayload">The JSON payload.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<FcmV1TemplateRegistrationDescription> CreateFcmV1TemplateRegistrationAsync(string fcmV1RegistrationId, string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Asynchronously creates MPNS native registration.
         /// </summary>
         /// <param name="channelUri">The channel URI.</param>

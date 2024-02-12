@@ -29,6 +29,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string FcmRegistrationDescription = "FcmRegistrationDescription";
         public const string GcmTemplateRegistrationDescription = "GcmTemplateRegistrationDescription";
         public const string FcmTemplateRegistrationDescription = "FcmTemplateRegistrationDescription";
+        public const string FcmV1RegistrationDescription = "FcmV1RegistrationDescription";
+        public const string FcmV1TemplateRegistrationDescription = "FcmV1TemplateRegistrationDescription";
         public const string BaiduRegistrationDescription = "BaiduRegistrationDescription";
         public const string BaiduTemplateRegistrationDescription = "BaiduTemplateRegistrationDescription";
         public const string WindowsRegistrationDescription = "WindowsRegistrationDescription";
@@ -43,12 +45,14 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string PnsCredentials = "PnsCredentials";
         public const string GcmCredential = "GcmCredential";
         public const string FcmCredential = "FcmCredential";
+        public const string FcmV1Credential = "FcmV1Credential";
         public const string BaiduCredential = "BaiduCredential";
         public const string WnsCredential = "WnsCredential";
         public const string ApnsCredential = "ApnsCredential";
         public const string AdmCredential = "AdmCredential";
         public const string GcmRegistrationId = "GcmRegistrationId";
         public const string FcmRegistrationId = "FcmRegistrationId";
+        public const string FcmV1RegistrationId = "FcmV1RegistrationId";
         public const string BaiduUserId = "BaiduUserId";
         public const string BaiduChannelId = "BaiduChannelId";
         public const string MpnsCredential = "MpnsCredential";
