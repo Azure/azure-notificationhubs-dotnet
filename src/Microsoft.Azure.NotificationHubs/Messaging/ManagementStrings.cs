@@ -102,6 +102,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string WnsOutcomeCounts = "WnsOutcomeCounts";
         public const string GcmOutcomeCounts = "GcmOutcomeCounts";
         public const string FcmOutcomeCounts = "FcmOutcomeCounts";
+        public const string FcmV1OutcomeCounts = "FcmV1OutcomeCounts";
         public const string AdmOutcomeCounts = "AdmOutcomeCounts";
         public const string BaiduOutcomeCounts = "BaiduOutcomeCounts";
         public const string NotificationBody = "NotificationBody";
