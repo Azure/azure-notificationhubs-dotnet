@@ -19,7 +19,7 @@ namespace Microsoft.Azure.NotificationHubs {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SRClient {
@@ -1211,18 +1211,52 @@ namespace Microsoft.Azure.NotificationHubs {
                 return ResourceManager.GetString("FCMRegistrationInvalidId", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ClientEmail is either not specified or invalid..
+        /// </summary>
+        internal static string FcmV1ClientEmailNotSpecified {
+            get {
+                return ResourceManager.GetString("FcmV1ClientEmailNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PrivateKey is either not specified or invalid..
+        /// </summary>
+        internal static string FcmV1PrivateKeyNotSpecified {
+            get {
+                return ResourceManager.GetString("FcmV1PrivateKeyNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProjectId is either not specified or invalid..
+        /// </summary>
+        internal static string FcmV1ProjectIdNotSpecified {
+            get {
+                return ResourceManager.GetString("FcmV1ProjectIdNotSpecified", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to FCM V1 Registration Id is invalid..
         /// </summary>
-        internal static string FCMV1RegistrationInvalidId
-        {
-            get
-            {
-                return ResourceManager.GetString("FCMV1RegistrationInvalidId", resourceCulture);
+        internal static string FcmV1RegistrationInvalidId {
+            get {
+                return ResourceManager.GetString("FcmV1RegistrationInvalidId", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PrivateKey, ProjectId, and ClientEmail are required..
+        /// </summary>
+        internal static string FcmV1RequiredProperties {
+            get {
+                return ResourceManager.GetString("FcmV1RequiredProperties", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to The feature &apos;{0}&apos; is not supported with the current configuration..
         /// </summary>
@@ -1231,51 +1265,7 @@ namespace Microsoft.Azure.NotificationHubs {
                 return ResourceManager.GetString("FeatureNotSupported", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Only PrivateKey, ProjectId and ClientEmail are required..
-        /// </summary>
-        internal static string FcmV1RequiredProperties
-        {
-            get
-            {
-                return ResourceManager.GetString("FcmV1RequiredProperties", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to FcmV1PrivateKey is either not specified or invalid..
-        /// </summary>
-        internal static string FcmV1PrivateKeyNotSpecified
-        {
-            get
-            {
-                return ResourceManager.GetString("FcmV1PrivateKeyNotSpecified", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to FcmV1ProjectId is either not specified or invalid..
-        /// </summary>
-        internal static string FcmV1ProjectIdNotSpecified
-        {
-            get
-            {
-                return ResourceManager.GetString("FcmV1ProjectIdNotSpecified", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to FcmV1ClientEmail is either not specified or invalid..
-        /// </summary>
-        internal static string FcmV1ClientEmailNotSpecified
-        {
-            get
-            {
-                return ResourceManager.GetString("FcmV1ClientEmailNotSpecified", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to There are {0} statements defined in the filter action, which exceeds the allowed maximum of {1}..
         /// </summary>
@@ -1365,7 +1355,7 @@ namespace Microsoft.Azure.NotificationHubs {
                 return ResourceManager.GetString("GoogleApiKeyNotSpecified", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The token provider does not support HTTP authorization token..
         /// </summary>
