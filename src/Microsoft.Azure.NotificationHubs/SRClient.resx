@@ -1294,4 +1294,16 @@
   <data name="ServerIsBusy" xml:space="preserve">
     <value>Server is busy.</value>
   </data>
+  <data name="BrowserRequiredProperties" xml:space="preserve">
+    <value>Subject, VapidPublicKey, and VapidPrivateKey are required.</value>
+  </data>
+  <data name="BrowserSubjectNotSpecified" xml:space="preserve">
+    <value>Subject is either not specified or invalid.</value>
+  </data>
+  <data name="BrowserVapidPrivateKeyNotSpecified" xml:space="preserve">
+    <value>VAPID private key is either not specified or invalid.</value>
+  </data>
+  <data name="BrowserVapidPublicKeyNotSpecified" xml:space="preserve">
+    <value>VAPID public key is either not specified or invalid.</value>
+  </data>
 </root>

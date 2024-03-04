@@ -22,6 +22,7 @@ namespace Microsoft.Azure.NotificationHubs
     [KnownType(typeof(WnsCredential))]
     [KnownType(typeof(AdmCredential))]
     [KnownType(typeof(FcmV1Credential))]
+    [KnownType(typeof(BrowserCredential))]
     public abstract class PnsCredential : EntityDescription
     {
         internal PnsCredential()

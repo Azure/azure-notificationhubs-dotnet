@@ -414,6 +414,20 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Gets or sets the browser credential.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// The browser credential.
+        /// </returns>
+        [DataMember(Name = ManagementStrings.BrowserCredential, IsRequired = false, EmitDefaultValue = false, Order = 1018)]
+        public BrowserCredential BrowserCredential
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         ///   Gets/Sets any User Metadata associated with the NotificationHub.
         /// </summary>
         /// 
