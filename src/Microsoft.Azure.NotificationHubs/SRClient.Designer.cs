@@ -1249,6 +1249,51 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ClientEmail is either not specified or invalid..
+        /// </summary>
+        internal static string FcmV1ClientEmailNotSpecified {
+            get {
+                return ResourceManager.GetString("FcmV1ClientEmailNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PrivateKey is either not specified or invalid..
+        /// </summary>
+        internal static string FcmV1PrivateKeyNotSpecified {
+            get {
+                return ResourceManager.GetString("FcmV1PrivateKeyNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProjectId is either not specified or invalid..
+        /// </summary>
+        internal static string FcmV1ProjectIdNotSpecified {
+            get {
+                return ResourceManager.GetString("FcmV1ProjectIdNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FCM V1 Registration Id is invalid..
+        /// </summary>
+        internal static string FcmV1RegistrationInvalidId {
+            get {
+                return ResourceManager.GetString("FcmV1RegistrationInvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PrivateKey, ProjectId, and ClientEmail are required..
+        /// </summary>
+        internal static string FcmV1RequiredProperties {
+            get {
+                return ResourceManager.GetString("FcmV1RequiredProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The feature &apos;{0}&apos; is not supported with the current configuration..
         /// </summary>
         internal static string FeatureNotSupported {
