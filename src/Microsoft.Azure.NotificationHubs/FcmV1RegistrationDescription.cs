@@ -98,7 +98,7 @@ namespace Microsoft.Azure.NotificationHubs
         {
             if (string.IsNullOrWhiteSpace(FcmV1RegistrationId))
             {
-                throw new InvalidDataContractException(SRClient.FCMV1RegistrationInvalidId);
+                throw new InvalidDataContractException(SRClient.FcmV1RegistrationInvalidId);
             }
         }
 
