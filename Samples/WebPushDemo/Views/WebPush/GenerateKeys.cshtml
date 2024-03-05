@@ -1,0 +1,23 @@
+﻿@model WebPushDemo.Models.Devices
+@{
+    ViewData["Title"] = "Configure Keys";
+}
+
+<h2>Configure Keys</h2>
+<div class="alert alert-warning alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Developer Notes:</strong>
+    <ul>
+        <li>Web Push notification require a public and private key to send a payload.</li>
+        <li>Newly generated keys for you to use are below.</li>
+        <li>Key generation code can be viewed in Controllers/WebPushController.cs:GenerateKeys</li>
+    </ul>
+</div>
+
+<p>Add the following keys to appsettings.json</p>
+<pre>
+  "VapidKeys" : {
+    "PublicKey": "@ViewBag.PublicKey",
+    "PrivateKey":  "@ViewBag.PrivateKey" 
+  } 
+</pre>
