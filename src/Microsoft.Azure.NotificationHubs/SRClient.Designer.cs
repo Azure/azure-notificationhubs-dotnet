@@ -457,6 +457,42 @@ namespace Microsoft.Azure.NotificationHubs {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Subject, VapidPublicKey, and VapidPrivateKey are required..
+        /// </summary>
+        internal static string BrowserRequiredProperties {
+            get {
+                return ResourceManager.GetString("BrowserRequiredProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subject is either not specified or invalid..
+        /// </summary>
+        internal static string BrowserSubjectNotSpecified {
+            get {
+                return ResourceManager.GetString("BrowserSubjectNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VAPID private key is either not specified or invalid..
+        /// </summary>
+        internal static string BrowserVapidPrivateKeyNotSpecified {
+            get {
+                return ResourceManager.GetString("BrowserVapidPrivateKeyNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VAPID public key is either not specified or invalid..
+        /// </summary>
+        internal static string BrowserVapidPublicKeyNotSpecified {
+            get {
+                return ResourceManager.GetString("BrowserVapidPublicKeyNotSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The buffer has already been reclaimed..
         /// </summary>
         internal static string BufferAlreadyReclaimed {

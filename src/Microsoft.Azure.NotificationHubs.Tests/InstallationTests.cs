@@ -4,6 +4,7 @@
 // license information.
 //------------------------------------------------------------
 
+using System.Text.Json;
 using Xunit;
 
 namespace Microsoft.Azure.NotificationHubs.Tests
@@ -150,6 +151,34 @@ namespace Microsoft.Azure.NotificationHubs.Tests
 
             Assert.Equal(ChannelUri, installation.PushChannel);
             Assert.Equal(NotificationPlatform.Mpns, installation.Platform);
+        }
+
+        [Fact]
+        public void CanCreateBrowserInstallation()
+        {
+            var installation = new BrowserInstallation();
+
+            Assert.Equal(NotificationPlatform.Browser, installation.Platform);
+        }
+
+        [Fact]
+        public void CanCreateBrowserInstallationWithBrowserPushSubscription()
+        {
+            var browserPushSubscription = new BrowserPushSubscription
+            {
+                Endpoint = "foo",
+                P256DH = "bar",
+                Auth = "baz",
+            };
+
+            var installation = new BrowserInstallation(InstallationId, browserPushSubscription);
+            var pushSubscription = JsonSerializer.Deserialize<BrowserPushSubscription>(installation.PushChannel);
+
+            Assert.NotNull(pushSubscription);
+            Assert.Equal(browserPushSubscription.Endpoint, pushSubscription.Endpoint);
+            Assert.Equal(browserPushSubscription.P256DH, pushSubscription.P256DH);
+            Assert.Equal(browserPushSubscription.Auth, pushSubscription.Auth);
+            Assert.Equal(NotificationPlatform.Browser, installation.Platform);
         }
     }
 }

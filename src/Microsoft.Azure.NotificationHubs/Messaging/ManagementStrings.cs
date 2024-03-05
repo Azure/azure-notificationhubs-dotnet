@@ -41,6 +41,8 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string MpnsTemplateRegistrationDescription = "MpnsTemplateRegistrationDescription";
         public const string AdmRegistrationDescription = "AdmRegistrationDescription";
         public const string AdmTemplateRegistrationDescription = "AdmTemplateRegistrationDescription";
+        public const string BrowserRegistrationDescription = "BrowserRegistrationDescription";
+        public const string BrowserTemplateRegistrationDescription = "BrowserTemplateRegistrationDescription";
         public const string PnsCredential = "PnsCredential";
         public const string PnsCredentials = "PnsCredentials";
         public const string GcmCredential = "GcmCredential";
@@ -50,12 +52,16 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string WnsCredential = "WnsCredential";
         public const string ApnsCredential = "ApnsCredential";
         public const string AdmCredential = "AdmCredential";
+        public const string BrowserCredential = "BrowserCredential";
         public const string GcmRegistrationId = "GcmRegistrationId";
         public const string FcmRegistrationId = "FcmRegistrationId";
         public const string FcmV1RegistrationId = "FcmV1RegistrationId";
         public const string BaiduUserId = "BaiduUserId";
         public const string BaiduChannelId = "BaiduChannelId";
         public const string MpnsCredential = "MpnsCredential";
+        public const string BrowserEndpoint = "Endpoint";
+        public const string BrowserP256DH = "P256DH";
+        public const string BrowserAuth = "Auth";
         public const string MpnsHeaders = "MpnsHeaders";
         public const string ApnsHeaders = "ApnsHeaders";
         public const string MpnsHeader = "MpnsHeader";
@@ -105,6 +111,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
         public const string FcmV1OutcomeCounts = "FcmV1OutcomeCounts";
         public const string AdmOutcomeCounts = "AdmOutcomeCounts";
         public const string BaiduOutcomeCounts = "BaiduOutcomeCounts";
+        public const string BrowserOutcomeCounts = "BrowserOutcomeCounts";
         public const string NotificationBody = "NotificationBody";
 
         public const string NotificationOutcomeCollection = "NotificationOutcomeCollection";
