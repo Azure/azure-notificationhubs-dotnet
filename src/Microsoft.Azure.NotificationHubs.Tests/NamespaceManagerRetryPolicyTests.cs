@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //------------------------------------------------------------
 
@@ -75,7 +75,7 @@ namespace Microsoft.Azure.NotificationHubs.DotNetCore.Tests
         public async Task RetryPolicyRetriesOnThrottling()
         {
             _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
-                    .Respond((HttpStatusCode)403, new Dictionary<string, string> { { "Retry-After", "1" }}, new StringContent(""));
+                    .Respond((HttpStatusCode)403, new Dictionary<string, string> { { "Retry-After", "1" } }, new StringContent(""));
             _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
                     .Respond((HttpStatusCode)429, new Dictionary<string, string> { { "Retry-After", "1" } }, new StringContent(""));
             _mockHttp.Expect("https://sample.servicebus.windows.net/hub-name")
