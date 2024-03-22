@@ -80,7 +80,7 @@ var hub = await namespaceManager.GetNotificationHubAsync("hubname", Cancellation
 ### Update an Azure Notification Hub
 
 ```csharp
-hub.FcmCredential = new FcmCredential("key");
+hub.FcmV1Credential = new FcmV1Credential("private-key", "project-id", "client-email"); 
 hub = await namespaceManager.UpdateNotificationHubAsync(hub, CancellationToken.None);
 ```
 

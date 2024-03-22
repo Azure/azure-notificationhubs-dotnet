@@ -1,6 +1,6 @@
 ﻿//----------------------------------------------------------------
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for 
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for
 // license information.
 //----------------------------------------------------------------
 
@@ -1460,6 +1460,67 @@ namespace Microsoft.Azure.NotificationHubs
         Task<NotificationOutcome> SendFcmNativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Sends Firebase Cloud Messaging (FCM) V1 native notification.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM V1 message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload);
+
+        /// <summary>
+        /// Sends Firebase Cloud Messaging (FCM) V1 native notification.
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends FCM V1 native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, string tagExpression);
+
+        /// <summary>
+        /// Sends FCM V1 native notification to a tag expression (a single tag "tag" is a valid tag expression).
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends a FCM V1 native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, IEnumerable<string> tags);
+
+        /// <summary>
+        /// Sends a FCM V1 native notification to a non-empty set of tags (max 20). This is equivalent to a tag expression with boolean ORs ("||").
+        /// </summary>
+        /// <param name="jsonPayload">The JSON payload. Documentation on proper formatting of a FCM message can be found <a href="https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#Message">here</a>.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendFcmV1NativeNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Sends a Microsoft Push Notification Service (MPNS) native notification. To specify headers for MPNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
         /// </summary>
         /// <param name="nativePayload">The native payload.</param>
@@ -1667,7 +1728,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Asynchronously sends a Windows native notification. To specify headers for WNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
         /// </summary>
-        /// <param name="windowsNativePayload">The Windows native payload. This can be used to send any valid WNS notification, 
+        /// <param name="windowsNativePayload">The Windows native payload. This can be used to send any valid WNS notification,
         /// including Tile, Toast, and Badge values, as described in the WNS documentation.</param>
         /// <returns>
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
@@ -1677,7 +1738,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <summary>
         /// Asynchronously sends a Windows native notification. To specify headers for WNS, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
         /// </summary>
-        /// <param name="windowsNativePayload">The Windows native payload. This can be used to send any valid WNS notification, 
+        /// <param name="windowsNativePayload">The Windows native payload. This can be used to send any valid WNS notification,
         /// including Tile, Toast, and Badge values, as described in the WNS documentation.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
         /// <returns>
