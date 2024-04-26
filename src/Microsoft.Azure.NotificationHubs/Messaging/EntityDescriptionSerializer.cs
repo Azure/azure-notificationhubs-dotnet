@@ -96,11 +96,11 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             this.entirySerializers.Add(
                 typeof(BaiduTemplateRegistrationDescription).Name,
                 this.CreateSerializer<BaiduTemplateRegistrationDescription>());
-            
+
             this.entirySerializers.Add(
                 typeof(BrowserRegistrationDescription).Name,
                 this.CreateSerializer<BrowserRegistrationDescription>());
-            
+
             this.entirySerializers.Add(
                 typeof(BrowserTemplateRegistrationDescription).Name,
                 this.CreateSerializer<BrowserTemplateRegistrationDescription>());
@@ -146,7 +146,7 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             {
                 Serialize(description, xmlWriter);
             }
-            
+
             return stringBuilder.ToString();
         }
 

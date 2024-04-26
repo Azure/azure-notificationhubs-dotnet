@@ -258,7 +258,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh);
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh);
 
         /// <summary>
         /// Asynchronously creates a browser native registration.
@@ -270,8 +270,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, CancellationToken cancellationToken);
-        
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, CancellationToken cancellationToken);
+
         /// <summary>
         /// Asynchronously creates a browser native registration.
         /// </summary>
@@ -282,8 +282,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags);
-        
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags);
+
         /// <summary>
         /// Asynchronously creates a browser native registration.
         /// </summary>
@@ -295,8 +295,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags, CancellationToken cancellationToken);
-        
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags, CancellationToken cancellationToken);
+
         /// <summary>
         /// Asynchronously creates FCM native registration.
         /// </summary>
@@ -1407,7 +1407,6 @@ namespace Microsoft.Azure.NotificationHubs
         /// </returns>
         Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, CancellationToken cancellationToken);
 
-        
         /// <summary>
         /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
         /// </summary>
@@ -1449,7 +1448,7 @@ namespace Microsoft.Azure.NotificationHubs
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
         Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken);
-        
+
         /// <summary>
         /// Sends a notification directly to all devices listed in deviceHandles (a valid tokens as expressed by the Notification type).
         /// Users of this API do not use Registrations or Installations. Instead, users of this API manage all devices

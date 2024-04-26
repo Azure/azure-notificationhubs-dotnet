@@ -2229,7 +2229,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh)
+        public Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh)
         {
             return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }));
         }
@@ -2244,7 +2244,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, CancellationToken cancellationToken)
+        public Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, CancellationToken cancellationToken)
         {
             return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }), cancellationToken);
         }
@@ -2259,7 +2259,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags)
+        public Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags)
         {
             return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }, tags));
         }
@@ -2275,7 +2275,7 @@ namespace Microsoft.Azure.NotificationHubs
         /// <returns>
         /// The task that completes the asynchronous operation.
         /// </returns>
-        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags, CancellationToken cancellationToken)
+        public Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags, CancellationToken cancellationToken)
         {
             return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }, tags), cancellationToken);
         }
