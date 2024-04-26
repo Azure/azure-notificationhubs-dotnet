@@ -15,6 +15,7 @@ using Microsoft.Azure.NotificationHubs.Messaging;
 
 namespace Microsoft.Azure.NotificationHubs
 {
+    [DataContract(Name = ManagementStrings.BrowserTemplateRegistrationDescription, Namespace = ManagementStrings.Namespace)]
     public class BrowserTemplateRegistrationDescription : BrowserRegistrationDescription
     {
         /// <summary>
