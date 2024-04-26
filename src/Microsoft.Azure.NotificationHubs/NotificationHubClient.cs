@@ -788,6 +788,85 @@ namespace Microsoft.Azure.NotificationHubs
         }
 
         /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload)
+        {
+            return SendNotificationAsync(new BrowserNotification(jsonPayload));
+        }
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new BrowserNotification(jsonPayload), cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, IEnumerable<string> tags)
+        {
+            return SendNotificationAsync(new BrowserNotification(jsonPayload), tags);
+        }
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new BrowserNotification(jsonPayload), tags, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, string tagExpression)
+        {
+            return SendNotificationAsync(new BrowserNotification(jsonPayload), tagExpression);
+        }
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        public Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken)
+        {
+            return SendNotificationAsync(new BrowserNotification(jsonPayload), tagExpression, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends the Amazon Device Messaging (ADM) native notification.
         /// </summary>
         /// <param name="jsonPayload">A valid, ADM JSON payload, described in detail <a href="https://developer.amazon.com/public/apis/engage/device-messaging/tech-docs/06-sending-a-message#Message Payloads and Uniqueness">here</a>.</param>
@@ -2141,6 +2220,66 @@ namespace Microsoft.Azure.NotificationHubs
 
         #endregion
 
+        /// <summary>
+        /// Asynchronously creates browser registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh)
+        {
+            return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }));
+        }
+
+        /// <summary>
+        /// Asynchronously creates browser registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }), cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously creates browser registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags)
+        {
+            return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }, tags));
+        }
+
+        /// <summary>
+        /// Asynchronously creates browser registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        public Task<BrowserRegistrationDescription> CreateBrowserRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags, CancellationToken cancellationToken)
+        {
+            return CreateRegistrationAsync(new BrowserRegistrationDescription(new BrowserPushSubscription { Auth = auth, Endpoint = endpoint, P256DH = p256dh }, tags), cancellationToken);
+        }
+        
         /// <summary>
         /// Asynchronously creates MPNS native registration.
         /// </summary>
