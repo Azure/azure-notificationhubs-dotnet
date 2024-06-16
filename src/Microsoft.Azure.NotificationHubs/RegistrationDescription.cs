@@ -40,6 +40,7 @@ namespace Microsoft.Azure.NotificationHubs
     [KnownType(typeof(BaiduTemplateRegistrationDescription))]
     [KnownType(typeof(FcmV1RegistrationDescription))]
     [KnownType(typeof(FcmV1TemplateRegistrationDescription))]
+    [KnownType(typeof(BrowserRegistrationDescription))]
     public abstract class RegistrationDescription : EntityDescription
     {
         internal const string TemplateRegistrationType = "template";

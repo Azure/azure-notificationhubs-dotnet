@@ -100,6 +100,10 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
             this.entirySerializers.Add(
                 typeof(NotificationHubJob).Name,
                 this.CreateSerializer<NotificationHubJob>());
+
+            this.entirySerializers.Add(
+                typeof(BrowserRegistrationDescription).Name,
+                this.CreateSerializer<BrowserRegistrationDescription>());
         }
 
         private DataContractSerializer CreateSerializer<T>()
