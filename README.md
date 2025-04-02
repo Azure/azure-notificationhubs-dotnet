@@ -1,6 +1,6 @@
 [![NuGet](https://img.shields.io/nuget/v/Microsoft.Azure.NotificationHubs.svg)](https://www.nuget.org/packages/Microsoft.Azure.NotificationHubs/)
 
-# .NET Client for Azure Notification Hubs
+# .NET Client for Azure Notification Hubs [2025]
 
 This repository contains source code for Azure Notification Hubs .NET SDK as well as samples for using the client.  This library is also available via NuGet as part of [`Microsoft.Azure.NotificationHubs`](https://www.nuget.org/packages/Microsoft.Azure.NotificationHubs/).
 
