@@ -250,6 +250,54 @@ namespace Microsoft.Azure.NotificationHubs
         Task<BaiduTemplateRegistrationDescription> CreateBaiduTemplateRegistrationAsync(string userId, string channelId, string jsonPayload, IEnumerable<string> tags);
 
         /// <summary>
+        /// Asynchronously creates a browser native registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh);
+
+        /// <summary>
+        /// Asynchronously creates a browser native registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously creates a browser native registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <param name="tags">The tags.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags);
+
+        /// <summary>
+        /// Asynchronously creates a browser native registration.
+        /// </summary>
+        /// <param name="endpoint">String containing the endpoint associated with the push subscription.</param>
+        /// <param name="auth">Value used to retrieve the authentication secret.</param>
+        /// <param name="p256dh">Value used to retrieve the public key.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        /// The task that completes the asynchronous operation.
+        /// </returns>
+        Task<BrowserRegistrationDescription> CreateBrowserNativeRegistrationAsync(string endpoint, string auth, string p256dh, IEnumerable<string> tags, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Asynchronously creates FCM native registration.
         /// </summary>
         /// <param name="fcmRegistrationId">The FCM registration ID.</param>
@@ -1339,6 +1387,67 @@ namespace Microsoft.Azure.NotificationHubs
         ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
         /// </returns>
         Task<NotificationOutcome> SendBaiduNativeNotificationAsync(string message, string tagExpression, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload);
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, IEnumerable<string> tags);
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tags">A non-empty set of tags (maximum 20 tags). Each string in the set can contain a single tag.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, IEnumerable<string> tags, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, string tagExpression);
+
+        /// <summary>
+        /// Sends a browser notification. To specify an expiry, use the <see cref="M:Microsoft.Azure.NotificationHubs.NotificationHubClient.SendNotificationAsync(Microsoft.Azure.NotificationHubs.Notification)" /> method.
+        /// </summary>
+        /// <param name="jsonPayload">This is a valid browser push notification payload.</param>
+        /// <param name="tagExpression">A tag expression is any boolean expression constructed using the logical operators AND (&amp;&amp;), OR (||), NOT (!), and round parentheses. For example: (A || B) &amp;&amp; !C. If an expression uses only ORs, it can contain at most 20 tags. Other expressions are limited to 6 tags. Note that a single tag "A" is a valid expression.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for a task to complete.</param>
+        /// <returns>
+        ///   <see cref="Microsoft.Azure.NotificationHubs.NotificationOutcome" /> which describes the result of the Send operation.
+        /// </returns>
+        Task<NotificationOutcome> SendBrowserNotificationAsync(string jsonPayload, string tagExpression, CancellationToken cancellationToken);
 
         /// <summary>
         /// Sends a notification directly to all devices listed in deviceHandles (a valid tokens as expressed by the Notification type).

@@ -98,6 +98,14 @@ namespace Microsoft.Azure.NotificationHubs.Messaging
                 this.CreateSerializer<BaiduTemplateRegistrationDescription>());
 
             this.entirySerializers.Add(
+                typeof(BrowserRegistrationDescription).Name,
+                this.CreateSerializer<BrowserRegistrationDescription>());
+
+            this.entirySerializers.Add(
+                typeof(BrowserTemplateRegistrationDescription).Name,
+                this.CreateSerializer<BrowserTemplateRegistrationDescription>());
+
+            this.entirySerializers.Add(
                 typeof(NotificationHubJob).Name,
                 this.CreateSerializer<NotificationHubJob>());
         }
