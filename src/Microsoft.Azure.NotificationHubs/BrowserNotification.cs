@@ -4,6 +4,7 @@
 // license information.
 //----------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Text;
 
 namespace Microsoft.Azure.NotificationHubs
@@ -19,7 +20,8 @@ namespace Microsoft.Azure.NotificationHubs
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.NotificationHubs.BrowserNotification"/> class.
         /// </summary>
         /// <param name="payload">The notification payload.</param>
-        public BrowserNotification(string payload) : base(null, null, contentType)
+        /// <param name="additionalHeaders">Additional headers for P256DH and Auth.</param>
+        public BrowserNotification(string payload, IDictionary<string, string> additionalHeaders = null) : base(additionalHeaders, null, contentType)
         {
             Body = payload;
         }
