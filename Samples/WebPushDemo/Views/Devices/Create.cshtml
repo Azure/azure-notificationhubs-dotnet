@@ -1,0 +1,69 @@
+﻿@model WebPushDemo.Models.Devices
+@section Scripts
+{
+    <script src="@Url.Content("~/js/CreateDevice.js")"></script>
+}
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Add Device</h2>
+<hr />
+<div class="row">
+    <div class="alert alert-info">
+        <strong>Developer Notes:</strong>
+        <ul>
+            <li>You can find the logic for registering a device in wwwroot/js/CreateDevice.js</li>
+            <li>ServiceWorkers on chrome will only work on sites with ssl enabled or local webservers.</li>
+            <li>Microsoft Edge requires enabling service workers.</li>
+        </ul>
+    </div>
+    <div class="alert alert-danger" style="display: none;">
+        <strong>Error:</strong>
+        <ul id="errorMessage"></ul>
+    </div>
+
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" style="width:500px">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="well" style="width: 500px;">
+                <h4>Web Push Details</h4>
+                <span style="font-size: 12px;">These values will automatically become populated once correct permissions are given by the browser.</span>
+                <hr/>
+                <div class="form-group">
+                    <label asp-for="PushEndpoint" class="control-label"></label>
+                    <input asp-for="PushEndpoint" class="form-control" readonly required/>
+                    <span asp-validation-for="PushEndpoint" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PushP256DH" class="control-label"></label>
+                    <input asp-for="PushP256DH" class="form-control" readonly required/>
+                    <span asp-validation-for="PushP256DH" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PushAuth" class="control-label"></label>
+                    <input asp-for="PushAuth" class="form-control" readonly required/>
+                    <span asp-validation-for="PushAuth" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    //Vapid public key.
+    var applicationServerPublicKey = '@ViewBag.PublicKey';
+</script>

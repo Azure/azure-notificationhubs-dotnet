@@ -1,0 +1,54 @@
+﻿@model WebPushDemo.Models.Devices
+
+@section Scripts
+{
+    <script src="@Url.Content("~/js/SendDevice.js")"></script>
+}
+@{
+    ViewData["Title"] = "Send";
+}
+<h2>Send Push Message</h2>
+<hr />
+
+<div class="row">
+    <div class="alert alert-info">
+        <strong>Developer Notes:</strong>
+        <ul>
+            <li>You can find the logic for sending a web push notification in Controllers/WebPushController.cs:Send</li>
+            <li>The Payload Generation Helper fields below are not sent to the web push api. They are simply used to generate the json payload which will be sent.</li>
+            <li>Client side code for handling push notifications can be found at wwwroot/sw.js</li>
+            <li>You can include any data in your payload, as long as your sw.js handles it.</li>
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <div class="well" style="width: 500px;">
+            <h4>Payload Generation Helper</h4>
+            <span style="font-size: 12px;">Type your Title and Message and your payload will be generated below.</span>
+            <hr/>
+            <div class="form-group">
+                <label class="control-label" for="Title">Title</label>
+                <input class="form-control" type="text" id="Title" name="Title" value="">
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="Message">Message</label>
+                <input class="form-control" type="text" id="Message" name="Message" value="">
+            </div>
+        </div>
+        
+        <form asp-action="Send">
+            <input type="hidden" asp-for="Id"/>
+            <div class="form-group">
+                <label class="control-label" for="Payload">Payload</label>
+
+                <textarea id="Payload" name="Payload" style="width: 500px; height: 200px;"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Send Push" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Devices" asp-action="Index">Back to List</a>
+</div>
